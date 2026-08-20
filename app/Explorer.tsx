@@ -22,6 +22,7 @@ import type {
 
 const snapshot = snapshotJson as BenchmarkSnapshot;
 type OutcomeFilter = "all" | "pass" | "fail";
+type CatalogView = "tasks" | "trajectories";
 type ContextTab = "policy" | "prompt" | "task" | "evaluation" | "raw";
 type LoadStatus = "idle" | "loading" | "ready" | "error";
 
@@ -32,7 +33,26 @@ interface LoadState<T> {
   error: string | null;
 }
 
+interface TaskRunGroup {
+  runId: string;
+  trajectories: TrajectorySummary[];
+  passCount: number;
+  failCount: number;
+}
+
+interface TaskSummaryGroup {
+  key: string;
+  taskId: string;
+  title: string;
+  scenarioPreview: string;
+  trajectories: TrajectorySummary[];
+  runs: TaskRunGroup[];
+  passCount: number;
+  failCount: number;
+}
+
 const PAGE_SIZE = 100;
+const TASK_PAGE_SIZE = 40;
 const DETAIL_CACHE_LIMIT = 24;
 const runIndexCache = new Map<string, Promise<TrajectorySummary[]>>();
 const tasksCache = new Map<string, Promise<TasksAsset>>();
@@ -64,6 +84,65 @@ function loadRunIndex(run: RunData) {
     });
   runIndexCache.set(run.id, request);
   return request;
+}
+
+function groupTaskSummaries(
+  summaries: TrajectorySummary[],
+  runsById: Map<string, RunData>,
+): TaskSummaryGroup[] {
+  const tasks = new Map<string, {
+    key: string;
+    taskId: string;
+    title: string;
+    scenarioPreview: string;
+    trajectories: TrajectorySummary[];
+    runs: Map<string, TrajectorySummary[]>;
+  }>();
+
+  for (const summary of summaries) {
+    const taskSet = runsById.get(summary.runId)?.tasksPath ?? summary.runId;
+    const key = JSON.stringify([summary.domainId, taskSet, summary.taskId]);
+    let task = tasks.get(key);
+    if (!task) {
+      task = {
+        key,
+        taskId: summary.taskId,
+        title: summary.title,
+        scenarioPreview: summary.scenarioPreview,
+        trajectories: [],
+        runs: new Map(),
+      };
+      tasks.set(key, task);
+    }
+    task.trajectories.push(summary);
+    const runTrajectories = task.runs.get(summary.runId) ?? [];
+    runTrajectories.push(summary);
+    task.runs.set(summary.runId, runTrajectories);
+  }
+
+  return [...tasks.values()].map((task) => {
+    const runs = [...task.runs.entries()].map(([runId, trajectories]) => {
+      const sorted = [...trajectories].sort((left, right) => left.trial - right.trial);
+      const passCount = sorted.filter((item) => item.reward === 1).length;
+      return {
+        runId,
+        trajectories: sorted,
+        passCount,
+        failCount: sorted.length - passCount,
+      };
+    });
+    const passCount = task.trajectories.filter((item) => item.reward === 1).length;
+    return {
+      key: task.key,
+      taskId: task.taskId,
+      title: task.title,
+      scenarioPreview: task.scenarioPreview,
+      trajectories: task.trajectories,
+      runs,
+      passCount,
+      failCount: task.trajectories.length - passCount,
+    };
+  });
 }
 
 function loadTasks(path: string) {
@@ -827,6 +906,8 @@ export default function Explorer() {
   const [selectedTrajectoryId, setSelectedTrajectoryId] = useState("");
   const [query, setQuery] = useState("");
   const [outcome, setOutcome] = useState<OutcomeFilter>("all");
+  const [catalogView, setCatalogView] = useState<CatalogView>("tasks");
+  const [focusedTaskKey, setFocusedTaskKey] = useState("");
   const [contextTab, setContextTab] = useState<ContextTab>("policy");
   const [promptVariantId, setPromptVariantId] = useState("");
   const [policyMode, setPolicyMode] = useState<"domain" | "run">("domain");
@@ -944,17 +1025,33 @@ export default function Explorer() {
     const matchesTrial = trialFilter === "all" || item.trial === Number(trialFilter);
     return matchesQuery && matchesOutcome && matchesTrial;
   }), [currentIndexState.data, deferredQuery, outcome, runsById, trialFilter]);
+  const taskGroups = useMemo(
+    () => groupTaskSummaries(filteredTrajectories, runsById),
+    [filteredTrajectories, runsById],
+  );
   const selectedSummary =
     filteredTrajectories.find((candidate) => candidate.id === selectedTrajectoryId) ??
     filteredTrajectories[0];
+  const selectedTaskGroup = selectedSummary
+    ? taskGroups.find((group) => group.trajectories.some((item) => item.id === selectedSummary.id))
+    : undefined;
+  const activeTaskGroup =
+    taskGroups.find((group) => group.key === focusedTaskKey) ??
+    selectedTaskGroup ??
+    taskGroups[0];
   const selectedRun = selectedSummary ? runsById.get(selectedSummary.runId) : undefined;
   const currentIndex = selectedSummary
     ? filteredTrajectories.findIndex((candidate) => candidate.id === selectedSummary.id)
     : -1;
-  const pageCount = Math.max(1, Math.ceil(filteredTrajectories.length / PAGE_SIZE));
+  const pageSize = catalogView === "tasks" ? TASK_PAGE_SIZE : PAGE_SIZE;
+  const catalogItemCount = catalogView === "tasks"
+    ? taskGroups.length
+    : filteredTrajectories.length;
+  const pageCount = Math.max(1, Math.ceil(catalogItemCount / pageSize));
   const safePage = Math.min(page, pageCount - 1);
-  const pageStart = safePage * PAGE_SIZE;
+  const pageStart = safePage * pageSize;
   const pageTrajectories = filteredTrajectories.slice(pageStart, pageStart + PAGE_SIZE);
+  const pageTaskGroups = taskGroups.slice(pageStart, pageStart + TASK_PAGE_SIZE);
 
   useEffect(() => {
     let current = true;
@@ -1035,6 +1132,7 @@ export default function Explorer() {
     setTrialFilter("all");
     setOutcome("all");
     setQuery("");
+    setFocusedTaskKey("");
     setPage(0);
     setSelectedTrajectoryId("");
     setPromptVariantId("");
@@ -1073,6 +1171,7 @@ export default function Explorer() {
     setTrialFilter("all");
     setPage(0);
     setSelectedTrajectoryId("");
+    setFocusedTaskKey("");
   }
 
   function changeRun(nextRun: string) {
@@ -1080,12 +1179,46 @@ export default function Explorer() {
     setTrialFilter("all");
     setPage(0);
     setSelectedTrajectoryId("");
+    setFocusedTaskKey("");
+  }
+
+  function changeCatalogView(nextView: CatalogView) {
+    setCatalogView(nextView);
+    if (!selectedSummary) {
+      setPage(0);
+      return;
+    }
+    if (nextView === "tasks") {
+      const taskIndex = taskGroups.findIndex((group) =>
+        group.trajectories.some((item) => item.id === selectedSummary.id));
+      setPage(taskIndex >= 0 ? Math.floor(taskIndex / TASK_PAGE_SIZE) : 0);
+      if (taskIndex >= 0) setFocusedTaskKey(taskGroups[taskIndex].key);
+      return;
+    }
+    const trajectoryIndex = filteredTrajectories.findIndex(
+      (item) => item.id === selectedSummary.id,
+    );
+    setPage(trajectoryIndex >= 0 ? Math.floor(trajectoryIndex / PAGE_SIZE) : 0);
+  }
+
+  function chooseTask(group: TaskSummaryGroup) {
+    setFocusedTaskKey(group.key);
+    if (!group.trajectories.some((item) => item.id === selectedSummary?.id)) {
+      setSelectedTrajectoryId(group.trajectories[0]?.id ?? "");
+    }
   }
 
   function chooseTrajectory(id: string) {
     const index = filteredTrajectories.findIndex((item) => item.id === id);
     setSelectedTrajectoryId(id);
-    if (index >= 0) setPage(Math.floor(index / PAGE_SIZE));
+    const taskIndex = taskGroups.findIndex((group) =>
+      group.trajectories.some((item) => item.id === id));
+    if (taskIndex >= 0) setFocusedTaskKey(taskGroups[taskIndex].key);
+    if (catalogView === "tasks") {
+      if (taskIndex >= 0) setPage(Math.floor(taskIndex / TASK_PAGE_SIZE));
+    } else if (index >= 0) {
+      setPage(Math.floor(index / PAGE_SIZE));
+    }
     setBrowserOpen(false);
     listRef.current?.scrollTo({ top: 0 });
   }
@@ -1093,15 +1226,33 @@ export default function Explorer() {
   function moveTrajectory(offset: number) {
     if (!filteredTrajectories.length || currentIndex < 0) return;
     const next = (currentIndex + offset + filteredTrajectories.length) % filteredTrajectories.length;
-    setSelectedTrajectoryId(filteredTrajectories[next].id);
-    setPage(Math.floor(next / PAGE_SIZE));
+    const nextTrajectory = filteredTrajectories[next];
+    setSelectedTrajectoryId(nextTrajectory.id);
+    if (catalogView === "tasks") {
+      const taskIndex = taskGroups.findIndex((group) =>
+        group.trajectories.some((item) => item.id === nextTrajectory.id));
+      if (taskIndex >= 0) {
+        setFocusedTaskKey(taskGroups[taskIndex].key);
+        setPage(Math.floor(taskIndex / TASK_PAGE_SIZE));
+      }
+    } else {
+      setPage(Math.floor(next / PAGE_SIZE));
+    }
   }
 
   function movePage(offset: number) {
     const next = Math.min(pageCount - 1, Math.max(0, safePage + offset));
     setPage(next);
-    const first = filteredTrajectories[next * PAGE_SIZE];
-    if (first) setSelectedTrajectoryId(first.id);
+    if (catalogView === "tasks") {
+      const firstTask = taskGroups[next * TASK_PAGE_SIZE];
+      if (firstTask) {
+        setFocusedTaskKey(firstTask.key);
+        setSelectedTrajectoryId(firstTask.trajectories[0]?.id ?? "");
+      }
+    } else {
+      const first = filteredTrajectories[next * PAGE_SIZE];
+      if (first) setSelectedTrajectoryId(first.id);
+    }
     listRef.current?.scrollTo({ top: 0 });
   }
 
@@ -1150,7 +1301,7 @@ export default function Explorer() {
             </select>
           </label>
           <div className="mobile-browser-field">
-            <span>Trajectory</span>
+            <span>Catalog</span>
             <button
               type="button"
               className="mobile-browser-trigger"
@@ -1158,7 +1309,11 @@ export default function Explorer() {
               aria-expanded={browserOpen}
             >
               <strong>{selectedSummary ? compactTaskId(selectedSummary.taskId) : "Browse catalog"}</strong>
-              <span>{filteredTrajectories.length.toLocaleString()} results</span>
+              <span>
+                {catalogView === "tasks"
+                  ? `${taskGroups.length.toLocaleString()} tasks`
+                  : `${filteredTrajectories.length.toLocaleString()} trajectories`}
+              </span>
             </button>
           </div>
         </div>
@@ -1188,22 +1343,38 @@ export default function Explorer() {
 
         <section
           className={`trajectory-browser${browserOpen ? " mobile-open" : ""}`}
-          aria-label="Trajectory browser"
+          aria-label="Task and trajectory browser"
         >
           <div className="mobile-browser-head">
             <div>
-              <p className="eyebrow">Trajectory catalog</p>
+              <p className="eyebrow">{catalogView === "tasks" ? "Task catalog" : "Trajectory catalog"}</p>
               <strong>{domain.name}</strong>
             </div>
             <button type="button" onClick={() => setBrowserOpen(false)} aria-label="Close browser">×</button>
           </div>
           <div className="section-heading">
-            <p className="eyebrow">Trajectories</p>
+            <p className="eyebrow">{catalogView === "tasks" ? "Tasks" : "Trajectories"}</p>
             <span>
               {currentIndexState.status === "ready"
-                ? `${filteredTrajectories.length.toLocaleString()} / ${expectedTrajectoryCount.toLocaleString()}`
+                ? catalogView === "tasks"
+                  ? `${taskGroups.length.toLocaleString()} tasks · ${filteredTrajectories.length.toLocaleString()} trajectories`
+                  : `${filteredTrajectories.length.toLocaleString()} / ${expectedTrajectoryCount.toLocaleString()}`
                 : "Loading…"}
             </span>
+          </div>
+          <div className="catalog-view-switch" role="tablist" aria-label="Catalog view">
+            {(["tasks", "trajectories"] as CatalogView[]).map((view) => (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={catalogView === view}
+                className={catalogView === view ? "active" : ""}
+                onClick={() => changeCatalogView(view)}
+                key={view}
+              >
+                {view === "tasks" ? "Tasks" : "Trajectories"}
+              </button>
+            ))}
           </div>
           <div className="catalog-filters">
             <label className="catalog-filter model-filter">
@@ -1230,6 +1401,7 @@ export default function Explorer() {
                   setTrialFilter(event.target.value);
                   setPage(0);
                   setSelectedTrajectoryId("");
+                  setFocusedTaskKey("");
                 }}
               >
                 <option value="all">All</option>
@@ -1244,9 +1416,11 @@ export default function Explorer() {
               onChange={(event) => {
                 setQuery(event.target.value);
                 setPage(0);
+                setSelectedTrajectoryId("");
+                setFocusedTaskKey("");
               }}
-              placeholder="Search task or tool"
-              aria-label="Search trajectories"
+              placeholder="Search task, scenario, or tool"
+              aria-label="Search tasks and trajectories"
             />
             {query ? (
               <button
@@ -1254,6 +1428,8 @@ export default function Explorer() {
                 onClick={() => {
                   setQuery("");
                   setPage(0);
+                  setSelectedTrajectoryId("");
+                  setFocusedTaskKey("");
                 }}
                 aria-label="Clear search"
               >×</button>
@@ -1268,6 +1444,7 @@ export default function Explorer() {
                   setOutcome(filter);
                   setPage(0);
                   setSelectedTrajectoryId("");
+                  setFocusedTaskKey("");
                 }}
                 key={filter}
               >
@@ -1292,7 +1469,72 @@ export default function Explorer() {
                 </button>
               </div>
             ) : null}
-            {currentIndexState.status === "ready" ? pageTrajectories.map((item) => {
+            {currentIndexState.status === "ready" && catalogView === "tasks"
+              ? pageTaskGroups.map((group) => {
+                const expanded = activeTaskGroup?.key === group.key;
+                const selected = selectedTaskGroup?.key === group.key;
+                return (
+                  <article
+                    className={`task-group-card${selected ? " active" : ""}`}
+                    key={group.key}
+                  >
+                    <button
+                      type="button"
+                      className="task-group-toggle"
+                      onClick={() => chooseTask(group)}
+                      aria-expanded={expanded}
+                    >
+                      <span className="task-group-copy">
+                        <span className="trajectory-id">Task {compactTaskId(group.taskId)}</span>
+                        <strong>{group.title}</strong>
+                        <span className="task-scenario">{group.scenarioPreview}</span>
+                        <span className="task-group-meta">
+                          {group.trajectories.length} trajectories · {group.runs.length} runs
+                        </span>
+                      </span>
+                      <span className="task-group-side" aria-label={`${group.passCount} passed, ${group.failCount} failed`}>
+                        <span className="task-result-count">✓ {group.passCount}</span>
+                        <span className="task-result-count fail">× {group.failCount}</span>
+                        <span className="task-group-disclosure" aria-hidden="true">⌄</span>
+                      </span>
+                    </button>
+                    {expanded ? (
+                      <div className="task-run-list" role="group" aria-label={`Trajectories for task ${group.taskId}`}>
+                        {group.runs.map((runGroup) => {
+                          const groupRun = runsById.get(runGroup.runId);
+                          const runLabel = groupRun ? formatRunLabel(groupRun) : "Unknown run";
+                          return (
+                            <div className="task-run-group" key={runGroup.runId}>
+                              <div className="task-run-heading">
+                                <strong>{runLabel}</strong>
+                                <span>{runGroup.passCount} pass · {runGroup.failCount} fail</span>
+                              </div>
+                              <div className="task-trial-chips">
+                                {runGroup.trajectories.map((item) => (
+                                  <button
+                                    type="button"
+                                    className={`task-trial-chip${item.id === selectedSummary?.id ? " active" : ""}`}
+                                    onClick={() => chooseTrajectory(item.id)}
+                                    aria-label={`Trial ${item.trial}, ${runLabel}, ${item.reward === 1 ? "Pass" : "Fail"}`}
+                                    key={item.id}
+                                  >
+                                    <span className={`trial-outcome ${item.reward === 1 ? "pass" : "fail"}`} aria-hidden="true">
+                                      {item.reward === 1 ? "✓" : "×"}
+                                    </span>
+                                    T{item.trial}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : null}
+                  </article>
+                );
+              })
+              : null}
+            {currentIndexState.status === "ready" && catalogView === "trajectories" ? pageTrajectories.map((item) => {
               const itemRun = runsById.get(item.runId);
               return (
               <button
@@ -1313,14 +1555,14 @@ export default function Explorer() {
               );
             }) : null}
             {currentIndexState.status === "ready" && !filteredTrajectories.length ? (
-              <div className="empty-list">No trajectory matches this filter.</div>
+              <div className="empty-list">No task or trajectory matches this filter.</div>
             ) : null}
           </div>
           {currentIndexState.status === "ready" && filteredTrajectories.length ? (
-            <div className="catalog-pagination" aria-label="Trajectory pages">
+            <div className="catalog-pagination" aria-label={`${catalogView === "tasks" ? "Task" : "Trajectory"} pages`}>
               <button type="button" onClick={() => movePage(-1)} disabled={safePage === 0}>←</button>
               <span>
-                {pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, filteredTrajectories.length)} of {filteredTrajectories.length.toLocaleString()}
+                {pageStart + 1}–{Math.min(pageStart + pageSize, catalogItemCount)} of {catalogItemCount.toLocaleString()} {catalogView}
               </span>
               <button type="button" onClick={() => movePage(1)} disabled={safePage >= pageCount - 1}>→</button>
             </div>

@@ -62,6 +62,9 @@ test("server-renders the TAU domain explorer shell", async () => {
   assert.match(html, /<title>TAU Explorer/);
   assert.match(html, /TAU Explorer/);
   assert.match(html, /τ²-bench/);
+  assert.match(html, /Catalog view/);
+  assert.match(html, />Tasks</);
+  assert.match(html, />Trajectories</);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
 });
 
@@ -72,7 +75,10 @@ test("uses a readable typography scale across the explorer", async () => {
     [".benchmark-tab", 12],
     [".domain-name", 13],
     [".catalog-filter select", 12],
+    [".catalog-view-switch button", 11],
     [".trajectory-item-copy strong", 13],
+    [".task-group-copy strong", 13],
+    [".task-trial-chip", 11],
     [".message-meta", 11],
     [".message > p", 14],
     [".tool-summary-copy strong", 12],
@@ -210,6 +216,7 @@ test("run indexes, task sets, and lazy trajectory details stay consistent", asyn
   }
 
   for (const domain of catalog.domains) {
+    const domainTaskGroups = new Map();
     for (const run of domain.runs) {
       const [index, taskSet] = await Promise.all([
         readJson(publicAssetUrl(run.indexPath)),
@@ -230,6 +237,7 @@ test("run indexes, task sets, and lazy trajectory details stay consistent", asyn
       assert.equal(index.trajectories.length - passCount, run.failCount);
 
       const summariesByChunk = new Map();
+      const runTaskGroups = new Map();
       for (const summary of index.trajectories) {
         assert.equal(summary.domainId, domain.id);
         assert.equal(summary.runId, run.id);
@@ -249,9 +257,30 @@ test("run indexes, task sets, and lazy trajectory details stay consistent", asyn
         chunkPaths.add(summary.detailPath);
         indexedTrajectories += 1;
 
+        const taskGroupKey = JSON.stringify([
+          summary.domainId,
+          run.tasksPath,
+          summary.taskId,
+        ]);
+        const runTaskSummaries = runTaskGroups.get(taskGroupKey) ?? [];
+        runTaskSummaries.push(summary);
+        runTaskGroups.set(taskGroupKey, runTaskSummaries);
+        const domainTaskSummaries = domainTaskGroups.get(taskGroupKey) ?? [];
+        domainTaskSummaries.push(summary);
+        domainTaskGroups.set(taskGroupKey, domainTaskSummaries);
+
         const chunkSummaries = summariesByChunk.get(summary.detailPath) ?? [];
         chunkSummaries.push(summary);
         summariesByChunk.set(summary.detailPath, chunkSummaries);
+      }
+
+      assert.equal(runTaskGroups.size, run.taskCount);
+      for (const summaries of runTaskGroups.values()) {
+        assert.equal(new Set(summaries.map((summary) => summary.trial)).size, summaries.length);
+        assert.deepEqual(
+          summaries.map((summary) => summary.trial).sort((a, b) => a - b),
+          [...run.trials].sort((a, b) => a - b),
+        );
       }
 
       assert.equal(summariesByChunk.size, Math.ceil(run.trajectoryCount / 20));
@@ -304,6 +333,24 @@ test("run indexes, task sets, and lazy trajectory details stay consistent", asyn
           }
         }
       }
+    }
+
+    assert.equal(domainTaskGroups.size, domain.taskCount);
+    assert.equal(
+      [...domainTaskGroups.values()].reduce((total, summaries) => total + summaries.length, 0),
+      domain.trajectoryCount,
+    );
+    const expectedTrajectoriesPerTask = domain.runs.reduce(
+      (total, run) => total + run.trials.length,
+      0,
+    );
+    for (const summaries of domainTaskGroups.values()) {
+      assert.equal(summaries.length, expectedTrajectoriesPerTask);
+      assert.equal(
+        new Set(summaries.map((summary) => `${summary.runId}:${summary.trial}`)).size,
+        summaries.length,
+      );
+      assert.equal(new Set(summaries.map((summary) => summary.title)).size, 1);
     }
   }
 
