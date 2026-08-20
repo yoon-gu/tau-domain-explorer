@@ -42,7 +42,13 @@ export interface DomainSource {
   resultsFile?: string;
 }
 
-export type RunMode = "historical" | "base" | "default" | "oracle-plan";
+export type RunMode =
+  | "historical"
+  | "base"
+  | "default"
+  | "oracle-plan"
+  | "no-user"
+  | "no-user-oracle-plan";
 export type PolicyVariant = "standard" | "workflow";
 
 export interface RunData {
@@ -99,7 +105,7 @@ export interface BenchmarkSource {
   license: string;
 }
 
-export interface ExcludedDataSummary {
+export interface AgentOnlyDataSummary {
   reason: string;
   runs: number;
   trajectories: number;
@@ -117,7 +123,7 @@ export interface BenchmarkSnapshot {
   datasetId: string;
   generatedAt: string;
   notice: string;
-  excluded: ExcludedDataSummary;
+  agentOnly: AgentOnlyDataSummary;
   sources: BenchmarkSource[];
   totals: DatasetTotals;
   domains: DomainData[];

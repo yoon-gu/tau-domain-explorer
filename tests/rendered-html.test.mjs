@@ -46,22 +46,22 @@ test("server-renders the TAU domain explorer shell", async () => {
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
 });
 
-test("catalog indexes every official conversational run", async () => {
+test("catalog indexes every official run, including agent-only ablations", async () => {
   const catalog = await readJson(catalogUrl);
   const expectedDomains = {
     "tau:airline": { runs: 2, trajectories: 600 },
     "tau:retail": { runs: 2, trajectories: 1_380 },
     "tau2:airline": { runs: 5, trajectories: 1_000 },
     "tau2:retail": { runs: 5, trajectories: 2_280 },
-    "tau2:telecom": { runs: 11, trajectories: 5_016 },
+    "tau2:telecom": { runs: 19, trajectories: 8_664 },
   };
 
   assert.equal(catalog.schemaVersion, 2);
   assert.equal(catalog.datasetId, "official-conversational-v2");
-  assert.equal(catalog.totals.runs, 25);
-  assert.equal(catalog.totals.trajectories, 10_276);
-  assert.deepEqual(catalog.excluded, {
-    reason: "No user-role messages / dummy_user ablation",
+  assert.equal(catalog.totals.runs, 33);
+  assert.equal(catalog.totals.trajectories, 13_924);
+  assert.deepEqual(catalog.agentOnly, {
+    reason: "dummy_user ablations with zero user-role messages",
     runs: 8,
     trajectories: 3_648,
   });
@@ -93,15 +93,55 @@ test("catalog indexes every official conversational run", async () => {
       assert.match(run.tasksPath, /^\/data\/.*\.json$/);
       assert.ok(promptIds.has(run.promptRef));
       assert.ok(policySnapshotIds.has(run.policySnapshotId));
-      assert.notEqual(run.userImplementation, "dummy_user");
-      assert.ok(!run.mode.startsWith("no-user"));
-      assert.doesNotMatch(run.sourceFile, /_no-user(?:-op)?_/);
       runs.push({ domain, run });
     }
   }
 
-  assert.equal(runs.length, 25);
+  assert.equal(runs.length, 33);
   assert.equal(new Set(runs.map(({ run }) => run.id)).size, runs.length);
+
+  const agentOnlyRuns = runs.filter(
+    ({ run }) => run.userImplementation === "dummy_user",
+  );
+  assert.equal(agentOnlyRuns.length, 8);
+  assert.equal(
+    agentOnlyRuns.reduce((total, { run }) => total + run.trajectoryCount, 0),
+    3_648,
+  );
+  assert.deepEqual(
+    new Set(agentOnlyRuns.map(({ run }) => run.environmentId)),
+    new Set(["telecom", "telecom-workflow"]),
+  );
+  assert.deepEqual(
+    new Set(agentOnlyRuns.map(({ run }) => run.model)),
+    new Set(["GPT-4.1", "o4-mini"]),
+  );
+  assert.deepEqual(
+    new Set(agentOnlyRuns.map(({ run }) => run.mode)),
+    new Set(["no-user", "no-user-oracle-plan"]),
+  );
+  assert.deepEqual(
+    agentOnlyRuns
+      .map(({ run }) => `${run.model}|${run.environmentId}|${run.mode}`)
+      .sort(),
+    [
+      "GPT-4.1|telecom-workflow|no-user",
+      "GPT-4.1|telecom-workflow|no-user-oracle-plan",
+      "GPT-4.1|telecom|no-user",
+      "GPT-4.1|telecom|no-user-oracle-plan",
+      "o4-mini|telecom-workflow|no-user",
+      "o4-mini|telecom-workflow|no-user-oracle-plan",
+      "o4-mini|telecom|no-user",
+      "o4-mini|telecom|no-user-oracle-plan",
+    ].sort(),
+  );
+  for (const { domain, run } of agentOnlyRuns) {
+    assert.equal(domain.id, "tau2:telecom");
+    assert.equal(run.trajectoryCount, 456);
+    assert.equal(run.userModel, "Not used");
+    assert.equal(run.promptRef, "no-user");
+    assert.match(run.sourceFile, /_no-user(?:-op)?_/);
+  }
 });
 
 test("run indexes, task sets, and lazy trajectory details stay consistent", async () => {
@@ -111,6 +151,7 @@ test("run indexes, task sets, and lazy trajectory details stay consistent", asyn
   const chunkPaths = new Set();
   let indexedTrajectories = 0;
   let resolvedTrajectories = 0;
+  let resolvedAgentOnlyTrajectories = 0;
   let expectedChunkCount = 0;
   let userToolExample;
 
@@ -202,6 +243,15 @@ test("run indexes, task sets, and lazy trajectory details stay consistent", asyn
           );
           resolvedTrajectories += 1;
 
+          if (run.userImplementation === "dummy_user") {
+            assert.ok(run.mode.startsWith("no-user"));
+            assert.ok(
+              trajectory.messages.every((message) => message.role !== "user"),
+            );
+            assert.equal(summary.userToolCallCount, 0);
+            resolvedAgentOnlyTrajectories += 1;
+          }
+
           if (!userToolExample && summary.userToolCallCount > 0) {
             userToolExample = { domain, summary, trajectory };
           }
@@ -212,9 +262,10 @@ test("run indexes, task sets, and lazy trajectory details stay consistent", asyn
 
   assert.equal(indexedTrajectories, catalog.totals.trajectories);
   assert.equal(resolvedTrajectories, catalog.totals.trajectories);
-  assert.equal(trajectoryIds.size, 10_276);
+  assert.equal(resolvedAgentOnlyTrajectories, catalog.agentOnly.trajectories);
+  assert.equal(trajectoryIds.size, 13_924);
   assert.equal(chunkPaths.size, expectedChunkCount);
-  assert.equal(chunkPaths.size, 517);
+  assert.equal(chunkPaths.size, 701);
   assert.ok(taskSets.size >= 5, "expected content-addressed task sets for both benchmarks");
 
   assert.ok(userToolExample, "expected a Telecom trajectory with user-operated tools");

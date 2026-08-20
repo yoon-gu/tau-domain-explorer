@@ -196,6 +196,19 @@ function formatCost(cost: number | null) {
   return `$${cost.toFixed(cost < 0.01 ? 4 : 3)}`;
 }
 
+function formatRunMode(mode: RunData["mode"]) {
+  return mode
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function formatRunLabel(run: RunData) {
+  const mode = formatRunMode(run.mode);
+  const normalize = (value: string) => value.toLocaleLowerCase().replace(/[^a-z0-9]/g, "");
+  return normalize(run.label).includes(normalize(mode)) ? run.label : `${run.label} · ${mode}`;
+}
+
 function scenarioText(domain: DomainData, trajectory: Trajectory) {
   if (domain.benchmark === "tau") {
     return String(trajectory.scenario.instruction ?? "");
@@ -730,7 +743,11 @@ function ContextPanel({
               <strong>{prompt.label}</strong>
               <p>{prompt.description}</p>
             </div>
-            {domain.benchmark === "tau2" && domain.slug === "telecom" ? (
+            {runtimePromptId === "no-user" ? (
+              <div className="context-note">
+                This is an agent-only run. No user simulator participates in the trajectory.
+              </div>
+            ) : domain.benchmark === "tau2" && domain.slug === "telecom" ? (
               <div className="context-note">
                 Telecom uses the tool-enabled guidelines at runtime because the simulated user
                 can operate device tools.
@@ -805,7 +822,7 @@ export default function Explorer() {
   const [benchmark, setBenchmark] = useState<BenchmarkId>("tau2");
   const [domainSlug, setDomainSlug] = useState("telecom");
   const [modelFilter, setModelFilter] = useState("all");
-  const [runFilter, setRunFilter] = useState("");
+  const [runFilter, setRunFilter] = useState("all");
   const [trialFilter, setTrialFilter] = useState("all");
   const [selectedTrajectoryId, setSelectedTrajectoryId] = useState("");
   const [query, setQuery] = useState("");
@@ -848,7 +865,7 @@ export default function Explorer() {
     () => domain.runs.filter((run) => modelFilter === "all" || run.model === modelFilter),
     [domain, modelFilter],
   );
-  const preferredRunId = runFilter || domain.defaultRunId;
+  const preferredRunId = runFilter || "all";
   const activeRunFilter = preferredRunId === "all"
     ? "all"
     : runsForModel.some((run) => run.id === preferredRunId)
@@ -1012,9 +1029,9 @@ export default function Explorer() {
     ? domain.policySnapshots.find((item) => item.id === contextRun.policySnapshotId)
     : undefined;
 
-  function resetBrowser(nextDomain: DomainData) {
+  function resetBrowser() {
     setModelFilter("all");
-    setRunFilter(nextDomain.defaultRunId);
+    setRunFilter("all");
     setTrialFilter("all");
     setOutcome("all");
     setQuery("");
@@ -1030,13 +1047,12 @@ export default function Explorer() {
     const nextDomain = nextDomains.find((item) => item.slug === domainSlug) ?? nextDomains[0];
     setBenchmark(nextBenchmark);
     setDomainSlug(nextDomain.slug);
-    resetBrowser(nextDomain);
+    resetBrowser();
   }
 
   function changeDomain(slug: string) {
-    const nextDomain = domains.find((item) => item.slug === slug) ?? domains[0];
     setDomainSlug(slug);
-    resetBrowser(nextDomain);
+    resetBrowser();
   }
 
   function changeModel(nextModel: string) {
@@ -1047,10 +1063,12 @@ export default function Explorer() {
       ? undefined
       : domain.runs.find((run) => run.id === activeRunFilter);
     setModelFilter(nextModel);
-    if (currentRun && nextRuns.some((run) => run.id === currentRun.id)) {
+    if (activeRunFilter === "all") {
+      setRunFilter("all");
+    } else if (currentRun && nextRuns.some((run) => run.id === currentRun.id)) {
       setRunFilter(currentRun.id);
     } else {
-      setRunFilter(nextRuns[0]?.id ?? "all");
+      setRunFilter("all");
     }
     setTrialFilter("all");
     setPage(0);
@@ -1200,7 +1218,7 @@ export default function Explorer() {
               <select value={activeRunFilter} onChange={(event) => changeRun(event.target.value)}>
                 <option value="all">All runs · {runsForModel.length}</option>
                 {runsForModel.map((run) => (
-                  <option value={run.id} key={run.id}>{run.label}</option>
+                  <option value={run.id} key={run.id}>{formatRunLabel(run)}</option>
                 ))}
               </select>
             </label>
@@ -1289,7 +1307,7 @@ export default function Explorer() {
                 <span className="trajectory-item-copy">
                   <span className="trajectory-id">Task {compactTaskId(item.taskId)} · T{item.trial}</span>
                   <strong>{item.title}</strong>
-                  <span>{item.messageCount} turns · {item.toolCallCount} calls · {itemRun?.label ?? "Unknown run"}</span>
+                  <span>{item.messageCount} turns · {item.toolCallCount} calls · {itemRun ? formatRunLabel(itemRun) : "Unknown run"}</span>
                 </span>
               </button>
               );
@@ -1388,14 +1406,14 @@ export default function Explorer() {
               <div className="metadata-strip">
                 <span><small>Agent</small>{selectedRun?.model ?? "—"}</span>
                 <span><small>User simulator</small>{selectedRun?.userModel ?? "—"}</span>
-                <span><small>Run</small>{selectedRun?.label ?? "—"}</span>
+                <span><small>Run</small>{selectedRun ? formatRunLabel(selectedRun) : "—"}</span>
                 <span><small>Termination</small>{selectedSummary.terminationReason.replaceAll("_", " ")}</span>
                 <span><small>Trial</small>#{selectedSummary.trial}</span>
                 <span><small>Cost</small>{formatCost(selectedSummary.agentCost)}</span>
               </div>
             ) : null}
 
-            {activeDetailStatus === "ready" && trajectory ? (
+            {activeDetailStatus === "ready" && trajectory?.messages.length ? (
               <ol className="chat-stream" aria-label="Conversation transcript" key={trajectory.id}>
                 {trajectory.messages.map((message, index) => (
                   <TranscriptItem
@@ -1406,6 +1424,12 @@ export default function Explorer() {
                   />
                 ))}
               </ol>
+            ) : activeDetailStatus === "ready" && trajectory ? (
+              <div className="workspace-state transcript-state" role="status" aria-label="Conversation transcript">
+                <span className="state-symbol">—</span>
+                <h1>No user conversation</h1>
+                <p>This agent-only run contains task and evaluation data, but no user simulator transcript.</p>
+              </div>
             ) : activeDetailStatus === "error" ? (
               <div className="workspace-state transcript-state" role="alert" aria-label="Conversation transcript">
                 <span className="state-symbol">!</span>

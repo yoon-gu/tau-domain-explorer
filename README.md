@@ -6,20 +6,20 @@ Explore domain policies, user-simulation prompts, task scenarios, evaluation det
 
 ## Included catalog
 
-TAU Explorer indexes every unique official conversational result in the pinned repositories, rather than a three-example sample.
+TAU Explorer indexes every unique official trajectory result in the pinned repositories, rather than a three-example sample.
 
-| Benchmark | Domain | Runs | Conversational trajectories |
+| Benchmark | Domain | Runs | Trajectories |
 | --- | --- | ---: | ---: |
 | τ-bench | Airline | 2 | 600 |
 | τ-bench | Retail | 2 | 1,380 |
 | τ²-bench v0.2.0 | Airline | 5 | 1,000 |
 | τ²-bench v0.2.0 | Retail | 5 | 2,280 |
-| τ²-bench v0.2.0 | Telecom, including the workflow-policy variant | 11 | 5,016 |
-| **Total** | **5 domain views** | **25** | **10,276** |
+| τ²-bench v0.2.0 | Telecom, including the workflow-policy variant | 19 | 8,664 |
+| **Total** | **5 domain views** | **33** | **13,924** |
 
-The catalog covers GPT-4o and Claude 3.5 Sonnet historical τ-bench runs, plus Claude 3.7 Sonnet, GPT-4.1, GPT-4.1 mini, o4-mini, GPT-5, oracle-plan, and Telecom workflow-policy τ²-bench runs. The GPT-5 trajectories come from the official leaderboard submission included in the pinned τ²-bench checkout; byte-identical leaderboard copies of files already present in `data/tau2/results/final/` are deduplicated.
+The catalog covers GPT-4o and Claude 3.5 Sonnet historical τ-bench runs, plus Claude 3.7 Sonnet, GPT-4.1, GPT-4.1 mini, o4-mini, GPT-5, oracle-plan, no-user, no-user-oracle-plan, and Telecom workflow-policy τ²-bench runs. The GPT-5 trajectories come from the official leaderboard submission included in the pinned τ²-bench checkout; byte-identical leaderboard copies of files already present in `data/tau2/results/final/` are deduplicated.
 
-Eight τ² `no-user` and `no-user-op` ablation runs, containing 3,648 agent-only traces, are intentionally excluded. They use `dummy_user` and contain no user-role messages, so they do not represent the user-simulation conversation flow this explorer is designed to show. Oracle-plan (`op`) runs remain included because they contain complete user, assistant, and tool interactions.
+The complete catalog includes eight τ² `no-user` and `no-user-op` ablation runs containing 3,648 agent-only traces. They use `dummy_user`, contain no user-role messages, and did not invoke a user-simulation prompt. The UI labels those runs as agent-only and shows a clear “No user simulator” placeholder while preserving their complete assistant and tool traces. Oracle-plan (`op`) runs use the normal user simulator; `no-user-op` is represented as the separate no-user-oracle-plan mode.
 
 τ² Telecom trajectories distinguish user-operated device tools from agent-operated customer-service tools. Their effective user prompt uses the tool-enabled simulator guidelines recorded by the benchmark.
 
@@ -72,7 +72,7 @@ TAU2_BENCH_DIR=/path/to/tau2-bench \
 npm run sync-data
 ```
 
-`npm run sync-data` rebuilds `app/data/benchmark-snapshot.json` and the complete `public/data/` shard tree. It validates the expected 25 conversational runs and 10,276 trajectories, rejects orphaned tool results, deduplicates source files and task sets, emits detail chunks containing at most 20 trajectories, and fails if a chunk exceeds the static asset limit or the generated data tree reaches 1,000 files.
+`npm run sync-data` rebuilds `app/data/benchmark-snapshot.json` and the complete `public/data/` shard tree. It validates the expected 33 runs and 13,924 trajectories, including all 3,648 agent-only traces; rejects orphaned tool results; deduplicates source files and task sets; emits detail chunks containing at most 20 trajectories; and fails if a chunk exceeds the static asset limit or the generated data tree reaches 1,000 files.
 
 ## Source revisions
 

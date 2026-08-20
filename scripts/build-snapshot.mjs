@@ -263,6 +263,18 @@ const tau2PromptTools = [
     content: withScenario(tau2ToolGuidelines),
   },
   ...tau2PromptStandard,
+  {
+    id: "no-user",
+    label: "No user simulator",
+    description:
+      "Agent-only ablation. The dummy_user implementation does not generate user messages or use a user-simulation prompt.",
+    content: [
+      "No user simulator was invoked for this run.",
+      "",
+      "Implementation: dummy_user",
+      "This agent-only trajectory contains no user-role messages, so there is no resolved user-simulation prompt.",
+    ].join("\n"),
+  },
 ];
 
 const domains = [
@@ -370,8 +382,8 @@ const sourceHashes = new Set();
 const generation = {
   sourceRuns: 0,
   trajectories: 0,
-  excludedNoUserRuns: 0,
-  excludedNoUserTrajectories: 0,
+  agentOnlyRuns: 0,
+  agentOnlyTrajectories: 0,
   orphanToolResults: 0,
   detailBytes: 0,
   maxDetailBytes: 0,
@@ -677,19 +689,20 @@ for (const input of tau2Inputs) {
   const hasUserMessages = result.simulations.some((simulation) =>
     simulation.messages.some((message) => message.role === "user"),
   );
-  const noUserRun = mode.startsWith("no-user") || !hasUserMessages;
-  if (noUserRun) {
-    generation.excludedNoUserRuns += 1;
-    generation.excludedNoUserTrajectories += result.simulations.length;
-    continue;
+  const agentOnlyRun = mode.startsWith("no-user") || !hasUserMessages;
+  if (agentOnlyRun) {
+    generation.agentOnlyRuns += 1;
+    generation.agentOnlyTrajectories += result.simulations.length;
   }
 
   const environmentId = result.info.environment_info.domain_name;
   const domainSlug = environmentId.startsWith("telecom") ? "telecom" : environmentId;
   const domainId = `tau2:${domainSlug}`;
   const agentModel = modelLabel(result.info.agent_info?.llm, path.basename(input.absolute));
-  const userModel = modelLabel(result.info.user_info?.llm, "Not recorded");
-  const usesUserTools = environmentId.startsWith("telecom");
+  const userModel = agentOnlyRun
+    ? "Not used"
+    : modelLabel(result.info.user_info?.llm, "Not recorded");
+  const usesUserTools = environmentId.startsWith("telecom") && !agentOnlyRun;
   addRun({
     benchmark: "tau2",
     domainId,
@@ -706,7 +719,7 @@ for (const input of tau2Inputs) {
     taskEntries: tau2TaskEntries(result.tasks),
     records: result.simulations,
     policyUsed: result.info.environment_info.policy,
-    promptRef: usesUserTools ? "tool-enabled" : "standard",
+    promptRef: agentOnlyRun ? "no-user" : usesUserTools ? "tool-enabled" : "standard",
   });
 }
 
@@ -735,8 +748,8 @@ for (const domain of domains) {
   );
 }
 
-const expectedRuns = 25;
-const expectedTrajectories = 10_276;
+const expectedRuns = 33;
+const expectedTrajectories = 13_924;
 if (generation.sourceRuns !== expectedRuns) {
   throw new Error(`Expected ${expectedRuns} conversational runs, got ${generation.sourceRuns}.`);
 }
@@ -760,11 +773,11 @@ const catalog = {
   datasetId,
   generatedAt: new Date().toISOString(),
   notice:
-    "All 10,276 unique official conversational trajectories are indexed. τ² no-user ablations are excluded because they contain zero user-role messages and do not use the requested user-simulation flow.",
-  excluded: {
-    reason: "No user-role messages / dummy_user ablation",
-    runs: generation.excludedNoUserRuns,
-    trajectories: generation.excludedNoUserTrajectories,
+    "All 13,924 unique official trajectories are indexed, including τ² no-user and no-user-oracle-plan agent-only ablations.",
+  agentOnly: {
+    reason: "dummy_user ablations with zero user-role messages",
+    runs: generation.agentOnlyRuns,
+    trajectories: generation.agentOnlyTrajectories,
   },
   sources: [
     {
@@ -806,8 +819,8 @@ console.log(
       catalog: catalogPath,
       runs: generation.sourceRuns,
       trajectories: generation.trajectories,
-      excludedNoUserRuns: generation.excludedNoUserRuns,
-      excludedNoUserTrajectories: generation.excludedNoUserTrajectories,
+      agentOnlyRuns: generation.agentOnlyRuns,
+      agentOnlyTrajectories: generation.agentOnlyTrajectories,
       dataAssets: generation.writtenAssets,
       detailMiB: Number((generation.detailBytes / 1024 / 1024).toFixed(1)),
       largestDetailKiB: Number((generation.maxDetailBytes / 1024).toFixed(1)),
