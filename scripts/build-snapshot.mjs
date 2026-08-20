@@ -13,6 +13,7 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 const tauRoot = process.env.TAU_BENCH_DIR ?? path.join(projectRoot, "work/tau-bench");
 const tau2Root = process.env.TAU2_BENCH_DIR ?? path.join(projectRoot, "work/tau2-bench");
 const datasetId = "official-conversational-v2";
+const detailsPerChunk = 20;
 const publicDataRoot = path.join(projectRoot, "public/data");
 const catalogPath = path.join(projectRoot, "app/data/benchmark-snapshot.json");
 
@@ -445,30 +446,27 @@ function detailAndSummary({
     evaluation: benchmark === "tau" ? record.info.reward_info ?? null : record.reward_info ?? null,
     messages: normalized.messages,
   };
-  const detailRelative = `sets/${datasetId}/trajectories/${runId}/${trajectoryId}.json`;
-  const written = writeJson(detailRelative, { schemaVersion: 2, datasetId, trajectory: detail });
-  generation.writtenAssets += 1;
-  generation.detailBytes += written.bytes;
-  generation.maxDetailBytes = Math.max(generation.maxDetailBytes, written.bytes);
-
   return {
-    id: trajectoryId,
-    detailPath: written.url,
-    domainId: domain.id,
-    runId,
-    taskId,
-    trial,
-    reward,
-    title: taskEntry.title,
-    terminationReason,
-    duration: detail.duration,
-    agentCost: detail.agentCost,
-    userCost: detail.userCost,
-    messageCount: normalized.messages.length,
-    toolCallCount: toolCalls.length,
-    userToolCallCount: toolCalls.filter((call) => call.requestor === "user").length,
-    toolNames,
-    scenarioPreview: compactScenario(taskEntry.scenario),
+    detail,
+    summary: {
+      id: trajectoryId,
+      detailPath: "",
+      domainId: domain.id,
+      runId,
+      taskId,
+      trial,
+      reward,
+      title: taskEntry.title,
+      terminationReason,
+      duration: detail.duration,
+      agentCost: detail.agentCost,
+      userCost: detail.userCost,
+      messageCount: normalized.messages.length,
+      toolCallCount: toolCalls.length,
+      userToolCallCount: toolCalls.filter((call) => call.requestor === "user").length,
+      toolNames,
+      scenarioPreview: compactScenario(taskEntry.scenario),
+    },
   };
 }
 
@@ -500,7 +498,7 @@ function addRun({
   const runId = stableId("run", [benchmark, sourceRelative], 18);
   const tasksPath = writeTasksAsset(taskEntries);
   const policySnapshotId = ensurePolicySnapshot(domain, policyUsed, environmentId, sourceUrl);
-  const summaries = records.map((record) => {
+  const prepared = records.map((record) => {
     const taskEntry = taskEntries[String(record.task_id)];
     if (!taskEntry) throw new Error(`Missing task ${record.task_id} in ${sourceFile}`);
     return detailAndSummary({
@@ -512,6 +510,26 @@ function addRun({
       taskEntry,
     });
   });
+  const summaries = [];
+  for (let start = 0; start < prepared.length; start += detailsPerChunk) {
+    const chunk = prepared.slice(start, start + detailsPerChunk);
+    const chunkNumber = String(Math.floor(start / detailsPerChunk)).padStart(4, "0");
+    const chunkRelative = `sets/${datasetId}/chunks/${runId}/chunk_${chunkNumber}.json`;
+    const written = writeJson(chunkRelative, {
+      schemaVersion: 2,
+      datasetId,
+      trajectories: Object.fromEntries(
+        chunk.map(({ detail }) => [detail.id, detail]),
+      ),
+    });
+    generation.writtenAssets += 1;
+    generation.detailBytes += written.bytes;
+    generation.maxDetailBytes = Math.max(generation.maxDetailBytes, written.bytes);
+    for (const { summary } of chunk) {
+      summary.detailPath = written.url;
+      summaries.push(summary);
+    }
+  }
   const indexRelative = `sets/${datasetId}/indexes/${runId}.json`;
   const index = writeJson(indexRelative, {
     schemaVersion: 2,
@@ -776,8 +794,10 @@ mkdirSync(path.dirname(catalogPath), { recursive: true });
 writeFileSync(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`);
 
 const publicFileCount = generation.writtenAssets;
-if (publicFileCount >= 19_000) {
-  throw new Error(`Generated ${publicFileCount} data assets; expected fewer than 19,000.`);
+if (publicFileCount >= 1_000) {
+  throw new Error(
+    `Generated ${publicFileCount} data assets; expected fewer than 1,000 for the hosting metadata budget.`,
+  );
 }
 
 console.log(

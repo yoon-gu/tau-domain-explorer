@@ -30,14 +30,14 @@ The browser does not download hundreds of megabytes as one application bundle. G
 ```text
 app/data/benchmark-snapshot.json
 public/data/sets/official-conversational-v2/
+├── chunks/<run-id>/chunk_<number>.json
 ├── indexes/<run-id>.json
-├── tasks/<content-hash>.json
-└── trajectories/<run-id>/<trajectory-id>.json
+└── tasks/<content-hash>.json
 ```
 
-The catalog contains domain policies, prompt templates, policy snapshots, run configurations, counts, and pointers to the shards. Selecting a run loads its searchable trajectory index; selecting a trajectory then loads only that normalized detail. Task sets are content-addressed and referenced per run, so task metadata remains correct even when upstream result files were produced at different revisions.
+The catalog contains domain policies, prompt templates, policy snapshots, run configurations, counts, and pointers to the shards. Selecting a run loads its searchable trajectory index. Each run is divided into detail chunks of at most 20 trajectories; selecting a trajectory loads only its containing chunk and resolves the trajectory by ID from the chunk's `trajectories` map. Task sets are content-addressed and referenced per run, so task metadata remains correct even when upstream result files were produced at different revisions.
 
-Each run index carries the fields needed for filtering without loading transcripts: task and trial IDs, outcome, title, termination reason, message and tool-call counts, distinct tool names, a scenario preview, and whether user-side tools were used. Detail shards contain the full normalized conversation and evaluation. The normalizer pairs tool calls and results by call ID and parses JSON-string arguments and results when possible.
+Each run index carries the fields needed for filtering without loading transcripts: task and trial IDs, outcome, title, termination reason, message and tool-call counts, distinct tool names, a scenario preview, and whether user-side tools were used. Chunk shards contain the full normalized conversations and evaluations. The normalizer pairs tool calls and results by call ID and parses JSON-string arguments and results when possible.
 
 ## Run locally
 
@@ -72,7 +72,7 @@ TAU2_BENCH_DIR=/path/to/tau2-bench \
 npm run sync-data
 ```
 
-`npm run sync-data` rebuilds `app/data/benchmark-snapshot.json` and the complete `public/data/` shard tree. It validates the expected 25 conversational runs and 10,276 trajectories, rejects orphaned tool results, deduplicates source files and task sets, and fails if a generated detail exceeds the static asset limit.
+`npm run sync-data` rebuilds `app/data/benchmark-snapshot.json` and the complete `public/data/` shard tree. It validates the expected 25 conversational runs and 10,276 trajectories, rejects orphaned tool results, deduplicates source files and task sets, emits detail chunks containing at most 20 trajectories, and fails if a chunk exceeds the static asset limit or the generated data tree reaches 1,000 files.
 
 ## Source revisions
 

@@ -183,10 +183,10 @@ export interface TrajectoryDetail {
   messages: TranscriptMessage[];
 }
 
-export interface TrajectoryDetailAsset {
+export interface TrajectoryChunkAsset {
   schemaVersion: 2;
   datasetId: string;
-  trajectory: TrajectoryDetail;
+  trajectories: Record<string, TrajectoryDetail>;
 }
 
 /**

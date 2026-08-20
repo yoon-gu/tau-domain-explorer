@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "datasetId": "official-conversational-v2",
-  "generatedAt": "2026-08-20T14:21:48.656Z",
+  "generatedAt": "2026-08-20T14:36:12.377Z",
   "notice": "All 10,276 unique official conversational trajectories are indexed. τ² no-user ablations are excluded because they contain zero user-role messages and do not use the requested user-simulation flow.",
   "excluded": {
     "reason": "No user-role messages / dummy_user ablation",
@@ -27,7 +27,7 @@
   "totals": {
     "runs": 25,
     "trajectories": 10276,
-    "detailBytes": 165344692
+    "detailBytes": 164912322
   },
   "domains": [
     {

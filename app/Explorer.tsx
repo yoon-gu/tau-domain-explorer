@@ -14,7 +14,8 @@ import type {
   PromptVariant,
   ToolInvocation,
   Trajectory,
-  TrajectoryDetailAsset,
+  TrajectoryChunkAsset,
+  TrajectoryDetail,
   TrajectorySummary,
   TranscriptMessage,
 } from "./data/types";
@@ -35,7 +36,7 @@ const PAGE_SIZE = 100;
 const DETAIL_CACHE_LIMIT = 24;
 const runIndexCache = new Map<string, Promise<TrajectorySummary[]>>();
 const tasksCache = new Map<string, Promise<TasksAsset>>();
-const detailRequestCache = new Map<string, Promise<Trajectory>>();
+const detailChunkCache = new Map<string, Promise<TrajectoryChunkAsset>>();
 const detailCache = new Map<string, Trajectory>();
 
 async function readJson<T>(path: string): Promise<T> {
@@ -76,6 +77,24 @@ function loadTasks(path: string) {
   return request;
 }
 
+function loadDetailChunk(path: string) {
+  const cached = detailChunkCache.get(path);
+  if (cached) return cached;
+  const request = readJson<TrajectoryChunkAsset>(path)
+    .then((asset) => {
+      if (!asset.trajectories || typeof asset.trajectories !== "object") {
+        throw new Error("The selected trajectory chunk is invalid.");
+      }
+      return asset;
+    })
+    .catch((error) => {
+      detailChunkCache.delete(path);
+      throw error;
+    });
+  detailChunkCache.set(path, request);
+  return request;
+}
+
 function rememberDetail(id: string, trajectory: Trajectory) {
   detailCache.delete(id);
   detailCache.set(id, trajectory);
@@ -90,19 +109,19 @@ function hydrateTrajectory(
   run: RunData,
   summary: TrajectorySummary,
   task: TaskAssetEntry,
-  detail: TrajectoryDetailAsset,
+  detail: TrajectoryDetail,
 ): Trajectory {
-  if (detail.trajectory.id !== summary.id || detail.trajectory.runId !== run.id) {
+  if (detail.id !== summary.id || detail.runId !== run.id) {
     throw new Error("The selected trajectory detail does not match its index entry.");
   }
-  if (!Array.isArray(detail.trajectory.messages)) {
+  if (!Array.isArray(detail.messages)) {
     throw new Error("The selected trajectory has no valid message transcript.");
   }
   const policy = domain.policySnapshots.find(
     (snapshot) => snapshot.id === run.policySnapshotId,
   );
   return {
-    ...detail.trajectory,
+    ...detail,
     model: run.model,
     userModel: run.userModel,
     policyUsed: policy?.content ?? null,
@@ -123,27 +142,22 @@ function loadTrajectoryDetail(
     detailCache.set(summary.id, loaded);
     return Promise.resolve(loaded);
   }
-  const pending = detailRequestCache.get(summary.id);
-  if (pending) return pending;
 
-  const request = Promise.all([
-    readJson<TrajectoryDetailAsset>(summary.detailPath),
+  return Promise.all([
+    loadDetailChunk(summary.detailPath),
     loadTasks(run.tasksPath),
   ])
-    .then(([detail, tasks]) => {
+    .then(([chunk, tasks]) => {
+      const detail = chunk.trajectories[summary.id];
+      if (!detail) {
+        throw new Error("The selected trajectory is missing from its detail chunk.");
+      }
       const task = tasks.tasks[summary.taskId];
       if (!task) throw new Error("Task metadata is missing for this trajectory.");
       const trajectory = hydrateTrajectory(domain, run, summary, task, detail);
       rememberDetail(summary.id, trajectory);
-      detailRequestCache.delete(summary.id);
       return trajectory;
-    })
-    .catch((error) => {
-      detailRequestCache.delete(summary.id);
-      throw error;
     });
-  detailRequestCache.set(summary.id, request);
-  return request;
 }
 
 const contextTabs: Array<{ id: ContextTab; label: string }> = [
@@ -1076,7 +1090,8 @@ export default function Explorer() {
   function retrySelectedDetail() {
     if (selectedSummary) {
       detailCache.delete(selectedSummary.id);
-      detailRequestCache.delete(selectedSummary.id);
+      detailChunkCache.delete(selectedSummary.detailPath);
+      if (selectedRun) tasksCache.delete(selectedRun.tasksPath);
     }
     setDetailRetry((value) => value + 1);
   }

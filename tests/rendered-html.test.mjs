@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 const catalogUrl = new URL("../app/data/benchmark-snapshot.json", import.meta.url);
@@ -108,9 +108,10 @@ test("run indexes, task sets, and lazy trajectory details stay consistent", asyn
   const catalog = await readJson(catalogUrl);
   const taskSets = new Map();
   const trajectoryIds = new Set();
-  const detailPaths = new Set();
-  const detailSamples = [];
+  const chunkPaths = new Set();
   let indexedTrajectories = 0;
+  let resolvedTrajectories = 0;
+  let expectedChunkCount = 0;
   let userToolExample;
 
   async function loadTaskSet(tasksPath) {
@@ -140,13 +141,16 @@ test("run indexes, task sets, and lazy trajectory details stay consistent", asyn
       assert.equal(passCount, run.passCount);
       assert.equal(index.trajectories.length - passCount, run.failCount);
 
+      const summariesByChunk = new Map();
       for (const summary of index.trajectories) {
         assert.equal(summary.domainId, domain.id);
         assert.equal(summary.runId, run.id);
         assert.ok(taskSet.tasks[summary.taskId]);
         assert.ok(!trajectoryIds.has(summary.id), `duplicate trajectory id: ${summary.id}`);
-        assert.ok(!detailPaths.has(summary.detailPath), `duplicate detail path: ${summary.detailPath}`);
-        assert.match(summary.detailPath, /^\/data\/.*\.json$/);
+        assert.match(
+          summary.detailPath,
+          new RegExp(`/chunks/${run.id}/chunk_[0-9]+\\.json$`),
+        );
         assert.ok(summary.messageCount > 0);
         assert.ok(summary.toolCallCount >= summary.userToolCallCount);
         assert.deepEqual(
@@ -154,63 +158,82 @@ test("run indexes, task sets, and lazy trajectory details stay consistent", asyn
           [...new Set(summary.toolNames)].sort(),
         );
         trajectoryIds.add(summary.id);
-        detailPaths.add(summary.detailPath);
+        chunkPaths.add(summary.detailPath);
         indexedTrajectories += 1;
 
-        if (!userToolExample && summary.userToolCallCount > 0) {
-          userToolExample = { domain, run, summary };
-        }
+        const chunkSummaries = summariesByChunk.get(summary.detailPath) ?? [];
+        chunkSummaries.push(summary);
+        summariesByChunk.set(summary.detailPath, chunkSummaries);
       }
 
-      detailSamples.push(
-        { domain, run, summary: index.trajectories[0] },
-        { domain, run, summary: index.trajectories.at(-1) },
-      );
+      assert.equal(summariesByChunk.size, Math.ceil(run.trajectoryCount / 20));
+      expectedChunkCount += summariesByChunk.size;
+      for (const [chunkPath, summaries] of summariesByChunk) {
+        assert.ok(summaries.length > 0 && summaries.length <= 20);
+        const payload = await readJson(publicAssetUrl(chunkPath));
+        assert.equal(payload.schemaVersion, catalog.schemaVersion);
+        assert.equal(payload.datasetId, catalog.datasetId);
+        assert.deepEqual(
+          Object.keys(payload.trajectories).sort(),
+          summaries.map((summary) => summary.id).sort(),
+        );
+
+        for (const summary of summaries) {
+          const trajectory = payload.trajectories[summary.id];
+          assert.ok(trajectory, `missing ${summary.id} in ${chunkPath}`);
+          const toolCalls = trajectory.messages.flatMap((message) => message.toolCalls);
+
+          assert.equal(trajectory.id, summary.id);
+          assert.equal(trajectory.runId, run.id);
+          assert.equal(trajectory.taskId, summary.taskId);
+          assert.equal(trajectory.trial, summary.trial);
+          assert.equal(trajectory.reward, summary.reward);
+          assert.equal(trajectory.title, summary.title);
+          assert.equal(trajectory.terminationReason, summary.terminationReason);
+          assert.equal(trajectory.messages.length, summary.messageCount);
+          assert.equal(toolCalls.length, summary.toolCallCount);
+          assert.equal(
+            toolCalls.filter((call) => call.requestor === "user").length,
+            summary.userToolCallCount,
+          );
+          assert.deepEqual(
+            [...new Set(toolCalls.map((call) => call.name))].sort(),
+            summary.toolNames,
+          );
+          resolvedTrajectories += 1;
+
+          if (!userToolExample && summary.userToolCallCount > 0) {
+            userToolExample = { domain, summary, trajectory };
+          }
+        }
+      }
     }
   }
 
   assert.equal(indexedTrajectories, catalog.totals.trajectories);
+  assert.equal(resolvedTrajectories, catalog.totals.trajectories);
   assert.equal(trajectoryIds.size, 10_276);
+  assert.equal(chunkPaths.size, expectedChunkCount);
+  assert.equal(chunkPaths.size, 517);
   assert.ok(taskSets.size >= 5, "expected content-addressed task sets for both benchmarks");
-
-  for (const { run, summary } of detailSamples) {
-    const payload = await readJson(publicAssetUrl(summary.detailPath));
-    const trajectory = payload.trajectory;
-    const toolCalls = trajectory.messages.flatMap((message) => message.toolCalls);
-
-    assert.equal(payload.schemaVersion, catalog.schemaVersion);
-    assert.equal(payload.datasetId, catalog.datasetId);
-    assert.equal(trajectory.id, summary.id);
-    assert.equal(trajectory.runId, run.id);
-    assert.equal(trajectory.taskId, summary.taskId);
-    assert.equal(trajectory.trial, summary.trial);
-    assert.equal(trajectory.reward, summary.reward);
-    assert.equal(trajectory.title, summary.title);
-    assert.equal(trajectory.messages.length, summary.messageCount);
-    assert.equal(toolCalls.length, summary.toolCallCount);
-    assert.equal(
-      toolCalls.filter((call) => call.requestor === "user").length,
-      summary.userToolCallCount,
-    );
-    assert.deepEqual(
-      [...new Set(toolCalls.map((call) => call.name))].sort(),
-      summary.toolNames,
-    );
-  }
 
   assert.ok(userToolExample, "expected a Telecom trajectory with user-operated tools");
   assert.equal(userToolExample.domain.id, "tau2:telecom");
   assert.ok(
     userToolExample.domain.userPrompts.some((prompt) => prompt.id === "tool-enabled"),
   );
-  const userToolPayload = await readJson(
-    publicAssetUrl(userToolExample.summary.detailPath),
-  );
-  const userToolCalls = userToolPayload.trajectory.messages.flatMap((message) =>
+  const userToolCalls = userToolExample.trajectory.messages.flatMap((message) =>
     message.toolCalls.filter((call) => call.requestor === "user"),
   );
   assert.equal(userToolCalls.length, userToolExample.summary.userToolCallCount);
   assert.ok(userToolCalls.length > 0);
+
+  const generatedEntries = await readdir(
+    new URL("../public/data/", import.meta.url),
+    { recursive: true, withFileTypes: true },
+  );
+  const generatedFileCount = generatedEntries.filter((entry) => entry.isFile()).length;
+  assert.ok(generatedFileCount < 1_000, `generated ${generatedFileCount} public data files`);
 });
 
 test("ships a social preview", async () => {
