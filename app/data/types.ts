@@ -1,10 +1,11 @@
 export type BenchmarkId = "tau" | "tau2";
 export type MessageRole = "user" | "assistant";
+export type ToolRequestor = "assistant" | "user";
 
 export interface ToolInvocation {
   id: string;
   name: string;
-  requestor: "assistant" | "user";
+  requestor: ToolRequestor;
   arguments: unknown;
   result: unknown;
   error: boolean;
@@ -25,32 +26,46 @@ export interface PromptVariant {
   content: string;
 }
 
-export interface Trajectory {
+export interface PolicySnapshot {
   id: string;
-  taskId: string;
-  trial: number;
-  reward: number;
-  title: string;
-  model: string;
-  userModel: string;
-  terminationReason: string;
-  duration: number | null;
-  agentCost: number | null;
-  userCost: number | null;
-  policyUsed: string | null;
-  scenario: Record<string, unknown>;
-  task: Record<string, unknown>;
-  evaluation: Record<string, unknown> | null;
-  messages: TranscriptMessage[];
+  label: string;
+  content: string;
   sourceUrl: string;
 }
 
 export interface DomainSource {
   repository: string;
   commit: string;
-  runCommit?: string | null;
   license: string;
-  resultsFile: string;
+  /** Legacy fields retained for callers that also consume the old monolithic snapshot. */
+  runCommit?: string | null;
+  resultsFile?: string;
+}
+
+export type RunMode = "historical" | "base" | "default" | "oracle-plan";
+export type PolicyVariant = "standard" | "workflow";
+
+export interface RunData {
+  id: string;
+  label: string;
+  model: string;
+  userModel: string;
+  mode: RunMode;
+  environmentId: string;
+  policyVariant: PolicyVariant;
+  agentImplementation: string;
+  userImplementation: string;
+  taskCount: number;
+  trajectoryCount: number;
+  passCount: number;
+  failCount: number;
+  trials: number[];
+  policySnapshotId: string;
+  promptRef: string;
+  indexPath: string;
+  tasksPath: string;
+  sourceFile: string;
+  sourceUrl: string;
 }
 
 export interface DomainData {
@@ -71,18 +86,118 @@ export interface DomainData {
   promptSource: string;
   promptUrl: string;
   source: DomainSource;
-  trajectories: Trajectory[];
+  runs: RunData[];
+  defaultRunId: string;
+  policySnapshots: PolicySnapshot[];
 }
 
+export interface BenchmarkSource {
+  id: BenchmarkId;
+  label: string;
+  repository: string;
+  revision: string;
+  license: string;
+}
+
+export interface ExcludedDataSummary {
+  reason: string;
+  runs: number;
+  trajectories: number;
+}
+
+export interface DatasetTotals {
+  runs: number;
+  trajectories: number;
+  detailBytes: number;
+}
+
+/** Small catalog imported with the application shell. */
 export interface BenchmarkSnapshot {
+  schemaVersion: 2;
+  datasetId: string;
   generatedAt: string;
   notice: string;
-  sources: Array<{
-    id: BenchmarkId;
-    label: string;
-    repository: string;
-    revision: string;
-    license: string;
-  }>;
+  excluded: ExcludedDataSummary;
+  sources: BenchmarkSource[];
+  totals: DatasetTotals;
   domains: DomainData[];
+}
+
+export type BenchmarkCatalog = BenchmarkSnapshot;
+
+/** Search/filter metadata loaded one run at a time. */
+export interface TrajectorySummary {
+  id: string;
+  detailPath: string;
+  domainId: string;
+  runId: string;
+  taskId: string;
+  trial: number;
+  reward: number;
+  title: string;
+  terminationReason: string;
+  duration: number | null;
+  agentCost: number | null;
+  userCost: number | null;
+  messageCount: number;
+  toolCallCount: number;
+  userToolCallCount: number;
+  toolNames: string[];
+  scenarioPreview: string;
+}
+
+export interface RunIndexAsset {
+  schemaVersion: 2;
+  datasetId: string;
+  runId: string;
+  trajectories: TrajectorySummary[];
+}
+
+/** Shared task/scenario data, deduplicated across trials and compatible runs. */
+export interface TaskAssetEntry {
+  taskId: string;
+  title: string;
+  scenario: Record<string, unknown>;
+  task: Record<string, unknown>;
+}
+
+export interface TasksAsset {
+  schemaVersion: 2;
+  datasetId: string;
+  tasks: Record<string, TaskAssetEntry>;
+}
+
+/** Exact trajectory payload stored in each lazy detail asset. */
+export interface TrajectoryDetail {
+  id: string;
+  runId: string;
+  taskId: string;
+  trial: number;
+  reward: number;
+  title: string;
+  terminationReason: string;
+  duration: number | null;
+  agentCost: number | null;
+  userCost: number | null;
+  evaluation: Record<string, unknown> | null;
+  messages: TranscriptMessage[];
+}
+
+export interface TrajectoryDetailAsset {
+  schemaVersion: 2;
+  datasetId: string;
+  trajectory: TrajectoryDetail;
+}
+
+/**
+ * UI-ready trajectory assembled from a detail asset, its run, its shared task,
+ * and the selected policy snapshot. This preserves the renderer's prior shape.
+ */
+export interface Trajectory extends TrajectoryDetail {
+  model: string;
+  userModel: string;
+  policyUsed: string | null;
+  scenario: Record<string, unknown>;
+  task: Record<string, unknown>;
+  sourceUrl: string;
 }
