@@ -3,6 +3,7 @@ import { readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 const catalogUrl = new URL("../app/data/benchmark-snapshot.json", import.meta.url);
+const stylesheetUrl = new URL("../app/globals.css", import.meta.url);
 
 async function readJson(url) {
   return JSON.parse(await readFile(url, "utf8"));
@@ -34,6 +35,24 @@ async function render() {
   );
 }
 
+function selectorBlock(css, selector) {
+  const marker = `${selector} {`;
+  const start = css.indexOf(marker);
+  assert.notEqual(start, -1, `missing CSS selector: ${selector}`);
+  const end = css.indexOf("}", start + marker.length);
+  assert.notEqual(end, -1, `unterminated CSS selector: ${selector}`);
+  return css.slice(start + marker.length, end);
+}
+
+function fontPixels(css, selector) {
+  const block = selectorBlock(css, selector);
+  const explicit = block.match(/font-size:\s*(\d+)px/);
+  const shorthand = block.match(/font:\s*(?:\d+\s+)?(\d+)px/);
+  const value = explicit?.[1] ?? shorthand?.[1];
+  assert.ok(value, `missing pixel font size for ${selector}`);
+  return Number(value);
+}
+
 test("server-renders the TAU domain explorer shell", async () => {
   const response = await render();
   assert.equal(response.status, 200);
@@ -44,6 +63,34 @@ test("server-renders the TAU domain explorer shell", async () => {
   assert.match(html, /TAU Explorer/);
   assert.match(html, /τ²-bench/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
+});
+
+test("uses a readable typography scale across the explorer", async () => {
+  const css = await readFile(stylesheetUrl, "utf8");
+  const minimums = new Map([
+    [".brand-name", 14],
+    [".benchmark-tab", 12],
+    [".domain-name", 13],
+    [".catalog-filter select", 12],
+    [".trajectory-item-copy strong", 13],
+    [".message-meta", 11],
+    [".message > p", 14],
+    [".tool-summary-copy strong", 12],
+    [".json-block pre", 12],
+    [".context-tabs button", 11],
+    [".markdown-document p", 13],
+    [".context-section p", 13],
+    [".prompt-pre,\n.raw-pre", 12],
+    [".mobile-selectors select", 16],
+  ]);
+
+  for (const [selector, minimum] of minimums) {
+    assert.ok(
+      fontPixels(css, selector) >= minimum,
+      `${selector} should be at least ${minimum}px`,
+    );
+  }
+  assert.equal(css.split(".message > p {").length - 1, 1);
 });
 
 test("catalog indexes every official run, including agent-only ablations", async () => {
