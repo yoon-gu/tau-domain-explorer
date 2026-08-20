@@ -4,6 +4,11 @@ import test from "node:test";
 
 const catalogUrl = new URL("../app/data/benchmark-snapshot.json", import.meta.url);
 const stylesheetUrl = new URL("../app/globals.css", import.meta.url);
+const taskTranslationsUrl = new URL(
+  "../app/data/task-translations.ko.json",
+  import.meta.url,
+);
+const hangulPattern = /[\uac00-\ud7a3]/u;
 
 async function readJson(url) {
   return JSON.parse(await readFile(url, "utf8"));
@@ -12,6 +17,53 @@ async function readJson(url) {
 function publicAssetUrl(assetPath) {
   assert.match(assetPath, /^\/data\/[a-zA-Z0-9_./-]+\.json$/);
   return new URL(`../public${assetPath}`, import.meta.url);
+}
+
+function assertExactKeys(value, expected, label) {
+  assert.ok(value && typeof value === "object" && !Array.isArray(value), `${label} must be an object`);
+  assert.deepEqual(
+    Object.keys(value).sort(),
+    [...expected].sort(),
+    `${label} keys`,
+  );
+}
+
+function assertKorean(value, label) {
+  assert.equal(typeof value, "string", `${label} type`);
+  assert.ok(value.trim().length > 0, `${label} must not be blank`);
+  assert.match(value, hangulPattern, `${label} must contain Hangul`);
+}
+
+function protectedTaskLiterals(value) {
+  const patterns = [
+    /`[^`]+`/g,
+    /https?:\/\/[^\s)\]}]+/g,
+    /[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g,
+    /#[A-Za-z0-9_-]+/g,
+    /\b\d{3}-\d{3}-\d{4}\b/g,
+    /\b(?=[A-Za-z0-9_-]*[A-Za-z])(?=[A-Za-z0-9_-]*\d)[A-Za-z0-9_-]{3,}\b/g,
+    /\b[a-z]+(?:_[a-z0-9]+)+\b/g,
+    /(?:\b\d{4}-\d{2}-\d{2}\b|\b\d{6,}\b)/g,
+  ];
+  return [...new Set(patterns.flatMap((pattern) => value.match(pattern) ?? []))]
+    .filter((literal) => !/^\d{1,2}(?:am|pm|h|st|nd|rd|th)$/i.test(literal))
+    .filter((literal) => !/^\d{1,3}-year-old$/i.test(literal));
+}
+
+function assertTranslationQuality(source, translated, label) {
+  assertKorean(translated, label);
+  assert.doesNotMatch(translated, /__TAU\d+TOKEN__/u, `${label} placeholder leak`);
+  assert.doesNotMatch(translated, /\b\d{5}년/u, `${label} must not treat a ZIP code as a year`);
+  for (const literal of protectedTaskLiterals(source)) {
+    assert.ok(translated.includes(literal), `${label} must preserve ${literal}`);
+  }
+  if (source === "You do not remember your email address") {
+    assert.match(translated, /기억나지 않습니다[.]?$/u, `${label} perspective`);
+    assert.doesNotMatch(translated, /[?？]/u, `${label} must remain a statement`);
+  }
+  if (/\bboots?\b/i.test(source)) {
+    assert.doesNotMatch(translated, /부팅/u, `${label} must translate boots as footwear`);
+  }
 }
 
 async function render() {
@@ -72,6 +124,7 @@ test("uses a readable typography scale across the explorer", async () => {
   const css = await readFile(stylesheetUrl, "utf8");
   const minimums = new Map([
     [".brand-name", 14],
+    [".task-language-switch button", 11],
     [".benchmark-tab", 12],
     [".domain-name", 13],
     [".catalog-filter select", 12],
@@ -195,6 +248,149 @@ test("catalog indexes every official run, including agent-only ablations", async
     assert.equal(run.promptRef, "no-user");
     assert.match(run.sourceFile, /_no-user(?:-op)?_/);
   }
+});
+
+test("every task asset carries an exhaustive Korean presentation translation", async () => {
+  const [catalog, translationSource] = await Promise.all([
+    readJson(catalogUrl),
+    readJson(taskTranslationsUrl),
+  ]);
+  assertExactKeys(
+    translationSource,
+    ["schemaVersion", "datasetId", "locale", "domains"],
+    "task translation root",
+  );
+  assert.equal(translationSource.schemaVersion, 1);
+  assert.equal(translationSource.datasetId, catalog.datasetId);
+  assert.equal(translationSource.locale, "ko");
+  assertExactKeys(
+    translationSource.domains,
+    catalog.domains.map((domain) => domain.id),
+    "task translation domains",
+  );
+
+  const uniqueTaskAssets = new Set();
+  let translatedTaskCount = 0;
+  for (const domain of catalog.domains) {
+    assert.ok(
+      domain.userPrompts.every((prompt) => !hangulPattern.test(prompt.content)),
+      `${domain.id} runtime user prompts must remain source English`,
+    );
+    const domainTranslation = translationSource.domains[domain.id];
+    assertExactKeys(domainTranslation, ["tasks"], `${domain.id} translation domain`);
+    const domainTaskPaths = new Set(domain.runs.map((run) => run.tasksPath));
+    assert.equal(domainTaskPaths.size, 1, `${domain.id} should share one task asset`);
+
+    for (const tasksPath of domainTaskPaths) {
+      assert.ok(!uniqueTaskAssets.has(tasksPath), `task asset reused across domains: ${tasksPath}`);
+      uniqueTaskAssets.add(tasksPath);
+      const taskSet = await readJson(publicAssetUrl(tasksPath));
+      assertExactKeys(
+        domainTranslation.tasks,
+        Object.keys(taskSet.tasks),
+        `${domain.id} translated task IDs`,
+      );
+
+      for (const [taskId, taskEntry] of Object.entries(taskSet.tasks)) {
+        const label = `${domain.id} task ${taskId}`;
+        const sourceTranslation = domainTranslation.tasks[taskId];
+        assertExactKeys(
+          sourceTranslation,
+          ["title", "descriptionPurpose", "scenario"],
+          `${label} source translation`,
+        );
+        assert.deepEqual(taskEntry.translations, { ko: sourceTranslation });
+        assertTranslationQuality(
+          taskEntry.title,
+          sourceTranslation.title,
+          `${label} title`,
+        );
+        assert.doesNotMatch(taskEntry.title, hangulPattern, `${label} source title`);
+        assert.doesNotMatch(
+          JSON.stringify(taskEntry.task),
+          hangulPattern,
+          `${label} raw task must remain source English`,
+        );
+        assert.ok(!("translations" in taskEntry.task), `${label} raw task must not contain translations`);
+
+        const expectedScenarioKeys = domain.benchmark === "tau"
+          ? ["instruction"]
+          : ["persona", "reasonForCall", "knownInfo", "unknownInfo", "taskInstructions"];
+        const sourceScenarioKeys = Object.keys(taskEntry.scenario).filter(
+          (key) => key !== "userId",
+        );
+        assert.deepEqual(
+          [...sourceScenarioKeys].sort(),
+          [...expectedScenarioKeys].sort(),
+          `${label} source scenario keys`,
+        );
+        assertExactKeys(
+          sourceTranslation.scenario,
+          sourceScenarioKeys,
+          `${label} translated scenario`,
+        );
+        assert.ok(!("userId" in sourceTranslation.scenario), `${label} must not translate userId`);
+        for (const key of sourceScenarioKeys) {
+          const sourceValue = taskEntry.scenario[key];
+          const translatedValue = sourceTranslation.scenario[key];
+          assert.ok(
+            sourceValue === null || typeof sourceValue === "string",
+            `${label} scenario.${key} source type`,
+          );
+          if (sourceValue === null) {
+            assert.equal(translatedValue, null, `${label} scenario.${key} null parity`);
+          } else {
+            assert.doesNotMatch(sourceValue, hangulPattern, `${label} scenario.${key} source`);
+            assertTranslationQuality(
+              sourceValue,
+              translatedValue,
+              `${label} scenario.${key}`,
+            );
+          }
+        }
+
+        const sourceDescriptionPurpose = domain.benchmark === "tau2"
+          ? taskEntry.task.description?.purpose ?? null
+          : null;
+        if (sourceDescriptionPurpose === null) {
+          assert.equal(
+            sourceTranslation.descriptionPurpose,
+            null,
+            `${label} descriptionPurpose null parity`,
+          );
+        } else {
+          assert.equal(typeof sourceDescriptionPurpose, "string");
+          assert.doesNotMatch(
+            sourceDescriptionPurpose,
+            hangulPattern,
+            `${label} description purpose source`,
+          );
+          assertTranslationQuality(
+            sourceDescriptionPurpose,
+            sourceTranslation.descriptionPurpose,
+            `${label} descriptionPurpose`,
+          );
+        }
+
+        if (domain.benchmark === "tau") {
+          assert.equal(taskEntry.scenario.userId, taskEntry.task.user_id, `${label} userId`);
+        } else {
+          const rawScenario = taskEntry.task.user_scenario;
+          const rawInstructions = rawScenario.instructions;
+          assert.ok(rawInstructions && typeof rawInstructions === "object");
+          assert.equal(taskEntry.scenario.persona, rawScenario.persona ?? null);
+          assert.equal(taskEntry.scenario.reasonForCall, rawInstructions.reason_for_call ?? null);
+          assert.equal(taskEntry.scenario.knownInfo, rawInstructions.known_info ?? null);
+          assert.equal(taskEntry.scenario.unknownInfo, rawInstructions.unknown_info ?? null);
+          assert.equal(taskEntry.scenario.taskInstructions, rawInstructions.task_instructions ?? null);
+        }
+        translatedTaskCount += 1;
+      }
+    }
+  }
+
+  assert.equal(uniqueTaskAssets.size, 5);
+  assert.equal(translatedTaskCount, 443);
 });
 
 test("run indexes, task sets, and lazy trajectory details stay consistent", async () => {

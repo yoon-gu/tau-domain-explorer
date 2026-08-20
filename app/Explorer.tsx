@@ -10,6 +10,8 @@ import type {
   RunData,
   RunIndexAsset,
   TaskAssetEntry,
+  TaskLanguage,
+  TaskTranslation,
   TasksAsset,
   PromptVariant,
   ToolInvocation,
@@ -54,6 +56,7 @@ interface TaskSummaryGroup {
 const PAGE_SIZE = 100;
 const TASK_PAGE_SIZE = 40;
 const DETAIL_CACHE_LIMIT = 24;
+const TASK_LANGUAGE_STORAGE_KEY = "tau-explorer-task-language";
 const runIndexCache = new Map<string, Promise<TrajectorySummary[]>>();
 const tasksCache = new Map<string, Promise<TasksAsset>>();
 const detailChunkCache = new Map<string, Promise<TrajectoryChunkAsset>>();
@@ -89,6 +92,8 @@ function loadRunIndex(run: RunData) {
 function groupTaskSummaries(
   summaries: TrajectorySummary[],
   runsById: Map<string, RunData>,
+  taskLanguage: TaskLanguage,
+  taskAssets: Map<string, TasksAsset>,
 ): TaskSummaryGroup[] {
   const tasks = new Map<string, {
     key: string;
@@ -102,13 +107,19 @@ function groupTaskSummaries(
   for (const summary of summaries) {
     const taskSet = runsById.get(summary.runId)?.tasksPath ?? summary.runId;
     const key = JSON.stringify([summary.domainId, taskSet, summary.taskId]);
+    const display = taskDisplayForSummary(
+      summary,
+      taskLanguage,
+      runsById,
+      taskAssets,
+    );
     let task = tasks.get(key);
     if (!task) {
       task = {
         key,
         taskId: summary.taskId,
-        title: summary.title,
-        scenarioPreview: summary.scenarioPreview,
+        title: display.title,
+        scenarioPreview: display.scenarioPreview,
         trajectories: [],
         runs: new Map(),
       };
@@ -154,6 +165,62 @@ function loadTasks(path: string) {
   });
   tasksCache.set(path, request);
   return request;
+}
+
+function nonEmptyText(value: unknown) {
+  return typeof value === "string" && value.trim() ? value : undefined;
+}
+
+function localizedTaskScenario(
+  scenario: Record<string, unknown>,
+  translation?: TaskTranslation,
+) {
+  if (!translation) return scenario;
+  return Object.fromEntries(
+    Object.entries(scenario).map(([key, value]) => [
+      key,
+      nonEmptyText(translation.scenario[key]) ?? value,
+    ]),
+  );
+}
+
+function compactScenarioPreview(scenario: Record<string, unknown>) {
+  return Object.values(scenario)
+    .filter((value) => value !== null && value !== undefined && value !== "")
+    .map((value) => typeof value === "string" ? value : JSON.stringify(value))
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 240);
+}
+
+function taskEntryForSummary(
+  summary: TrajectorySummary,
+  runsById: Map<string, RunData>,
+  taskAssets: Map<string, TasksAsset>,
+) {
+  const tasksPath = runsById.get(summary.runId)?.tasksPath;
+  return tasksPath ? taskAssets.get(tasksPath)?.tasks[summary.taskId] : undefined;
+}
+
+function taskDisplayForSummary(
+  summary: TrajectorySummary,
+  taskLanguage: TaskLanguage,
+  runsById: Map<string, RunData>,
+  taskAssets: Map<string, TasksAsset>,
+) {
+  const taskEntry = taskEntryForSummary(summary, runsById, taskAssets);
+  const translation = taskLanguage === "ko" ? taskEntry?.translations?.ko : undefined;
+  const scenario = taskEntry
+    ? localizedTaskScenario(taskEntry.scenario, translation)
+    : undefined;
+  return {
+    title: nonEmptyText(translation?.title) ?? summary.title,
+    scenarioPreview: scenario
+      ? compactScenarioPreview(scenario) || summary.scenarioPreview
+      : summary.scenarioPreview,
+    translation,
+  };
 }
 
 function loadDetailChunk(path: string) {
@@ -338,6 +405,37 @@ function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) 
   );
 }
 
+function TaskLanguageSwitch({
+  value,
+  onChange,
+  className = "",
+}: {
+  value: TaskLanguage;
+  onChange: (language: TaskLanguage) => void;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`task-language-switch${className ? ` ${className}` : ""}`}
+      role="group"
+      aria-label="Task display language"
+    >
+      {(["en", "ko"] as TaskLanguage[]).map((language) => (
+        <button
+          type="button"
+          className={value === language ? "active" : ""}
+          onClick={() => onChange(language)}
+          aria-pressed={value === language}
+          aria-label={language === "en" ? "Show tasks in English" : "태스크를 한국어로 보기"}
+          key={language}
+        >
+          {language === "en" ? "EN" : "한국어"}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function JsonBlock({ label, value }: { label: string; value: unknown }) {
   const text = stringify(value);
   return (
@@ -500,31 +598,103 @@ function Stat({ label, value }: { label: string; value: ReactNode }) {
   );
 }
 
-function TaskPanel({ domain, trajectory }: { domain: DomainData; trajectory?: Trajectory }) {
+function TaskPanel({
+  domain,
+  trajectory,
+  taskLanguage,
+  taskTranslation,
+  translationStatus,
+  translationError,
+}: {
+  domain: DomainData;
+  trajectory?: Trajectory;
+  taskLanguage: TaskLanguage;
+  taskTranslation?: TaskTranslation;
+  translationStatus: LoadStatus;
+  translationError: string | null;
+}) {
   if (!trajectory) return <EmptyContext label="Choose a trajectory to inspect its task." />;
   const description = asRecord(trajectory.task.description);
+  const translatedScenario = localizedTaskScenario(
+    trajectory.scenario,
+    taskLanguage === "ko" ? taskTranslation : undefined,
+  );
+  const rawPurpose = nonEmptyText(description.purpose);
+  const title = taskLanguage === "ko"
+    ? nonEmptyText(taskTranslation?.title) ?? trajectory.title
+    : trajectory.title;
+  const purpose = taskLanguage === "ko"
+    ? nonEmptyText(taskTranslation?.descriptionPurpose) ?? rawPurpose
+    : rawPurpose;
+  const scenarioFields = domain.benchmark === "tau"
+    ? ["instruction"]
+    : ["persona", "reasonForCall", "knownInfo", "unknownInfo", "taskInstructions"];
+  const hasFieldFallback = taskLanguage === "ko" && (
+    !nonEmptyText(taskTranslation?.title) ||
+    (Boolean(rawPurpose) && !nonEmptyText(taskTranslation?.descriptionPurpose)) ||
+    scenarioFields.some((field) =>
+      nonEmptyText(trajectory.scenario[field]) &&
+      !nonEmptyText(taskTranslation?.scenario[field]))
+  );
+  const labels = taskLanguage === "ko"
+    ? {
+        task: "태스크",
+        userInstruction: "사용자 지시사항",
+        userId: "사용자 ID",
+        referenceActions: "참조 액션",
+        expectedOutputs: "예상 출력",
+        persona: "페르소나",
+        reasonForCall: "문의 사유",
+        knownInfo: "알려진 정보",
+        unknownInfo: "알려지지 않은 정보",
+        taskInstructions: "태스크 지시사항",
+        completeJson: "전체 태스크 JSON",
+      }
+    : {
+        task: "Task",
+        userInstruction: "User instruction",
+        userId: "User ID",
+        referenceActions: "Reference actions",
+        expectedOutputs: "Expected outputs",
+        persona: "Persona",
+        reasonForCall: "Reason for call",
+        knownInfo: "Known information",
+        unknownInfo: "Unknown information",
+        taskInstructions: "Task instructions",
+        completeJson: "Complete task JSON",
+      };
 
   return (
     <div className="context-content structured-content">
       <div className="panel-intro">
-        <span className="section-kicker">Task · {compactTaskId(trajectory.taskId)}</span>
-        <h2>{trajectory.title}</h2>
-        {description.purpose ? <p>{String(description.purpose)}</p> : null}
+        <span className="section-kicker">{labels.task} · {compactTaskId(trajectory.taskId)}</span>
+        <h2>{title}</h2>
+        {purpose ? <p>{purpose}</p> : null}
       </div>
+
+      {taskLanguage === "ko" && translationStatus === "loading" ? (
+        <div className="context-note translation-note">
+          한국어 번역을 불러오는 동안 번역되지 않은 항목은 영어 원문으로 표시됩니다.
+        </div>
+      ) : taskLanguage === "ko" && (translationError || hasFieldFallback) ? (
+        <div className="context-note translation-note">
+          한국어 번역이 없는 항목은 정확한 영어 원문으로 표시됩니다.
+        </div>
+      ) : null}
 
       {domain.benchmark === "tau" ? (
         <>
-          <ContextSection title="User instruction">
-            <p className="preserve-lines">{String(trajectory.scenario.instruction ?? "—")}</p>
+          <ContextSection title={labels.userInstruction}>
+            <p className="preserve-lines">{String(translatedScenario.instruction ?? "—")}</p>
           </ContextSection>
           <dl className="definition-list">
-            <Stat label="User ID" value={String(trajectory.scenario.userId ?? "—")} />
+            <Stat label={labels.userId} value={String(trajectory.scenario.userId ?? "—")} />
             <Stat
-              label="Reference actions"
+              label={labels.referenceActions}
               value={Array.isArray(trajectory.task.actions) ? trajectory.task.actions.length : 0}
             />
             <Stat
-              label="Expected outputs"
+              label={labels.expectedOutputs}
               value={Array.isArray(trajectory.task.outputs) ? trajectory.task.outputs.length : 0}
             />
           </dl>
@@ -532,11 +702,11 @@ function TaskPanel({ domain, trajectory }: { domain: DomainData; trajectory?: Tr
       ) : (
         <>
           {[
-            ["Persona", trajectory.scenario.persona],
-            ["Reason for call", trajectory.scenario.reasonForCall],
-            ["Known information", trajectory.scenario.knownInfo],
-            ["Unknown information", trajectory.scenario.unknownInfo],
-            ["Task instructions", trajectory.scenario.taskInstructions],
+            [labels.persona, translatedScenario.persona],
+            [labels.reasonForCall, translatedScenario.reasonForCall],
+            [labels.knownInfo, translatedScenario.knownInfo],
+            [labels.unknownInfo, translatedScenario.unknownInfo],
+            [labels.taskInstructions, translatedScenario.taskInstructions],
           ].map(([label, value]) =>
             value ? (
               <ContextSection title={String(label)} key={String(label)}>
@@ -548,7 +718,7 @@ function TaskPanel({ domain, trajectory }: { domain: DomainData; trajectory?: Tr
       )}
 
       <details className="raw-disclosure">
-        <summary>Complete task JSON <span aria-hidden="true">⌄</span></summary>
+        <summary>{labels.completeJson} <span aria-hidden="true">⌄</span></summary>
         <JsonBlock label="Task" value={trajectory.task} />
       </details>
     </div>
@@ -657,6 +827,10 @@ function ContextLoadState({
 function ContextPanel({
   domain,
   trajectory,
+  taskLanguage,
+  taskTranslation,
+  translationStatus,
+  translationError,
   tab,
   setTab,
   promptVariantId,
@@ -676,6 +850,10 @@ function ContextPanel({
 }: {
   domain: DomainData;
   trajectory?: Trajectory;
+  taskLanguage: TaskLanguage;
+  taskTranslation?: TaskTranslation;
+  translationStatus: LoadStatus;
+  translationError: string | null;
   tab: ContextTab;
   setTab: (tab: ContextTab) => void;
   promptVariantId: string;
@@ -822,6 +1000,12 @@ function ContextPanel({
               <strong>{prompt.label}</strong>
               <p>{prompt.description}</p>
             </div>
+            {taskLanguage === "ko" ? (
+              <div className="context-note prompt-language-note">
+                이 패널은 실제 사용자 시뮬레이션에 사용된 영어 프롬프트 원문을 표시합니다.
+                한국어 태스크 번역은 Task 탭에서 확인할 수 있습니다.
+              </div>
+            ) : null}
             {runtimePromptId === "no-user" ? (
               <div className="context-note">
                 This is an agent-only run. No user simulator participates in the trajectory.
@@ -850,7 +1034,16 @@ function ContextPanel({
         ) : null}
 
         {tab === "task" ? (
-          trajectory ? <TaskPanel domain={domain} trajectory={trajectory} /> : (
+          trajectory ? (
+            <TaskPanel
+              domain={domain}
+              trajectory={trajectory}
+              taskLanguage={taskLanguage}
+              taskTranslation={taskTranslation}
+              translationStatus={translationStatus}
+              translationError={translationError}
+            />
+          ) : (
             <ContextLoadState
               status={detailStatus}
               error={detailError}
@@ -907,6 +1100,8 @@ export default function Explorer() {
   const [query, setQuery] = useState("");
   const [outcome, setOutcome] = useState<OutcomeFilter>("all");
   const [catalogView, setCatalogView] = useState<CatalogView>("tasks");
+  const [taskLanguage, setTaskLanguage] = useState<TaskLanguage>("en");
+  const [taskLanguageMounted, setTaskLanguageMounted] = useState(false);
   const [focusedTaskKey, setFocusedTaskKey] = useState("");
   const [contextTab, setContextTab] = useState<ContextTab>("policy");
   const [promptVariantId, setPromptVariantId] = useState("");
@@ -930,7 +1125,42 @@ export default function Explorer() {
     data: null,
     error: null,
   });
+  const [taskAssetsState, setTaskAssetsState] = useState<LoadState<Map<string, TasksAsset>>>({
+    key: "",
+    status: "idle",
+    data: new Map(),
+    error: null,
+  });
   const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let current = true;
+    let storedLanguage: TaskLanguage = "en";
+    try {
+      if (window.localStorage.getItem(TASK_LANGUAGE_STORAGE_KEY) === "ko") {
+        storedLanguage = "ko";
+      }
+    } catch {
+      // Storage can be unavailable in privacy-restricted browser contexts.
+    }
+    document.documentElement.lang = storedLanguage;
+    void Promise.resolve().then(() => {
+      if (!current) return;
+      setTaskLanguage(storedLanguage);
+      setTaskLanguageMounted(true);
+    });
+    return () => { current = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!taskLanguageMounted) return;
+    document.documentElement.lang = taskLanguage;
+    try {
+      window.localStorage.setItem(TASK_LANGUAGE_STORAGE_KEY, taskLanguage);
+    } catch {
+      // The selected language still applies for this session when storage is unavailable.
+    }
+  }, [taskLanguage, taskLanguageMounted]);
 
   const domains = useMemo(
     () => snapshot.domains.filter((domain) => domain.benchmark === benchmark),
@@ -958,6 +1188,11 @@ export default function Explorer() {
       : runsForModel.filter((run) => run.id === activeRunFilter),
     [activeRunFilter, runsForModel],
   );
+  const requestedTaskPaths = useMemo(
+    () => [...new Set(requestedRuns.map((run) => run.tasksPath))],
+    [requestedRuns],
+  );
+  const requestedTaskPathsKey = requestedTaskPaths.join("|");
   const requestedKey = requestedRuns.map((run) => run.id).join("|");
   const expectedTrajectoryCount = requestedRuns.reduce(
     (count, run) => count + run.trajectoryCount,
@@ -971,6 +1206,44 @@ export default function Explorer() {
     () => [...new Set(requestedRuns.flatMap((run) => run.trials))].sort((a, b) => a - b),
     [requestedRuns],
   );
+
+  useEffect(() => {
+    if (taskLanguage !== "ko") return;
+    let current = true;
+    void Promise.resolve().then(() => {
+      if (!current) return;
+      setTaskAssetsState((state) => ({
+        key: requestedTaskPathsKey,
+        status: "loading",
+        data: state.data,
+        error: null,
+      }));
+    });
+    Promise.allSettled(requestedTaskPaths.map(async (path) => [path, await loadTasks(path)] as const))
+      .then((results) => {
+        if (!current) return;
+        setTaskAssetsState((state) => {
+          const data = new Map(state.data);
+          let failed = 0;
+          for (const result of results) {
+            if (result.status === "fulfilled") {
+              data.set(result.value[0], result.value[1]);
+            } else {
+              failed += 1;
+            }
+          }
+          return {
+            key: requestedTaskPathsKey,
+            status: "ready",
+            data,
+            error: failed
+              ? `${failed} task translation asset${failed === 1 ? "" : "s"} could not be loaded.`
+              : null,
+          };
+        });
+      });
+    return () => { current = false; };
+  }, [requestedTaskPaths, requestedTaskPathsKey, taskLanguage]);
 
   useEffect(() => {
     let current = true;
@@ -1013,10 +1286,25 @@ export default function Explorer() {
   const currentIndexState = indexState.key === requestedKey
     ? indexState
     : { key: requestedKey, status: "loading" as const, data: [], error: null };
+  const activeTaskTranslationStatus: LoadStatus = taskLanguage === "en"
+    ? "idle"
+    : taskAssetsState.key === requestedTaskPathsKey
+      ? taskAssetsState.status
+      : "loading";
+  const activeTaskTranslationError = taskLanguage === "ko" &&
+    taskAssetsState.key === requestedTaskPathsKey
+    ? taskAssetsState.error
+    : null;
   const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase());
   const filteredTrajectories = useMemo(() => currentIndexState.data.filter((item) => {
     const run = runsById.get(item.runId);
-    const haystack = `${item.taskId} ${item.title} ${item.scenarioPreview} ${item.toolNames.join(" ")} ${run?.label ?? ""} ${run?.model ?? ""}`.toLocaleLowerCase();
+    const koreanDisplay = taskDisplayForSummary(
+      item,
+      "ko",
+      runsById,
+      taskAssetsState.data,
+    );
+    const haystack = `${item.taskId} ${item.title} ${item.scenarioPreview} ${koreanDisplay.title} ${koreanDisplay.scenarioPreview} ${item.toolNames.join(" ")} ${run?.label ?? ""} ${run?.model ?? ""}`.toLocaleLowerCase();
     const matchesQuery = haystack.includes(deferredQuery);
     const matchesOutcome =
       outcome === "all" ||
@@ -1024,10 +1312,15 @@ export default function Explorer() {
       (outcome === "fail" && item.reward !== 1);
     const matchesTrial = trialFilter === "all" || item.trial === Number(trialFilter);
     return matchesQuery && matchesOutcome && matchesTrial;
-  }), [currentIndexState.data, deferredQuery, outcome, runsById, trialFilter]);
+  }), [currentIndexState.data, deferredQuery, outcome, runsById, taskAssetsState.data, trialFilter]);
   const taskGroups = useMemo(
-    () => groupTaskSummaries(filteredTrajectories, runsById),
-    [filteredTrajectories, runsById],
+    () => groupTaskSummaries(
+      filteredTrajectories,
+      runsById,
+      taskLanguage,
+      taskAssetsState.data,
+    ),
+    [filteredTrajectories, runsById, taskAssetsState.data, taskLanguage],
   );
   const selectedSummary =
     filteredTrajectories.find((candidate) => candidate.id === selectedTrajectoryId) ??
@@ -1040,6 +1333,17 @@ export default function Explorer() {
     selectedTaskGroup ??
     taskGroups[0];
   const selectedRun = selectedSummary ? runsById.get(selectedSummary.runId) : undefined;
+  const selectedTaskDisplay = selectedSummary
+    ? taskDisplayForSummary(
+        selectedSummary,
+        taskLanguage,
+        runsById,
+        taskAssetsState.data,
+      )
+    : undefined;
+  const selectedTaskTranslation = taskLanguage === "ko"
+    ? selectedTaskDisplay?.translation
+    : undefined;
   const currentIndex = selectedSummary
     ? filteredTrajectories.findIndex((candidate) => candidate.id === selectedSummary.id)
     : -1;
@@ -1270,10 +1574,15 @@ export default function Explorer() {
       <aside className="sidebar">
         <div className="brand-row">
           <span className="brand-mark">τ</span>
-          <div>
+          <div className="brand-copy">
             <strong className="brand-name">TAU Explorer</strong>
             <span className="brand-subtitle">Domain observatory</span>
           </div>
+          <TaskLanguageSwitch
+            value={taskLanguage}
+            onChange={setTaskLanguage}
+            className="desktop-task-language"
+          />
         </div>
 
         <div className="benchmark-switch" aria-label="Benchmark version">
@@ -1316,6 +1625,11 @@ export default function Explorer() {
               </span>
             </button>
           </div>
+          <TaskLanguageSwitch
+            value={taskLanguage}
+            onChange={setTaskLanguage}
+            className="mobile-task-language"
+          />
         </div>
 
         <nav className="domain-nav" aria-label="Domains">
@@ -1536,6 +1850,12 @@ export default function Explorer() {
               : null}
             {currentIndexState.status === "ready" && catalogView === "trajectories" ? pageTrajectories.map((item) => {
               const itemRun = runsById.get(item.runId);
+              const itemDisplay = taskDisplayForSummary(
+                item,
+                taskLanguage,
+                runsById,
+                taskAssetsState.data,
+              );
               return (
               <button
                 type="button"
@@ -1548,7 +1868,7 @@ export default function Explorer() {
                 </span>
                 <span className="trajectory-item-copy">
                   <span className="trajectory-id">Task {compactTaskId(item.taskId)} · T{item.trial}</span>
-                  <strong>{item.title}</strong>
+                  <strong>{itemDisplay.title}</strong>
                   <span>{item.messageCount} turns · {item.toolCallCount} calls · {itemRun ? formatRunLabel(itemRun) : "Unknown run"}</span>
                 </span>
               </button>
@@ -1607,7 +1927,7 @@ export default function Explorer() {
                 <p className="breadcrumb">
                   {domain.benchmarkLabel} / {domain.slug} / task {compactTaskId(selectedSummary.taskId)}
                 </p>
-                <h1>{selectedSummary.title}</h1>
+                <h1>{selectedTaskDisplay?.title ?? selectedSummary.title}</h1>
               </div>
               <div className="topbar-actions">
                 <button
@@ -1702,6 +2022,10 @@ export default function Explorer() {
       <ContextPanel
         domain={domain}
         trajectory={trajectory}
+        taskLanguage={taskLanguage}
+        taskTranslation={selectedTaskTranslation}
+        translationStatus={activeTaskTranslationStatus}
+        translationError={activeTaskTranslationError}
         tab={contextTab}
         setTab={setContextTab}
         promptVariantId={promptVariantId}

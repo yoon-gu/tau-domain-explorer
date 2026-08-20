@@ -23,12 +23,21 @@ The complete catalog includes eight τ² `no-user` and `no-user-op` ablation run
 
 τ² Telecom trajectories distinguish user-operated device tools from agent-operated customer-service tools. Their effective user prompt uses the tool-enabled simulator guidelines recorded by the benchmark.
 
+## English / 한국어 task display
+
+Every one of the 443 benchmark tasks includes a complete Korean presentation translation for its title, description purpose, and non-identifier scenario fields. The task view can switch between **EN** and **한국어** without changing which task, run, trial, or trajectory is selected. Nullable source fields remain nullable in Korean, and identifiers such as `userId`, reservation IDs, tool names, arguments, and expected values are never translated.
+
+Translations are a display-only layer. The canonical task fields, raw task JSON, user-simulator prompt, stored trajectory messages, tool calls, and evaluation data remain the pinned English source used by τ-bench and τ²-bench. In particular, choosing 한국어 does not create a translated simulator prompt or alter benchmark behavior; the Raw view continues to expose the original source data.
+
+The curated translation source lives at `app/data/task-translations.ko.json`. During catalog generation, each content-addressed task entry receives its matching `translations.ko` presentation object. Generation fails on a missing or extra domain/task/field, mismatched null, blank translation, non-Korean natural-language value, or an attempt to translate `userId`.
+
 ## Lazy data layout
 
 The browser does not download hundreds of megabytes as one application bundle. Generated data is split into a small catalog and lazy JSON assets:
 
 ```text
 app/data/benchmark-snapshot.json
+app/data/task-translations.ko.json
 public/data/sets/official-conversational-v2/
 ├── chunks/<run-id>/chunk_<number>.json
 ├── indexes/<run-id>.json
@@ -72,7 +81,7 @@ TAU2_BENCH_DIR=/path/to/tau2-bench \
 npm run sync-data
 ```
 
-`npm run sync-data` rebuilds `app/data/benchmark-snapshot.json` and the complete `public/data/` shard tree. It validates the expected 33 runs and 13,924 trajectories, including all 3,648 agent-only traces; rejects orphaned tool results; deduplicates source files and task sets; emits detail chunks containing at most 20 trajectories; and fails if a chunk exceeds the static asset limit or the generated data tree reaches 1,000 files.
+`npm run sync-data` rebuilds `app/data/benchmark-snapshot.json` and the complete `public/data/` shard tree. It validates the expected 33 runs and 13,924 trajectories, including all 3,648 agent-only traces; validates exhaustive Korean coverage for all five domain views and 443 tasks; rejects orphaned tool results; deduplicates source files and task sets; emits detail chunks containing at most 20 trajectories; and fails if a chunk exceeds the static asset limit or the generated data tree reaches 1,000 files.
 
 ## Source revisions
 

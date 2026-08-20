@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "datasetId": "official-conversational-v2",
-  "generatedAt": "2026-08-20T14:43:02.550Z",
+  "generatedAt": "2026-08-20T16:01:25.213Z",
   "notice": "All 13,924 unique official trajectories are indexed, including τ² no-user and no-user-oracle-plan agent-only ablations.",
   "agentOnly": {
     "reason": "dummy_user ablations with zero user-role messages",
@@ -110,7 +110,7 @@
           "policySnapshotId": "policy_56c335801c16e26b",
           "promptRef": "llm",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_jQb7DWXsZFePSXdjZN.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_bfbca68f5724feb73a.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_120e5543c7a7b08dff.json",
           "sourceFile": "historical_trajectories/gpt-4o-airline.json",
           "sourceUrl": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/historical_trajectories/gpt-4o-airline.json"
         },
@@ -141,7 +141,7 @@
           "policySnapshotId": "policy_56c335801c16e26b",
           "promptRef": "llm",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run__oW5REo3ijpFVK3rmU.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_bfbca68f5724feb73a.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_120e5543c7a7b08dff.json",
           "sourceFile": "historical_trajectories/sonnet-35-new-airline.json",
           "sourceUrl": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/historical_trajectories/sonnet-35-new-airline.json"
         }
@@ -227,7 +227,7 @@
           "policySnapshotId": "policy_d539fd2a46a8b8dd",
           "promptRef": "llm",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_foZKX0judsY9FLQn7W.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_5e0c5c746bcb10f46a.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_040b5388ad7190a239.json",
           "sourceFile": "historical_trajectories/gpt-4o-retail.json",
           "sourceUrl": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/historical_trajectories/gpt-4o-retail.json"
         },
@@ -258,7 +258,7 @@
           "policySnapshotId": "policy_d539fd2a46a8b8dd",
           "promptRef": "llm",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_HFN_brZ8ixr1QFA10c.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_5e0c5c746bcb10f46a.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_040b5388ad7190a239.json",
           "sourceFile": "historical_trajectories/sonnet-35-new-retail.json",
           "sourceUrl": "https://github.com/sierra-research/tau-bench/blob/59a200c6d575d595120f1cb70fea53cef0632f6b/historical_trajectories/sonnet-35-new-retail.json"
         }
@@ -326,7 +326,7 @@
           "policySnapshotId": "policy_10dc052542152120",
           "promptRef": "standard",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_Z50YXpR-dbaIcJn7O1.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_156ef631589b9db8c5.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_19f68fd0e7406433bb.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-2025-04-14_airline_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-2025-04-14_airline_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -353,7 +353,7 @@
           "policySnapshotId": "policy_10dc052542152120",
           "promptRef": "standard",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_cJ5pvG-VbK9x6vYlpe.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_156ef631589b9db8c5.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_19f68fd0e7406433bb.json",
           "sourceFile": "web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_airline_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_airline_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -380,7 +380,7 @@
           "policySnapshotId": "policy_10dc052542152120",
           "promptRef": "standard",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_fQZKBtUK8M8IVtUKiW.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_156ef631589b9db8c5.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_19f68fd0e7406433bb.json",
           "sourceFile": "data/tau2/results/final/claude-3-7-sonnet-20250219_airline_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/claude-3-7-sonnet-20250219_airline_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -407,7 +407,7 @@
           "policySnapshotId": "policy_10dc052542152120",
           "promptRef": "standard",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_uYcM0965Fsr4Cre5M8.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_156ef631589b9db8c5.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_19f68fd0e7406433bb.json",
           "sourceFile": "data/tau2/results/final/o4-mini-2025-04-16_airline_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/o4-mini-2025-04-16_airline_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -434,7 +434,7 @@
           "policySnapshotId": "policy_10dc052542152120",
           "promptRef": "standard",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_3OIHm-4g9kNNDJV9MZ.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_156ef631589b9db8c5.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_19f68fd0e7406433bb.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-mini-2025-04-14_airline_base_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-mini-2025-04-14_airline_base_gpt-4.1-2025-04-14_4trials.json"
         }
@@ -502,7 +502,7 @@
           "policySnapshotId": "policy_2c9652afbce57d6e",
           "promptRef": "standard",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_n9eQUdL8HfVCV8gNgd.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_9e84d9dcb89578b3fd.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_f5408fe76d47a43770.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-2025-04-14_retail_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-2025-04-14_retail_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -529,7 +529,7 @@
           "policySnapshotId": "policy_2c9652afbce57d6e",
           "promptRef": "standard",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_o7OQCUdXVT5V8W3TkF.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_9e84d9dcb89578b3fd.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_f5408fe76d47a43770.json",
           "sourceFile": "web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_retail_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_retail_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -556,7 +556,7 @@
           "policySnapshotId": "policy_2c9652afbce57d6e",
           "promptRef": "standard",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_V6g5zMvv1yFMlORgW0.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_9e84d9dcb89578b3fd.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_f5408fe76d47a43770.json",
           "sourceFile": "data/tau2/results/final/claude-3-7-sonnet-20250219_retail_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/claude-3-7-sonnet-20250219_retail_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -583,7 +583,7 @@
           "policySnapshotId": "policy_2c9652afbce57d6e",
           "promptRef": "standard",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_oQynwETqr9K_ztf6po.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_9e84d9dcb89578b3fd.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_f5408fe76d47a43770.json",
           "sourceFile": "data/tau2/results/final/o4-mini-2025-04-16_retail_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/o4-mini-2025-04-16_retail_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -610,7 +610,7 @@
           "policySnapshotId": "policy_2c9652afbce57d6e",
           "promptRef": "standard",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_QgzErk4kW7SQYwABki.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_9e84d9dcb89578b3fd.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_f5408fe76d47a43770.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-mini-2025-04-14_retail_base_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-mini-2025-04-14_retail_base_gpt-4.1-2025-04-14_4trials.json"
         }
@@ -696,7 +696,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_fAPvVy3voxCg-UkCXK.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-2025-04-14_telecom_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-2025-04-14_telecom_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -723,7 +723,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "no-user",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_6YPULDNAYAHby3FxT4.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-2025-04-14_telecom_no-user_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-2025-04-14_telecom_no-user_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -750,7 +750,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "no-user",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_7QM-wUo1r6RFlKW44j.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-2025-04-14_telecom_no-user-op_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-2025-04-14_telecom_no-user-op_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -777,7 +777,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_NkQuH5ORPpc2f1qZ8t.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_telecom_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_telecom_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -804,7 +804,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_vsh-Gn3WLc9CLaBK8i.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/claude-3-7-sonnet-20250219_telecom_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/claude-3-7-sonnet-20250219_telecom_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -831,7 +831,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_1_ZlTUzZmUksDcUXxX.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/o4-mini-2025-04-16_telecom_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/o4-mini-2025-04-16_telecom_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -858,7 +858,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "no-user",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_6UX4fgousgaDt8Hn3K.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/o4-mini-2025-04-16_telecom_no-user_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/o4-mini-2025-04-16_telecom_no-user_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -885,7 +885,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "no-user",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_96WrNRN5B84o2ir6vf.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/o4-mini-2025-04-16_telecom_no-user-op_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/o4-mini-2025-04-16_telecom_no-user-op_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -912,7 +912,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_kCaAq4nNh6OLK48Fje.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-mini-2025-04-14_telecom_base_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-mini-2025-04-14_telecom_base_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -939,7 +939,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_Ykswx9NXij5YnOcbRC.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-2025-04-14_telecom_op_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-2025-04-14_telecom_op_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -966,7 +966,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_WPseiDBGIwesu4oSWw.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/o4-mini-2025-04-16_telecom_op_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/o4-mini-2025-04-16_telecom_op_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -993,7 +993,7 @@
           "policySnapshotId": "policy_4713ad7b8c70d176",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_NJcdG712CzqdmafnaD.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-2025-04-14_telecom-workflow_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-2025-04-14_telecom-workflow_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -1020,7 +1020,7 @@
           "policySnapshotId": "policy_4713ad7b8c70d176",
           "promptRef": "no-user",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_m9KAzzvBegrSmYaoXX.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-2025-04-14_telecom-workflow_no-user_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-2025-04-14_telecom-workflow_no-user_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -1047,7 +1047,7 @@
           "policySnapshotId": "policy_4713ad7b8c70d176",
           "promptRef": "no-user",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_n9ek3yOJy7AGAXvBXZ.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-2025-04-14_telecom-workflow_no-user-op_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-2025-04-14_telecom-workflow_no-user-op_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -1074,7 +1074,7 @@
           "policySnapshotId": "policy_4713ad7b8c70d176",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_USWKA_vOtxL2AqlMxa.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/o4-mini-2025-04-16_telecom-workflow_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/o4-mini-2025-04-16_telecom-workflow_default_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -1101,7 +1101,7 @@
           "policySnapshotId": "policy_4713ad7b8c70d176",
           "promptRef": "no-user",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_nKd7Qoa_fli3tDbwlq.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/o4-mini-2025-04-16_telecom-workflow_no-user_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/o4-mini-2025-04-16_telecom-workflow_no-user_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -1128,7 +1128,7 @@
           "policySnapshotId": "policy_4713ad7b8c70d176",
           "promptRef": "no-user",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_SZld2CwGnWK2uwUntG.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/o4-mini-2025-04-16_telecom-workflow_no-user-op_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/o4-mini-2025-04-16_telecom-workflow_no-user-op_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -1155,7 +1155,7 @@
           "policySnapshotId": "policy_4713ad7b8c70d176",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_rISgGQM25TvKV6i1t5.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/gpt-4.1-2025-04-14_telecom-workflow_op_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/gpt-4.1-2025-04-14_telecom-workflow_op_gpt-4.1-2025-04-14_4trials.json"
         },
@@ -1182,7 +1182,7 @@
           "policySnapshotId": "policy_4713ad7b8c70d176",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/official-conversational-v2/indexes/run_1t4pMgQdF61EGKoZ8b.json",
-          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_62f63041d97bf10128.json",
+          "tasksPath": "/data/sets/official-conversational-v2/tasks/tasks_c1549f7867c2c1bb6b.json",
           "sourceFile": "data/tau2/results/final/o4-mini-2025-04-16_telecom-workflow_op_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/data/tau2/results/final/o4-mini-2025-04-16_telecom-workflow_op_gpt-4.1-2025-04-14_4trials.json"
         }

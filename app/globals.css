@@ -92,6 +92,44 @@ summary:focus-visible {
   gap: 2px;
 }
 
+.brand-copy {
+  min-width: 0;
+}
+
+.task-language-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  margin-left: auto;
+  padding: 2px;
+  border: 1px solid #d7d7d2;
+  border-radius: 7px;
+  background: #e7e7e3;
+}
+
+.task-language-switch button {
+  min-width: 31px;
+  min-height: 30px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 680;
+  white-space: nowrap;
+}
+
+.task-language-switch button.active {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 7%);
+}
+
+.mobile-task-language {
+  display: none;
+}
+
 .brand-mark {
   display: grid;
   width: 30px;
@@ -1602,6 +1640,13 @@ pre {
   line-height: 1.6;
 }
 
+.prompt-language-note,
+.translation-note {
+  border-style: solid;
+  background: #f1f1ed;
+  color: var(--ink-soft);
+}
+
 .panel-intro {
   padding-bottom: 19px;
   border-bottom: 1px solid var(--line-soft);
@@ -1868,6 +1913,10 @@ pre {
     align-self: center;
   }
 
+  .desktop-task-language {
+    display: none;
+  }
+
   .benchmark-switch {
     align-self: center;
     margin: 0;
@@ -1876,8 +1925,22 @@ pre {
   .mobile-selectors {
     display: grid;
     grid-column: 1 / -1;
-    grid-template-columns: 1fr 1.4fr;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr) auto;
     gap: 8px;
+  }
+
+  .mobile-task-language {
+    display: grid;
+    align-self: end;
+    min-height: 42px;
+    margin: 0;
+    padding: 3px;
+  }
+
+  .mobile-task-language button {
+    min-width: 34px;
+    min-height: 34px;
+    padding: 4px 5px;
   }
 
   .mobile-selectors label,
@@ -2111,6 +2174,18 @@ pre {
 
   .brand-row {
     padding-left: 2px;
+  }
+
+  .mobile-selectors {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr) auto;
+    gap: 6px;
+  }
+
+  .mobile-task-language button {
+    min-width: 31px;
+    padding-right: 4px;
+    padding-left: 4px;
+    font-size: 11px;
   }
 
   .benchmark-tab {

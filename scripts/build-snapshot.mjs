@@ -16,18 +16,58 @@ const datasetId = "official-conversational-v2";
 const detailsPerChunk = 20;
 const publicDataRoot = path.join(projectRoot, "public/data");
 const catalogPath = path.join(projectRoot, "app/data/benchmark-snapshot.json");
+const taskTranslationsPath = path.join(
+  projectRoot,
+  "app/data/task-translations.ko.json",
+);
+const taskTranslationSource = JSON.parse(
+  readFileSync(taskTranslationsPath, "utf8"),
+);
 
 if (!publicDataRoot.startsWith(`${projectRoot}${path.sep}`)) {
   throw new Error("Refusing to write generated data outside the project.");
 }
 
-rmSync(publicDataRoot, { recursive: true, force: true });
-mkdirSync(publicDataRoot, { recursive: true });
-
 const read = (file) => readFileSync(file, "utf8");
 const tauPath = (...parts) => path.join(tauRoot, ...parts);
 const tau2Path = (...parts) => path.join(tau2Root, ...parts);
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
+
+function isRecord(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function requireRecord(value, label) {
+  if (!isRecord(value)) throw new Error(`${label} must be an object.`);
+  return value;
+}
+
+function sortedKeys(value) {
+  return Object.keys(value).sort((a, b) =>
+    a.localeCompare(b, undefined, { numeric: true }),
+  );
+}
+
+function requireExactKeys(value, expectedKeys, label) {
+  const actual = sortedKeys(requireRecord(value, label));
+  const expected = [...expectedKeys].sort((a, b) =>
+    a.localeCompare(b, undefined, { numeric: true }),
+  );
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    throw new Error(
+      `${label} keys differ. Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}.`,
+    );
+  }
+}
+
+function requireKorean(value, label) {
+  if (typeof value !== "string" || value.trim() === "") {
+    throw new Error(`${label} must be a nonblank Korean string.`);
+  }
+  if (!/[\uac00-\ud7a3]/u.test(value)) {
+    throw new Error(`${label} must contain Hangul.`);
+  }
+}
 
 function stableId(prefix, parts, length = 22) {
   const digest = createHash("sha256")
@@ -377,8 +417,75 @@ const domains = [
   }),
 ];
 const domainsById = new Map(domains.map((domain) => [domain.id, domain]));
+requireExactKeys(
+  taskTranslationSource,
+  ["schemaVersion", "datasetId", "locale", "domains"],
+  "Korean task translation root",
+);
+if (taskTranslationSource.schemaVersion !== 1) {
+  throw new Error("Korean task translations must use schemaVersion 1.");
+}
+if (taskTranslationSource.datasetId !== datasetId) {
+  throw new Error(`Korean task translations must target ${datasetId}.`);
+}
+if (taskTranslationSource.locale !== "ko") {
+  throw new Error("Korean task translations must use locale \"ko\".");
+}
+const translationDomains = requireRecord(
+  taskTranslationSource.domains,
+  "Korean task translation domains",
+);
+requireExactKeys(
+  translationDomains,
+  [...domainsById.keys()],
+  "Korean task translation domains",
+);
+for (const domainId of domainsById.keys()) {
+  const translationDomain = requireRecord(
+    translationDomains[domainId],
+    `Korean task translation domain ${domainId}`,
+  );
+  requireExactKeys(
+    translationDomain,
+    ["tasks"],
+    `Korean task translation domain ${domainId}`,
+  );
+  requireRecord(
+    translationDomain.tasks,
+    `Korean task translations for ${domainId}`,
+  );
+  for (const [taskId, translation] of Object.entries(translationDomain.tasks)) {
+    const label = `${domainId} task ${taskId}`;
+    requireExactKeys(
+      translation,
+      ["title", "descriptionPurpose", "scenario"],
+      `Korean translation for ${label}`,
+    );
+    requireKorean(translation.title, `${label} title translation`);
+    if (translation.descriptionPurpose !== null) {
+      requireKorean(
+        translation.descriptionPurpose,
+        `${label} descriptionPurpose translation`,
+      );
+    }
+    const scenario = requireRecord(
+      translation.scenario,
+      `Korean scenario translation for ${label}`,
+    );
+    for (const [key, value] of Object.entries(scenario)) {
+      if (value !== null) {
+        requireKorean(value, `${label} scenario.${key} translation`);
+      }
+    }
+  }
+}
+
+rmSync(publicDataRoot, { recursive: true, force: true });
+mkdirSync(publicDataRoot, { recursive: true });
+
 const taskAssetPaths = new Map();
 const sourceHashes = new Set();
+const validatedTranslationTaskCounts = new Map();
 const generation = {
   sourceRuns: 0,
   trajectories: 0,
@@ -390,6 +497,88 @@ const generation = {
   writtenAssets: 0,
   trajectoryIds: new Set(),
 };
+
+function attachTaskTranslations(domainId, taskEntries) {
+  const translatedTasks = translationDomains[domainId].tasks;
+  requireExactKeys(
+    translatedTasks,
+    Object.keys(taskEntries),
+    `Korean task translations for ${domainId}`,
+  );
+
+  const attached = {};
+  for (const [taskId, entry] of Object.entries(taskEntries)) {
+    const label = `${domainId} task ${taskId}`;
+    const translation = requireRecord(
+      translatedTasks[taskId],
+      `Korean translation for ${label}`,
+    );
+    requireExactKeys(
+      translation,
+      ["title", "descriptionPurpose", "scenario"],
+      `Korean translation for ${label}`,
+    );
+    requireKorean(translation.title, `${label} title translation`);
+
+    const descriptionPurpose = domainId.startsWith("tau2:")
+      ? entry.task?.description?.purpose ?? null
+      : null;
+    if (descriptionPurpose !== null && typeof descriptionPurpose !== "string") {
+      throw new Error(`${label} description purpose must be a string or null.`);
+    }
+    if (descriptionPurpose === null) {
+      if (translation.descriptionPurpose !== null) {
+        throw new Error(`${label} descriptionPurpose translation must be null.`);
+      }
+    } else {
+      requireKorean(
+        translation.descriptionPurpose,
+        `${label} descriptionPurpose translation`,
+      );
+    }
+
+    const translatedScenario = requireRecord(
+      translation.scenario,
+      `Korean scenario translation for ${label}`,
+    );
+    const sourceScenarioKeys = Object.keys(entry.scenario).filter(
+      (key) => key !== "userId",
+    );
+    requireExactKeys(
+      translatedScenario,
+      sourceScenarioKeys,
+      `Korean scenario translation for ${label}`,
+    );
+    for (const key of sourceScenarioKeys) {
+      const sourceValue = entry.scenario[key];
+      const translatedValue = translatedScenario[key];
+      if (sourceValue !== null && typeof sourceValue !== "string") {
+        throw new Error(`${label} scenario.${key} must be a string or null.`);
+      }
+      if (sourceValue === null) {
+        if (translatedValue !== null) {
+          throw new Error(`${label} scenario.${key} translation must be null.`);
+        }
+      } else {
+        requireKorean(translatedValue, `${label} scenario.${key} translation`);
+      }
+    }
+
+    attached[taskId] = {
+      ...entry,
+      translations: {
+        ko: {
+          title: translation.title,
+          descriptionPurpose: translation.descriptionPurpose,
+          scenario: { ...translatedScenario },
+        },
+      },
+    };
+  }
+
+  validatedTranslationTaskCounts.set(domainId, Object.keys(attached).length);
+  return attached;
+}
 
 function ensurePolicySnapshot(domain, content, environmentId, sourceUrl) {
   const hash = sha256(content);
@@ -508,10 +697,11 @@ function addRun({
   sourceHashes.add(sourceHash);
 
   const runId = stableId("run", [benchmark, sourceRelative], 18);
-  const tasksPath = writeTasksAsset(taskEntries);
+  const localizedTaskEntries = attachTaskTranslations(domainId, taskEntries);
+  const tasksPath = writeTasksAsset(localizedTaskEntries);
   const policySnapshotId = ensurePolicySnapshot(domain, policyUsed, environmentId, sourceUrl);
   const prepared = records.map((record) => {
-    const taskEntry = taskEntries[String(record.task_id)];
+    const taskEntry = localizedTaskEntries[String(record.task_id)];
     if (!taskEntry) throw new Error(`Missing task ${record.task_id} in ${sourceFile}`);
     return detailAndSummary({
       benchmark,
@@ -566,7 +756,7 @@ function addRun({
     policyVariant,
     agentImplementation,
     userImplementation,
-    taskCount: Object.keys(taskEntries).length,
+    taskCount: Object.keys(localizedTaskEntries).length,
     trajectoryCount: summaries.length,
     passCount,
     failCount: summaries.length - passCount,
@@ -750,6 +940,21 @@ for (const domain of domains) {
 
 const expectedRuns = 33;
 const expectedTrajectories = 13_924;
+const expectedTranslatedTasks = 443;
+if (validatedTranslationTaskCounts.size !== domainsById.size) {
+  throw new Error(
+    `Expected translations for ${domainsById.size} domains, validated ${validatedTranslationTaskCounts.size}.`,
+  );
+}
+const translatedTaskCount = [...validatedTranslationTaskCounts.values()].reduce(
+  (total, count) => total + count,
+  0,
+);
+if (translatedTaskCount !== expectedTranslatedTasks) {
+  throw new Error(
+    `Expected ${expectedTranslatedTasks} translated tasks, validated ${translatedTaskCount}.`,
+  );
+}
 if (generation.sourceRuns !== expectedRuns) {
   throw new Error(`Expected ${expectedRuns} conversational runs, got ${generation.sourceRuns}.`);
 }

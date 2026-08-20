@@ -159,12 +159,23 @@ export interface RunIndexAsset {
   trajectories: TrajectorySummary[];
 }
 
+export type TaskLanguage = "en" | "ko";
+
+export interface TaskTranslation {
+  title: string;
+  descriptionPurpose: string | null;
+  scenario: Record<string, string | null>;
+}
+
 /** Shared task/scenario data, deduplicated across trials and compatible runs. */
 export interface TaskAssetEntry {
   taskId: string;
   title: string;
   scenario: Record<string, unknown>;
   task: Record<string, unknown>;
+  translations?: {
+    ko?: TaskTranslation;
+  };
 }
 
 export interface TasksAsset {
@@ -205,5 +216,6 @@ export interface Trajectory extends TrajectoryDetail {
   policyUsed: string | null;
   scenario: Record<string, unknown>;
   task: Record<string, unknown>;
+  taskTranslation?: TaskTranslation;
   sourceUrl: string;
 }
