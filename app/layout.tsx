@@ -16,27 +16,18 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.SITE_URL ?? "http://localhost:3000",
   ),
-  title: "TAU Explorer · Domains, policies, prompts, and trajectories",
+  title: "τ² GPT-5 Explorer · Domains, policies, prompts, and trajectories",
   description:
-    "Explore τ-bench and τ²-bench domain policies, user-simulation prompts, tasks, evaluations, and tool-rich chat trajectories.",
+    "Explore the official τ²-bench GPT-5 airline, retail, and telecom runs with domain policies, runtime prompts, tasks, evaluations, and tool-rich chat trajectories.",
   openGraph: {
-    title: "TAU Explorer",
-    description: "Domains · Policies · Prompts · Trajectories",
+    title: "τ² GPT-5 Explorer",
+    description: "3 domains · 3 official GPT-5 runs · Policies · Prompts · Trajectories",
     type: "website",
-    images: [
-      {
-        url: "/og.png",
-        width: 1731,
-        height: 909,
-        alt: "TAU Explorer — Domains, Policies, Prompts, Trajectories",
-      },
-    ],
   },
   twitter: {
-    card: "summary_large_image",
-    title: "TAU Explorer",
-    description: "Domains · Policies · Prompts · Trajectories",
-    images: ["/og.png"],
+    card: "summary",
+    title: "τ² GPT-5 Explorer",
+    description: "3 domains · 3 official GPT-5 runs · Policies · Prompts · Trajectories",
   },
 };
 

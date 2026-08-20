@@ -4,16 +4,19 @@ import { Fragment, useDeferredValue, useEffect, useMemo, useRef, useState } from
 import type { ReactNode } from "react";
 import snapshotJson from "./data/benchmark-snapshot.json";
 import type {
-  BenchmarkId,
+  AssetRef,
   BenchmarkSnapshot,
   DomainData,
+  KoreanContextTranslationAsset,
+  KoreanTranscriptOverlayAsset,
+  KoreanTranscriptTrajectory,
   RunData,
   RunIndexAsset,
+  RuntimePromptCatalog,
   TaskAssetEntry,
   TaskLanguage,
   TaskTranslation,
   TasksAsset,
-  PromptVariant,
   ToolInvocation,
   Trajectory,
   TrajectoryChunkAsset,
@@ -23,9 +26,18 @@ import type {
 } from "./data/types";
 
 const snapshot = snapshotJson as BenchmarkSnapshot;
+const TARGET_BENCHMARK = "tau2";
+const TARGET_MODEL = "GPT-5";
+const scopedDomains = snapshot.domains.filter(
+  (domain) => domain.benchmark === TARGET_BENCHMARK &&
+    domain.runs.some((run) => run.model === TARGET_MODEL),
+);
 type OutcomeFilter = "all" | "pass" | "fail";
 type CatalogView = "tasks" | "trajectories";
 type ContextTab = "policy" | "prompt" | "task" | "evaluation" | "raw";
+type PromptComponent = "agent" | "user" | "evaluator";
+type PromptMode = "resolved" | "template";
+type EvaluatorPromptMode = "system" | "user";
 type LoadStatus = "idle" | "loading" | "ready" | "error";
 
 interface LoadState<T> {
@@ -33,6 +45,11 @@ interface LoadState<T> {
   status: LoadStatus;
   data: T;
   error: string | null;
+}
+
+interface IndexData {
+  trajectories: TrajectorySummary[];
+  transcriptOverlays: Record<string, AssetRef>;
 }
 
 interface TaskRunGroup {
@@ -47,6 +64,7 @@ interface TaskSummaryGroup {
   taskId: string;
   title: string;
   scenarioPreview: string;
+  contentLanguage: TaskLanguage;
   trajectories: TrajectorySummary[];
   runs: TaskRunGroup[];
   passCount: number;
@@ -56,10 +74,14 @@ interface TaskSummaryGroup {
 const PAGE_SIZE = 100;
 const TASK_PAGE_SIZE = 40;
 const DETAIL_CACHE_LIMIT = 24;
-const TASK_LANGUAGE_STORAGE_KEY = "tau-explorer-task-language";
-const runIndexCache = new Map<string, Promise<TrajectorySummary[]>>();
+const DISPLAY_LANGUAGE_STORAGE_KEY = "tau-explorer-display-language";
+const LEGACY_TASK_LANGUAGE_STORAGE_KEY = "tau-explorer-task-language";
+const runIndexCache = new Map<string, Promise<RunIndexAsset>>();
 const tasksCache = new Map<string, Promise<TasksAsset>>();
+const loadedTasksCache = new Map<string, TasksAsset>();
 const detailChunkCache = new Map<string, Promise<TrajectoryChunkAsset>>();
+const transcriptOverlayCache = new Map<string, Promise<KoreanTranscriptOverlayAsset>>();
+const contextTranslationCache = new Map<string, Promise<KoreanContextTranslationAsset>>();
 const detailCache = new Map<string, Trajectory>();
 
 async function readJson<T>(path: string): Promise<T> {
@@ -79,7 +101,7 @@ function loadRunIndex(run: RunData) {
       if (asset.runId !== run.id || !Array.isArray(asset.trajectories)) {
         throw new Error(`The index for ${run.label} is invalid.`);
       }
-      return asset.trajectories;
+      return asset;
     })
     .catch((error) => {
       runIndexCache.delete(run.id);
@@ -100,6 +122,7 @@ function groupTaskSummaries(
     taskId: string;
     title: string;
     scenarioPreview: string;
+    contentLanguage: TaskLanguage;
     trajectories: TrajectorySummary[];
     runs: Map<string, TrajectorySummary[]>;
   }>();
@@ -120,6 +143,7 @@ function groupTaskSummaries(
         taskId: summary.taskId,
         title: display.title,
         scenarioPreview: display.scenarioPreview,
+        contentLanguage: display.translation ? "ko" : "en",
         trajectories: [],
         runs: new Map(),
       };
@@ -148,6 +172,7 @@ function groupTaskSummaries(
       taskId: task.taskId,
       title: task.title,
       scenarioPreview: task.scenarioPreview,
+      contentLanguage: task.contentLanguage,
       trajectories: task.trajectories,
       runs,
       passCount,
@@ -159,10 +184,16 @@ function groupTaskSummaries(
 function loadTasks(path: string) {
   const cached = tasksCache.get(path);
   if (cached) return cached;
-  const request = readJson<TasksAsset>(path).catch((error) => {
-    tasksCache.delete(path);
-    throw error;
-  });
+  const request = readJson<TasksAsset>(path)
+    .then((asset) => {
+      loadedTasksCache.set(path, asset);
+      return asset;
+    })
+    .catch((error) => {
+      tasksCache.delete(path);
+      loadedTasksCache.delete(path);
+      throw error;
+    });
   tasksCache.set(path, request);
   return request;
 }
@@ -241,6 +272,182 @@ function loadDetailChunk(path: string) {
   return request;
 }
 
+function loadTranscriptOverlay(path: string) {
+  const cached = transcriptOverlayCache.get(path);
+  if (cached) return cached;
+  const request = readJson<KoreanTranscriptOverlayAsset>(path)
+    .then((asset) => {
+      if (
+        asset.schemaVersion !== 1 ||
+        asset.datasetId !== snapshot.datasetId ||
+        asset.locale !== "ko" ||
+        asset.model !== TARGET_MODEL ||
+        !asset.trajectories ||
+        typeof asset.trajectories !== "object"
+      ) {
+        throw new Error("The Korean conversation overlay is invalid.");
+      }
+      return asset;
+    })
+    .catch((error) => {
+      transcriptOverlayCache.delete(path);
+      throw error;
+    });
+  transcriptOverlayCache.set(path, request);
+  return request;
+}
+
+function loadContextTranslation(path: string, domainId: string) {
+  const cached = contextTranslationCache.get(path);
+  if (cached) return cached;
+  const request = readJson<KoreanContextTranslationAsset>(path)
+    .then((asset) => {
+      if (
+        asset.schemaVersion !== 1 ||
+        asset.datasetId !== snapshot.datasetId ||
+        asset.locale !== "ko" ||
+        asset.model !== TARGET_MODEL ||
+        asset.domainId !== domainId
+      ) {
+        throw new Error("The Korean domain context overlay is invalid.");
+      }
+      return asset;
+    })
+    .catch((error) => {
+      contextTranslationCache.delete(path);
+      throw error;
+    });
+  contextTranslationCache.set(path, request);
+  return request;
+}
+
+function contextTranslationRef(domain: DomainData) {
+  return domain.contextTranslationPath ? { path: domain.contextTranslationPath } : undefined;
+}
+
+function isControlToken(content: string | null) {
+  return Boolean(content?.trim().match(/^###[A-Z0-9_-]+###$/));
+}
+
+function translatedMessageContent(trajectoryOverlay: KoreanTranscriptTrajectory, messageIndex: number) {
+  return nonEmptyText(trajectoryOverlay.messages[String(messageIndex)]);
+}
+
+interface DisplayToolInvocation {
+  invocation: ToolInvocation;
+  argumentsLanguage: TaskLanguage;
+  resultLanguage: TaskLanguage;
+}
+
+function cloneJsonValue(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(cloneJsonValue);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, child]) => [key, cloneJsonValue(child)]),
+    );
+  }
+  return value;
+}
+
+function decodeJsonPointerSegment(segment: string) {
+  if (/~(?![01])/u.test(segment)) return undefined;
+  return segment.replaceAll("~1", "/").replaceAll("~0", "~");
+}
+
+function translatedToolValue(
+  canonical: unknown,
+  pointer: string,
+  leaves: Record<string, string>,
+) {
+  const exact = nonEmptyText(leaves[pointer]);
+  if (exact && (canonical === null || typeof canonical !== "object")) {
+    return { value: exact, translated: true };
+  }
+
+  const prefix = `${pointer}/`;
+  const entries = Object.entries(leaves).filter(([path]) => path.startsWith(prefix));
+  if (!entries.length || canonical === null || typeof canonical !== "object") {
+    return { value: canonical, translated: false };
+  }
+
+  const value = cloneJsonValue(canonical);
+  let translated = false;
+  for (const [path, translation] of entries) {
+    const segments = path.slice(prefix.length).split("/").map(decodeJsonPointerSegment);
+    if (!segments.length || segments.some((segment) => segment === undefined)) continue;
+    let cursor: unknown = value;
+    let valid = true;
+    for (const segment of segments.slice(0, -1)) {
+      if (segment === undefined) {
+        valid = false;
+        break;
+      }
+      if (Array.isArray(cursor)) {
+        if (!/^\d+$/u.test(segment)) {
+          valid = false;
+          break;
+        }
+        const index = Number(segment);
+        if (index >= cursor.length) {
+          valid = false;
+          break;
+        }
+        cursor = cursor[index];
+      } else if (cursor && typeof cursor === "object" &&
+        Object.prototype.hasOwnProperty.call(cursor, segment)) {
+        cursor = (cursor as Record<string, unknown>)[segment];
+      } else {
+        valid = false;
+        break;
+      }
+    }
+    const leaf = segments.at(-1);
+    if (!valid || leaf === undefined) continue;
+    if (Array.isArray(cursor)) {
+      if (!/^\d+$/u.test(leaf)) continue;
+      const index = Number(leaf);
+      if (index >= cursor.length || (cursor[index] !== null && typeof cursor[index] === "object")) {
+        continue;
+      }
+      cursor[index] = translation;
+      translated = true;
+    } else if (cursor && typeof cursor === "object" &&
+      Object.prototype.hasOwnProperty.call(cursor, leaf)) {
+      const record = cursor as Record<string, unknown>;
+      if (record[leaf] !== null && typeof record[leaf] === "object") continue;
+      record[leaf] = translation;
+      translated = true;
+    }
+  }
+  return { value, translated };
+}
+
+function displayToolInvocations(
+  message: TranscriptMessage,
+  messageIndex: number,
+  translation: KoreanTranscriptTrajectory | null,
+): DisplayToolInvocation[] {
+  const leaves = translation?.toolLeaves ?? {};
+  return message.toolCalls.map((invocation, toolIndex) => {
+    const base = `/messages/${messageIndex}/toolCalls/${toolIndex}`;
+    const translatedArguments = translatedToolValue(
+      invocation.arguments,
+      `${base}/arguments`,
+      leaves,
+    );
+    const translatedResult = translatedToolValue(invocation.result, `${base}/result`, leaves);
+    return {
+      invocation: {
+        ...invocation,
+        arguments: translatedArguments.value,
+        result: translatedResult.value,
+      },
+      argumentsLanguage: translatedArguments.translated ? "ko" : "en",
+      resultLanguage: translatedResult.translated ? "ko" : "en",
+    };
+  });
+}
+
 function rememberDetail(id: string, trajectory: Trajectory) {
   detailCache.delete(id);
   detailCache.set(id, trajectory);
@@ -308,7 +515,7 @@ function loadTrajectoryDetail(
 
 const contextTabs: Array<{ id: ContextTab; label: string }> = [
   { id: "policy", label: "Policy" },
-  { id: "prompt", label: "User prompt" },
+  { id: "prompt", label: "Prompts" },
   { id: "task", label: "Task" },
   { id: "evaluation", label: "Evaluation" },
   { id: "raw", label: "Raw" },
@@ -355,38 +562,45 @@ function formatRunLabel(run: RunData) {
   return normalize(run.label).includes(normalize(mode)) ? run.label : `${run.label} · ${mode}`;
 }
 
-function scenarioText(domain: DomainData, trajectory: Trajectory) {
-  if (domain.benchmark === "tau") {
-    return String(trajectory.scenario.instruction ?? "");
-  }
-
-  const fields: Array<[string, unknown]> = [
-    ["Domain", domain.slug],
-    ["Persona", trajectory.scenario.persona],
-    ["Reason for call", trajectory.scenario.reasonForCall],
-    ["Known information", trajectory.scenario.knownInfo],
-    ["Unknown information", trajectory.scenario.unknownInfo],
-    ["Task instructions", trajectory.scenario.taskInstructions],
-  ];
-  return fields
-    .filter(([, value]) => value !== null && value !== undefined && value !== "")
-    .map(([label, value]) => `${label}:\n${stringify(value)}`)
-    .join("\n\n");
+function documentContent(value: unknown) {
+  return nonEmptyText(value) ?? nonEmptyText(asRecord(value).content);
 }
 
-function resolvedPrompt(
-  domain: DomainData,
-  trajectory: Trajectory | undefined,
-  prompt: PromptVariant,
-) {
-  if (!trajectory) return prompt.content;
-  if (domain.benchmark === "tau") {
-    return prompt.content.replace(
-      /{{ task\.instruction }}/g,
-      String(trajectory.scenario.instruction ?? ""),
-    );
-  }
-  return prompt.content.replace(/{{ user_scenario }}/g, scenarioText(domain, trajectory));
+function documentSourceUrl(value: unknown) {
+  return nonEmptyText(asRecord(value).sourceUrl) ?? nonEmptyText(asRecord(value).url);
+}
+
+function runtimePromptCatalog() {
+  const prompts = (snapshot as BenchmarkSnapshot & { runtimePrompts?: RuntimePromptCatalog })
+    .runtimePrompts;
+  return prompts ?? {
+    agent: {
+      model: TARGET_MODEL,
+      instruction: { sourceHash: "", content: AGENT_INSTRUCTION_FALLBACK, sourceUrl: "" },
+      systemTemplate: { sourceHash: "", content: AGENT_SYSTEM_TEMPLATE_FALLBACK, sourceUrl: "" },
+    },
+    evaluator: {
+      model: "gpt-4o-mini",
+      temperature: 0,
+      invocationCount: 0,
+      system: { sourceHash: "", content: EVALUATOR_SYSTEM_FALLBACK, sourceUrl: "" },
+      userTemplate: { sourceHash: "", content: "", sourceUrl: "" },
+    },
+  };
+}
+
+function runtimeScenario(task: TaskAssetEntry | undefined, translation?: TaskTranslation) {
+  return nonEmptyText(translation?.runtimeScenario) ?? nonEmptyText(task?.runtimeScenario);
+}
+
+function fillAgentSystemPrompt(template: string, instruction: string, policy: string) {
+  return template
+    .replaceAll("{agent_instruction}", instruction)
+    .replaceAll("{domain_policy}", policy);
+}
+
+function fillUserSystemPrompt(template: string, scenario: string) {
+  return template.replaceAll("{{ user_scenario }}", scenario);
 }
 
 function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {
@@ -399,7 +613,7 @@ function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) 
   }
 
   return (
-    <button type="button" className="quiet-button" onClick={copy}>
+    <button type="button" className="quiet-button" onClick={copy} lang="en">
       {copied ? "Copied" : label}
     </button>
   );
@@ -418,7 +632,7 @@ function TaskLanguageSwitch({
     <div
       className={`task-language-switch${className ? ` ${className}` : ""}`}
       role="group"
-      aria-label="Task display language"
+      aria-label="Content display language"
     >
       {(["en", "ko"] as TaskLanguage[]).map((language) => (
         <button
@@ -426,7 +640,10 @@ function TaskLanguageSwitch({
           className={value === language ? "active" : ""}
           onClick={() => onChange(language)}
           aria-pressed={value === language}
-          aria-label={language === "en" ? "Show tasks in English" : "태스크를 한국어로 보기"}
+          aria-label={language === "en"
+            ? "Show tasks, conversations, policies, and prompts in English"
+            : "태스크, 대화, 정책, 프롬프트를 한국어로 보기"}
+          lang={language}
           key={language}
         >
           {language === "en" ? "EN" : "한국어"}
@@ -436,10 +653,18 @@ function TaskLanguageSwitch({
   );
 }
 
-function JsonBlock({ label, value }: { label: string; value: unknown }) {
+function JsonBlock({
+  label,
+  value,
+  language = "en",
+}: {
+  label: string;
+  value: unknown;
+  language?: TaskLanguage;
+}) {
   const text = stringify(value);
   return (
-    <section className="json-block">
+    <section className="json-block" lang={language}>
       <div className="json-heading">
         <span>{label}</span>
         <CopyButton text={text} />
@@ -451,9 +676,13 @@ function JsonBlock({ label, value }: { label: string; value: unknown }) {
 
 function ToolInvocationCard({
   invocation,
+  argumentsLanguage,
+  resultLanguage,
   defaultOpen,
 }: {
   invocation: ToolInvocation;
+  argumentsLanguage: TaskLanguage;
+  resultLanguage: TaskLanguage;
   defaultOpen?: boolean;
 }) {
   const isUserTool = invocation.requestor === "user";
@@ -462,6 +691,7 @@ function ToolInvocationCard({
       className={`tool-call ${isUserTool ? "user-tool" : "agent-tool"}${
         invocation.error ? " tool-error" : ""
       }`}
+      lang="en"
       open={defaultOpen || undefined}
     >
       <summary>
@@ -478,8 +708,8 @@ function ToolInvocationCard({
         <span className="disclosure" aria-hidden="true">⌄</span>
       </summary>
       <div className="tool-detail-grid">
-        <JsonBlock label="Arguments" value={invocation.arguments} />
-        <JsonBlock label="Result" value={invocation.result} />
+        <JsonBlock label="Arguments" value={invocation.arguments} language={argumentsLanguage} />
+        <JsonBlock label="Result" value={invocation.result} language={resultLanguage} />
       </div>
     </details>
   );
@@ -489,10 +719,18 @@ function TranscriptItem({
   message,
   messageIndex,
   metadataVisible,
+  displayContent,
+  displayToolCalls,
+  contentLanguage,
+  translationFallback,
 }: {
   message: TranscriptMessage;
   messageIndex: number;
   metadataVisible: boolean;
+  displayContent: string | null;
+  displayToolCalls: DisplayToolInvocation[];
+  contentLanguage: TaskLanguage;
+  translationFallback: boolean;
 }) {
   const isUser = message.role === "user";
   const timestamp = message.timestamp
@@ -511,20 +749,63 @@ function TranscriptItem({
         </span>
         <strong>{isUser ? "User" : "Assistant"}</strong>
         <span className="turn-label">Turn {message.turnIndex}</span>
+        {translationFallback ? (
+          <span className="message-language-badge" lang="en">EN original</span>
+        ) : null}
         {metadataVisible && timestamp ? <time>{timestamp}</time> : null}
       </div>
-      {message.content ? (
-        <p className={message.content.startsWith("###") ? "control-token" : undefined}>
-          {message.content}
+      {displayContent ? (
+        <p
+          className={isControlToken(displayContent) ? "control-token" : undefined}
+          lang={contentLanguage}
+        >
+          {displayContent}
         </p>
       ) : null}
-      {message.toolCalls.map((invocation, index) => (
+      {displayToolCalls.map((display, index) => (
         <ToolInvocationCard
-          key={`${invocation.id}-${index}`}
-          invocation={invocation}
+          key={`${display.invocation.id}-${index}`}
+          invocation={display.invocation}
+          argumentsLanguage={display.argumentsLanguage}
+          resultLanguage={display.resultLanguage}
           defaultOpen={messageIndex < 6 && index === 0}
         />
       ))}
+    </li>
+  );
+}
+
+function TranscriptLanguageNotice({
+  status,
+  error,
+  hasTranslation,
+  fallbackCount,
+  retry,
+}: {
+  status: LoadStatus;
+  error: string | null;
+  hasTranslation: boolean;
+  fallbackCount: number;
+  retry: () => void;
+}) {
+  const unavailable = status === "error" || (status === "ready" && !hasTranslation);
+  return (
+    <li className="transcript-language-note" role="status" aria-live="polite" lang="ko">
+      <span>
+        {status === "loading"
+          ? "한국어 대화를 불러오는 동안 영어 원문을 표시합니다."
+          : unavailable
+            ? "한국어 대화를 불러오지 못해 영어 원문을 표시합니다."
+            : fallbackCount
+              ? `표시용 한국어 번역입니다. 번역이 없는 ${fallbackCount}개 메시지는 영어 원문입니다.`
+              : "표시용 한국어 번역입니다. 실제 대화와 도구 데이터는 영어로 기록되었습니다."}
+      </span>
+      {unavailable ? (
+        <button type="button" className="quiet-button" onClick={retry} aria-label="한국어 대화 다시 불러오기">
+          다시 시도
+        </button>
+      ) : null}
+      {error ? <small lang="en">{error}</small> : null}
     </li>
   );
 }
@@ -605,6 +886,7 @@ function TaskPanel({
   taskTranslation,
   translationStatus,
   translationError,
+  retryTranslation,
 }: {
   domain: DomainData;
   trajectory?: Trajectory;
@@ -612,6 +894,7 @@ function TaskPanel({
   taskTranslation?: TaskTranslation;
   translationStatus: LoadStatus;
   translationError: string | null;
+  retryTranslation: () => void;
 }) {
   if (!trajectory) return <EmptyContext label="Choose a trajectory to inspect its task." />;
   const description = asRecord(trajectory.task.description);
@@ -667,27 +950,45 @@ function TaskPanel({
   return (
     <div className="context-content structured-content">
       <div className="panel-intro">
-        <span className="section-kicker">{labels.task} · {compactTaskId(trajectory.taskId)}</span>
-        <h2>{title}</h2>
-        {purpose ? <p>{purpose}</p> : null}
+        <span className="section-kicker" lang={taskLanguage}>
+          {labels.task} · <span lang="en">{compactTaskId(trajectory.taskId)}</span>
+        </span>
+        <h2 lang={taskLanguage === "ko" && nonEmptyText(taskTranslation?.title) ? "ko" : "en"}>
+          {title}
+        </h2>
+        {purpose ? (
+          <p lang={taskLanguage === "ko" && nonEmptyText(taskTranslation?.descriptionPurpose) ? "ko" : "en"}>
+            {purpose}
+          </p>
+        ) : null}
       </div>
 
       {taskLanguage === "ko" && translationStatus === "loading" ? (
-        <div className="context-note translation-note">
+        <div className="context-note translation-note" role="status" aria-live="polite" lang="ko">
           한국어 번역을 불러오는 동안 번역되지 않은 항목은 영어 원문으로 표시됩니다.
         </div>
       ) : taskLanguage === "ko" && (translationError || hasFieldFallback) ? (
-        <div className="context-note translation-note">
-          한국어 번역이 없는 항목은 정확한 영어 원문으로 표시됩니다.
+        <div className="context-note translation-note" role="status" aria-live="polite" lang="ko">
+          <span>한국어 번역이 없는 항목은 정확한 영어 원문으로 표시됩니다.</span>
+          {translationError ? (
+            <button type="button" className="quiet-button" onClick={retryTranslation}>
+              다시 시도
+            </button>
+          ) : null}
         </div>
       ) : null}
 
       {domain.benchmark === "tau" ? (
         <>
-          <ContextSection title={labels.userInstruction}>
-            <p className="preserve-lines">{String(translatedScenario.instruction ?? "—")}</p>
+          <ContextSection title={labels.userInstruction} titleLanguage={taskLanguage}>
+            <p
+              className="preserve-lines"
+              lang={taskLanguage === "ko" && nonEmptyText(taskTranslation?.scenario.instruction) ? "ko" : "en"}
+            >
+              {String(translatedScenario.instruction ?? "—")}
+            </p>
           </ContextSection>
-          <dl className="definition-list">
+          <dl className="definition-list" lang={taskLanguage}>
             <Stat label={labels.userId} value={String(trajectory.scenario.userId ?? "—")} />
             <Stat
               label={labels.referenceActions}
@@ -702,15 +1003,20 @@ function TaskPanel({
       ) : (
         <>
           {[
-            [labels.persona, translatedScenario.persona],
-            [labels.reasonForCall, translatedScenario.reasonForCall],
-            [labels.knownInfo, translatedScenario.knownInfo],
-            [labels.unknownInfo, translatedScenario.unknownInfo],
-            [labels.taskInstructions, translatedScenario.taskInstructions],
-          ].map(([label, value]) =>
+            { field: "persona", label: labels.persona, value: translatedScenario.persona },
+            { field: "reasonForCall", label: labels.reasonForCall, value: translatedScenario.reasonForCall },
+            { field: "knownInfo", label: labels.knownInfo, value: translatedScenario.knownInfo },
+            { field: "unknownInfo", label: labels.unknownInfo, value: translatedScenario.unknownInfo },
+            { field: "taskInstructions", label: labels.taskInstructions, value: translatedScenario.taskInstructions },
+          ].map(({ field, label, value }) =>
             value ? (
-              <ContextSection title={String(label)} key={String(label)}>
-                <p className="preserve-lines">{stringify(value)}</p>
+              <ContextSection title={String(label)} titleLanguage={taskLanguage} key={String(label)}>
+                <p
+                  className="preserve-lines"
+                  lang={taskLanguage === "ko" && nonEmptyText(taskTranslation?.scenario[field]) ? "ko" : "en"}
+                >
+                  {stringify(value)}
+                </p>
               </ContextSection>
             ) : null,
           )}
@@ -718,17 +1024,25 @@ function TaskPanel({
       )}
 
       <details className="raw-disclosure">
-        <summary>{labels.completeJson} <span aria-hidden="true">⌄</span></summary>
+        <summary lang={taskLanguage}>{labels.completeJson} <span aria-hidden="true">⌄</span></summary>
         <JsonBlock label="Task" value={trajectory.task} />
       </details>
     </div>
   );
 }
 
-function ContextSection({ title, children }: { title: string; children: ReactNode }) {
+function ContextSection({
+  title,
+  titleLanguage = "en",
+  children,
+}: {
+  title: string;
+  titleLanguage?: TaskLanguage;
+  children: ReactNode;
+}) {
   return (
     <section className="context-section">
-      <h3>{title}</h3>
+      <h3 lang={titleLanguage}>{title}</h3>
       {children}
     </section>
   );
@@ -743,7 +1057,7 @@ function EvaluationPanel({ trajectory }: { trajectory?: Trajectory }) {
     : [];
 
   return (
-    <div className="context-content structured-content">
+    <div className="context-content structured-content" lang="en">
       <div className="evaluation-hero">
         <span className={`outcome-mark ${trajectory.reward === 1 ? "pass" : "fail"}`}>
           {trajectory.reward === 1 ? "✓" : "×"}
@@ -824,24 +1138,437 @@ function ContextLoadState({
   return <EmptyContext label={`Loading ${label}…`} />;
 }
 
+function translatedPolicyContent(
+  asset: KoreanContextTranslationAsset | null,
+  policyMode: "domain" | "run",
+  policySnapshotId?: string,
+) {
+  if (!asset) return undefined;
+  if (policyMode === "domain") return asset.policy.content;
+  if (!policySnapshotId) return undefined;
+  return asset.policySnapshots[policySnapshotId]?.content;
+}
+
+function ContextTranslationNote({
+  status,
+  error,
+  translated,
+  kind,
+  retry,
+}: {
+  status: LoadStatus;
+  error: string | null;
+  translated: boolean;
+  kind: string;
+  retry: () => void;
+}) {
+  const fallback = status === "error" || (status === "ready" && !translated);
+  return (
+    <div className="context-note translation-note" role="status" aria-live="polite" lang="ko">
+      <span>
+        {status === "loading"
+          ? `한국어 ${kind}을 불러오는 동안 영어 원문을 표시합니다.`
+          : fallback
+            ? `한국어 ${kind}을 불러오지 못해 영어 원문을 표시합니다.`
+            : `표시용 한국어 번역입니다. 실제 모델 실행에는 영어 원문이 사용되었습니다.`}
+      </span>
+      {fallback ? (
+        <button type="button" className="quiet-button" onClick={retry}>다시 시도</button>
+      ) : null}
+      {error ? <span className="sr-only" lang="en">{error}</span> : null}
+    </div>
+  );
+}
+
+const AGENT_INSTRUCTION_FALLBACK = `You are a customer service agent that helps the user according to the <policy> provided below.
+In each turn you can either:
+- Send a message to the user.
+- Make a tool call.
+You cannot do both at the same time.
+
+Try to be helpful and always follow the policy. Always make sure you generate valid JSON only.`;
+
+const AGENT_SYSTEM_TEMPLATE_FALLBACK = `<instructions>
+{agent_instruction}
+</instructions>
+<policy>
+{domain_policy}
+</policy>`;
+
+const EVALUATOR_SYSTEM_FALLBACK = `TASK
+- You will be given a list of expected outcomes and a conversation that was collected during a test case run.
+- The conversation is between an agent and a customer.
+- Your job is to evaluate whether the agent satisfies each of the expected outcomes.
+- Grade each expected outcome individually.
+
+FORMAT
+- Your response should be a JSON object with the fields reasoning, metExpectation, and expectedOutcome.`;
+
+function legacyScenarioText(domain: DomainData, trajectory: Trajectory | undefined) {
+  if (!trajectory) return "";
+  const fields: Array<[string, unknown]> = [
+    ["Domain", domain.slug],
+    ["Persona", trajectory.scenario.persona],
+    ["Reason for call", trajectory.scenario.reasonForCall],
+    ["Known information", trajectory.scenario.knownInfo],
+    ["Unknown information", trajectory.scenario.unknownInfo],
+    ["Task instructions", trajectory.scenario.taskInstructions],
+  ];
+  return fields
+    .filter(([, value]) => value !== null && value !== undefined && value !== "")
+    .map(([label, value]) => `${label}:\n${stringify(value)}`)
+    .join("\n\n");
+}
+
+function PromptPanel({
+  domain,
+  trajectory,
+  taskEntry,
+  taskTranslation,
+  taskLanguage,
+  component,
+  setComponent,
+  promptMode,
+  setPromptMode,
+  evaluatorMode,
+  setEvaluatorMode,
+  runtimePromptId,
+  runAgentModel,
+  runUserModel,
+  runPolicy,
+  contextTranslation,
+  contextTranslationStatus,
+  contextTranslationError,
+  retryContextTranslation,
+  taskTranslationStatus,
+  taskTranslationError,
+  retryTaskTranslation,
+  transcriptTranslation,
+  transcriptTranslationStatus,
+  transcriptTranslationError,
+  retryTranscriptTranslation,
+  detailStatus,
+  detailError,
+  retryDetail,
+}: {
+  domain: DomainData;
+  trajectory?: Trajectory;
+  taskEntry?: TaskAssetEntry;
+  taskTranslation?: TaskTranslation;
+  taskLanguage: TaskLanguage;
+  component: PromptComponent;
+  setComponent: (component: PromptComponent) => void;
+  promptMode: PromptMode;
+  setPromptMode: (mode: PromptMode) => void;
+  evaluatorMode: EvaluatorPromptMode;
+  setEvaluatorMode: (mode: EvaluatorPromptMode) => void;
+  runtimePromptId?: string;
+  runAgentModel?: string;
+  runUserModel?: string;
+  runPolicy?: string;
+  contextTranslation: KoreanContextTranslationAsset | null;
+  contextTranslationStatus: LoadStatus;
+  contextTranslationError: string | null;
+  retryContextTranslation: () => void;
+  taskTranslationStatus: LoadStatus;
+  taskTranslationError: string | null;
+  retryTaskTranslation: () => void;
+  transcriptTranslation: KoreanTranscriptTrajectory | null;
+  transcriptTranslationStatus: LoadStatus;
+  transcriptTranslationError: string | null;
+  retryTranscriptTranslation: () => void;
+  detailStatus: LoadStatus;
+  detailError: string | null;
+  retryDetail: () => void;
+}) {
+  const runtimePrompts = runtimePromptCatalog();
+  const runtimeAgent = runtimePrompts.agent;
+  const runtimeEvaluator = runtimePrompts.evaluator;
+  const translatedAgent = contextTranslation?.agent;
+  const translatedUser = contextTranslation?.user;
+  const translatedEvaluator = contextTranslation?.evaluator;
+  const userPrompt = domain.userPrompts.find((item) => item.id === runtimePromptId) ??
+    domain.userPrompts[0];
+  const translatedUserPrompt = translatedUser?.prompt;
+  const evaluationPrompt = trajectory?.evaluationPrompt;
+
+  const agentInstruction = documentContent(runtimeAgent.instruction) ?? AGENT_INSTRUCTION_FALLBACK;
+  const agentTemplate = documentContent(runtimeAgent.systemTemplate) ?? AGENT_SYSTEM_TEMPLATE_FALLBACK;
+  const agentResolved = fillAgentSystemPrompt(
+    agentTemplate,
+    agentInstruction,
+    runPolicy ?? domain.policy,
+  );
+  const translatedAgentTemplate = documentContent(translatedAgent?.systemTemplate);
+  const translatedAgentResolved = documentContent(translatedAgent?.resolvedSystemPrompt);
+  const englishScenario = runtimeScenario(taskEntry) ?? legacyScenarioText(domain, trajectory);
+  const koreanScenario = nonEmptyText(taskTranslation?.runtimeScenario);
+  const userTemplate = userPrompt?.content ?? "No user simulator prompt was recorded.";
+  const translatedUserTemplate = documentContent(translatedUserPrompt);
+  const userResolved = fillUserSystemPrompt(userTemplate, englishScenario);
+  const translatedUserResolved = translatedUserTemplate && koreanScenario
+    ? fillUserSystemPrompt(translatedUserTemplate, koreanScenario)
+    : undefined;
+  const evaluatorSystem = documentContent(runtimeEvaluator.system) ?? EVALUATOR_SYSTEM_FALLBACK;
+  const translatedEvaluatorSystem = documentContent(translatedEvaluator?.system);
+  const evaluatorUserPrompt = nonEmptyText(evaluationPrompt?.userPrompt);
+  const translatedEvaluatorUserPrompt = nonEmptyText(transcriptTranslation?.evaluatorUserPrompt);
+  const evaluatorInvoked = Boolean(evaluatorUserPrompt);
+  const agentModel = runAgentModel ?? runtimeAgent.model;
+  const userModel = runUserModel ?? contextTranslation?.user.model ?? "gpt-4.1-2025-04-14";
+  const evaluatorModel = runtimeEvaluator.model;
+
+  const isKorean = taskLanguage === "ko";
+  const usesTranscriptTranslation = component === "evaluator" && evaluatorMode === "user";
+  const usesTaskTranslation = component === "user" && promptMode === "resolved" &&
+    Boolean(translatedUserTemplate);
+  const translationStatus = usesTranscriptTranslation
+    ? transcriptTranslationStatus
+    : usesTaskTranslation
+      ? taskTranslationError ? "error" : taskTranslationStatus
+      : contextTranslationStatus;
+  const translationError = usesTranscriptTranslation
+    ? transcriptTranslationError
+    : usesTaskTranslation
+      ? taskTranslationError
+      : contextTranslationError;
+  const retryTranslation = usesTranscriptTranslation
+    ? retryTranscriptTranslation
+    : usesTaskTranslation
+      ? retryTaskTranslation
+      : retryContextTranslation;
+
+  let text = "";
+  let translated = false;
+  let title = "";
+  let description = "";
+  let sourceLabel = "";
+  let sourceUrl = domain.promptUrl;
+  let waitingForDetail = false;
+
+  if (component === "agent") {
+    title = "Agent system prompt";
+    description = `Instructions and the selected run’s domain-policy snapshot sent to ${agentModel}.`;
+    const translatedText = promptMode === "template"
+      ? translatedAgentTemplate
+      : translatedAgentResolved;
+    text = isKorean && translatedText
+      ? translatedText
+      : promptMode === "template" ? agentTemplate : agentResolved;
+    translated = Boolean(isKorean && translatedText);
+    sourceLabel = "τ² LLMAgent runtime";
+    sourceUrl = documentSourceUrl(runtimeAgent.systemTemplate) ??
+      `https://github.com/${domain.source.repository}/blob/964ef/src/tau2/agent/llm_agent.py`;
+  } else if (component === "user") {
+    title = isKorean
+      ? nonEmptyText(translatedUserPrompt?.label) ?? userPrompt?.label ?? "User simulator system prompt"
+      : userPrompt?.label ?? "User simulator system prompt";
+    description = isKorean
+      ? nonEmptyText(translatedUserPrompt?.description) ?? userPrompt?.description ??
+        `The system prompt sent to the ${userModel} user simulator.`
+      : userPrompt?.description ??
+      `The system prompt sent to the ${userModel} user simulator.`;
+    const translatedText = promptMode === "template"
+      ? translatedUserTemplate
+      : translatedUserResolved;
+    text = isKorean && translatedText
+      ? translatedText
+      : promptMode === "template" ? userTemplate : userResolved;
+    translated = Boolean(isKorean && translatedText);
+    waitingForDetail = promptMode === "resolved" && !trajectory;
+    sourceLabel = domain.slug === "telecom"
+      ? "Tool-enabled τ² user simulator runtime"
+      : domain.promptSource;
+    sourceUrl = documentSourceUrl(userPrompt) ?? domain.promptUrl;
+  } else {
+    title = evaluatorMode === "system" ? "NL evaluator system prompt" : "NL evaluator user input";
+    description = evaluatorMode === "system"
+      ? `The grading instructions sent to ${evaluatorModel}.`
+      : "The selected trajectory and expected outcomes sent for natural-language grading.";
+    const translatedText = evaluatorMode === "system"
+      ? translatedEvaluatorSystem
+      : translatedEvaluatorUserPrompt;
+    const englishText = evaluatorMode === "system" ? evaluatorSystem : evaluatorUserPrompt ?? "";
+    text = isKorean && translatedText ? translatedText : englishText;
+    translated = Boolean(isKorean && translatedText);
+    waitingForDetail = !trajectory;
+    sourceLabel = "τ² NL-assertions evaluator runtime";
+    sourceUrl = documentSourceUrl(runtimeEvaluator.system) ??
+      `https://github.com/${domain.source.repository}/blob/964ef/src/tau2/evaluator/evaluator_nl_assertions.py`;
+  }
+
+  const translationKind = component === "agent"
+    ? "에이전트 프롬프트"
+    : component === "user"
+      ? "사용자 시뮬레이터 프롬프트"
+      : "평가 프롬프트";
+  const promptLanguage: TaskLanguage = translated ? "ko" : "en";
+  const sourceLinks = component === "user" && userPrompt?.sourceLinks?.length
+    ? userPrompt.sourceLinks
+    : [{ label: "English source", sourcePath: "", sourceUrl }];
+
+  return (
+    <div className="context-content document-content">
+      <div className="stacked-toolbar">
+        <div className="prompt-component-switch" role="tablist" aria-label="Runtime prompt component">
+          {([
+            ["agent", "Agent", agentModel],
+            ["user", "User simulator", userModel],
+            ["evaluator", "NL evaluator", evaluatorModel],
+          ] as Array<[PromptComponent, string, string]>).map(([id, label, model]) => (
+            <button
+              type="button"
+              role="tab"
+              aria-selected={component === id}
+              className={component === id ? "active" : ""}
+              onClick={() => setComponent(id)}
+              key={id}
+            >
+              <span>{label}</span>
+              <small>{model}</small>
+            </button>
+          ))}
+        </div>
+        <div className="document-toolbar">
+          {component === "evaluator" ? (
+            <div className="mini-switch" role="group" aria-label="Evaluator prompt view">
+              <button
+                type="button"
+                className={evaluatorMode === "system" ? "active" : ""}
+                onClick={() => setEvaluatorMode("system")}
+              >
+                System
+              </button>
+              <button
+                type="button"
+                className={evaluatorMode === "user" ? "active" : ""}
+                onClick={() => setEvaluatorMode("user")}
+              >
+                User input
+              </button>
+            </div>
+          ) : (
+            <div className="mini-switch" role="group" aria-label="Prompt view">
+              <button
+                type="button"
+                className={promptMode === "template" ? "active" : ""}
+                onClick={() => setPromptMode("template")}
+              >
+                Template
+              </button>
+              <button
+                type="button"
+                className={promptMode === "resolved" ? "active" : ""}
+                onClick={() => setPromptMode("resolved")}
+              >
+                Resolved
+              </button>
+            </div>
+          )}
+          {text ? <CopyButton text={text} /> : null}
+        </div>
+      </div>
+
+      <div
+        className="prompt-description"
+        lang={component === "user" && isKorean && translatedUserPrompt ? "ko" : "en"}
+      >
+        <strong>{title}</strong>
+        <p>{description}</p>
+      </div>
+
+      {isKorean && !(component === "evaluator" && trajectory && !evaluatorInvoked) ? (
+        <ContextTranslationNote
+          status={translationStatus}
+          error={translationError}
+          translated={translated}
+          kind={translationKind}
+          retry={retryTranslation}
+        />
+      ) : null}
+
+      {component === "user" ? (
+        <div className="context-note">
+          The initial greeting is a transcript message, not part of this system prompt.
+          {domain.slug === "telecom"
+            ? " Telecom uses the tool-enabled user-simulator prompt at runtime."
+            : ""}
+        </div>
+      ) : null}
+
+      <div className="source-line">
+        <span>
+          {sourceLabel}. Exactly reconstructed from runtime commit 964ef; provider raw HTTP
+          request and tool-schema serialization were not recorded.
+        </span>
+        <span className="source-link-list">
+          {sourceLinks.map((source) => (
+            <a
+              href={source.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              title={source.sourcePath || undefined}
+              key={`${source.label}:${source.sourceUrl}`}
+            >
+              {source.label} ↗
+            </a>
+          ))}
+        </span>
+      </div>
+
+      {waitingForDetail ? (
+        <ContextLoadState
+          status={detailStatus}
+          error={detailError}
+          label={component === "evaluator" ? "the evaluator input" : "the resolved prompt"}
+          retry={retryDetail}
+        />
+      ) : component === "evaluator" && !evaluatorInvoked ? (
+        <div className="empty-context" role="status" lang={isKorean ? "ko" : "en"}>
+          {isKorean
+            ? "이 trajectory에서는 자연어 평가기가 호출되지 않았습니다."
+            : "The NL evaluator was not invoked for this trajectory."}
+        </div>
+      ) : (
+        <pre className="prompt-pre" lang={promptLanguage}>{text}</pre>
+      )}
+    </div>
+  );
+}
+
 function ContextPanel({
   domain,
   trajectory,
   taskLanguage,
+  taskEntry,
   taskTranslation,
   translationStatus,
   translationError,
+  retryTaskTranslation,
   tab,
   setTab,
-  promptVariantId,
-  setPromptVariantId,
+  promptComponent,
+  setPromptComponent,
   policyMode,
   setPolicyMode,
   promptMode,
   setPromptMode,
+  evaluatorPromptMode,
+  setEvaluatorPromptMode,
   runtimePromptId,
+  runAgentModel,
+  runUserModel,
   runPolicy,
   runPolicyUrl,
+  runPolicyId,
+  contextTranslation,
+  contextTranslationStatus,
+  contextTranslationError,
+  retryContextTranslation,
+  transcriptTranslation,
+  transcriptTranslationStatus,
+  transcriptTranslationError,
+  retryTranscriptTranslation,
   detailStatus,
   detailError,
   retryDetail,
@@ -851,36 +1578,48 @@ function ContextPanel({
   domain: DomainData;
   trajectory?: Trajectory;
   taskLanguage: TaskLanguage;
+  taskEntry?: TaskAssetEntry;
   taskTranslation?: TaskTranslation;
   translationStatus: LoadStatus;
   translationError: string | null;
+  retryTaskTranslation: () => void;
   tab: ContextTab;
   setTab: (tab: ContextTab) => void;
-  promptVariantId: string;
-  setPromptVariantId: (id: string) => void;
+  promptComponent: PromptComponent;
+  setPromptComponent: (component: PromptComponent) => void;
   policyMode: "domain" | "run";
   setPolicyMode: (mode: "domain" | "run") => void;
-  promptMode: "resolved" | "template";
-  setPromptMode: (mode: "resolved" | "template") => void;
+  promptMode: PromptMode;
+  setPromptMode: (mode: PromptMode) => void;
+  evaluatorPromptMode: EvaluatorPromptMode;
+  setEvaluatorPromptMode: (mode: EvaluatorPromptMode) => void;
   runtimePromptId?: string;
+  runAgentModel?: string;
+  runUserModel?: string;
   runPolicy?: string;
   runPolicyUrl?: string;
+  runPolicyId?: string;
+  contextTranslation: KoreanContextTranslationAsset | null;
+  contextTranslationStatus: LoadStatus;
+  contextTranslationError: string | null;
+  retryContextTranslation: () => void;
+  transcriptTranslation: KoreanTranscriptTrajectory | null;
+  transcriptTranslationStatus: LoadStatus;
+  transcriptTranslationError: string | null;
+  retryTranscriptTranslation: () => void;
   detailStatus: LoadStatus;
   detailError: string | null;
   retryDetail: () => void;
   open: boolean;
   close: () => void;
 }) {
-  const prompt =
-    domain.userPrompts.find((variant) => variant.id === promptVariantId) ??
-    domain.userPrompts.find((variant) => variant.id === runtimePromptId) ??
-    domain.userPrompts[0];
-  const policy = policyMode === "run" && runPolicy
+  const canonicalPolicy = policyMode === "run" && runPolicy
     ? runPolicy
     : domain.policy;
-  const promptText = promptMode === "resolved"
-    ? resolvedPrompt(domain, trajectory, prompt)
-    : prompt.content;
+  const translatedPolicy = taskLanguage === "ko"
+    ? translatedPolicyContent(contextTranslation, policyMode, runPolicyId)
+    : undefined;
+  const policy = translatedPolicy ?? canonicalPolicy;
 
   function downloadRaw() {
     if (!trajectory) return;
@@ -902,6 +1641,12 @@ function ContextPanel({
           <strong>{domain.name}</strong>
         </div>
         <div className="context-header-actions">
+          <span
+            title="Callable tools exposed to each participant"
+            aria-label={`${domain.agentToolCount ?? domain.toolCount} agent tools and ${domain.userToolCount ?? 0} user tools`}
+          >
+            Agent {domain.agentToolCount ?? domain.toolCount} · User {domain.userToolCount ?? 0}
+          </span>
           <span>{domain.versionLabel}</span>
           <button type="button" className="context-close" onClick={close} aria-label="Close context">
             ×
@@ -954,83 +1699,56 @@ function ContextPanel({
                 target="_blank"
                 rel="noreferrer"
               >
-                Source ↗
+                English source ↗
               </a>
             </div>
-            <MarkdownDocument content={policy} />
+            {taskLanguage === "ko" ? (
+              <ContextTranslationNote
+                status={contextTranslationStatus}
+                error={contextTranslationError}
+                translated={Boolean(translatedPolicy)}
+                kind="도메인 정책"
+                retry={retryContextTranslation}
+              />
+            ) : null}
+            <div lang={translatedPolicy ? "ko" : "en"}>
+              <MarkdownDocument content={policy} />
+            </div>
           </div>
         ) : null}
 
         {tab === "prompt" ? (
-          <div className="context-content document-content">
-            <div className="stacked-toolbar">
-              <div className="variant-row" aria-label="Prompt variant">
-                {domain.userPrompts.map((variant) => (
-                  <button
-                    type="button"
-                    className={`variant-chip${variant.id === prompt.id ? " active" : ""}`}
-                    onClick={() => setPromptVariantId(variant.id)}
-                    key={variant.id}
-                  >
-                    {variant.label}
-                  </button>
-                ))}
-              </div>
-              <div className="document-toolbar">
-                <div className="mini-switch" aria-label="Prompt view">
-                  <button
-                    type="button"
-                    className={promptMode === "resolved" ? "active" : ""}
-                    onClick={() => setPromptMode("resolved")}
-                  >
-                    Resolved
-                  </button>
-                  <button
-                    type="button"
-                    className={promptMode === "template" ? "active" : ""}
-                    onClick={() => setPromptMode("template")}
-                  >
-                    Template
-                  </button>
-                </div>
-                <CopyButton text={promptText} />
-              </div>
-            </div>
-            <div className="prompt-description">
-              <strong>{prompt.label}</strong>
-              <p>{prompt.description}</p>
-            </div>
-            {taskLanguage === "ko" ? (
-              <div className="context-note prompt-language-note">
-                이 패널은 실제 사용자 시뮬레이션에 사용된 영어 프롬프트 원문을 표시합니다.
-                한국어 태스크 번역은 Task 탭에서 확인할 수 있습니다.
-              </div>
-            ) : null}
-            {runtimePromptId === "no-user" ? (
-              <div className="context-note">
-                This is an agent-only run. No user simulator participates in the trajectory.
-              </div>
-            ) : domain.benchmark === "tau2" && domain.slug === "telecom" ? (
-              <div className="context-note">
-                Telecom uses the tool-enabled guidelines at runtime because the simulated user
-                can operate device tools.
-              </div>
-            ) : null}
-            <div className="source-line">
-              <span>{domain.promptSource}</span>
-              <a href={domain.promptUrl} target="_blank" rel="noreferrer">Source ↗</a>
-            </div>
-            {promptMode === "resolved" && !trajectory ? (
-              <ContextLoadState
-                status={detailStatus}
-                error={detailError}
-                label="the resolved prompt"
-                retry={retryDetail}
-              />
-            ) : (
-              <pre className="prompt-pre">{promptText}</pre>
-            )}
-          </div>
+          <PromptPanel
+            domain={domain}
+            trajectory={trajectory}
+            taskEntry={taskEntry}
+            taskTranslation={taskTranslation}
+            taskLanguage={taskLanguage}
+            component={promptComponent}
+            setComponent={setPromptComponent}
+            promptMode={promptMode}
+            setPromptMode={setPromptMode}
+            evaluatorMode={evaluatorPromptMode}
+            setEvaluatorMode={setEvaluatorPromptMode}
+            runtimePromptId={runtimePromptId}
+            runAgentModel={runAgentModel}
+            runUserModel={runUserModel}
+            runPolicy={runPolicy}
+            contextTranslation={contextTranslation}
+            contextTranslationStatus={contextTranslationStatus}
+            contextTranslationError={contextTranslationError}
+            retryContextTranslation={retryContextTranslation}
+            taskTranslationStatus={translationStatus}
+            taskTranslationError={translationError}
+            retryTaskTranslation={retryTaskTranslation}
+            transcriptTranslation={transcriptTranslation}
+            transcriptTranslationStatus={transcriptTranslationStatus}
+            transcriptTranslationError={transcriptTranslationError}
+            retryTranscriptTranslation={retryTranscriptTranslation}
+            detailStatus={detailStatus}
+            detailError={detailError}
+            retryDetail={retryDetail}
+          />
         ) : null}
 
         {tab === "task" ? (
@@ -1042,6 +1760,7 @@ function ContextPanel({
               taskTranslation={taskTranslation}
               translationStatus={translationStatus}
               translationError={translationError}
+              retryTranslation={retryTaskTranslation}
             />
           ) : (
             <ContextLoadState
@@ -1064,7 +1783,7 @@ function ContextPanel({
         ) : null}
         {tab === "raw" ? (
           trajectory ? (
-            <div className="context-content document-content">
+            <div className="context-content document-content" lang="en">
               <div className="document-toolbar raw-toolbar">
                 <span>Normalized trajectory</span>
                 <div>
@@ -1091,9 +1810,7 @@ function ContextPanel({
 }
 
 export default function Explorer() {
-  const [benchmark, setBenchmark] = useState<BenchmarkId>("tau2");
   const [domainSlug, setDomainSlug] = useState("telecom");
-  const [modelFilter, setModelFilter] = useState("all");
   const [runFilter, setRunFilter] = useState("all");
   const [trialFilter, setTrialFilter] = useState("all");
   const [selectedTrajectoryId, setSelectedTrajectoryId] = useState("");
@@ -1104,22 +1821,38 @@ export default function Explorer() {
   const [taskLanguageMounted, setTaskLanguageMounted] = useState(false);
   const [focusedTaskKey, setFocusedTaskKey] = useState("");
   const [contextTab, setContextTab] = useState<ContextTab>("policy");
-  const [promptVariantId, setPromptVariantId] = useState("");
+  const [promptComponent, setPromptComponent] = useState<PromptComponent>("agent");
   const [policyMode, setPolicyMode] = useState<"domain" | "run">("domain");
-  const [promptMode, setPromptMode] = useState<"resolved" | "template">("resolved");
+  const [promptMode, setPromptMode] = useState<PromptMode>("resolved");
+  const [evaluatorPromptMode, setEvaluatorPromptMode] = useState<EvaluatorPromptMode>("system");
   const [metadataVisible, setMetadataVisible] = useState(false);
   const [contextOpen, setContextOpen] = useState(false);
   const [browserOpen, setBrowserOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [indexRetry, setIndexRetry] = useState(0);
   const [detailRetry, setDetailRetry] = useState(0);
-  const [indexState, setIndexState] = useState<LoadState<TrajectorySummary[]>>({
+  const [taskTranslationRetry, setTaskTranslationRetry] = useState(0);
+  const [transcriptTranslationRetry, setTranscriptTranslationRetry] = useState(0);
+  const [contextTranslationRetry, setContextTranslationRetry] = useState(0);
+  const [indexState, setIndexState] = useState<LoadState<IndexData>>({
     key: "",
     status: "idle",
-    data: [],
+    data: { trajectories: [], transcriptOverlays: {} },
     error: null,
   });
   const [detailState, setDetailState] = useState<LoadState<Trajectory | null>>({
+    key: "",
+    status: "idle",
+    data: null,
+    error: null,
+  });
+  const [transcriptTranslationState, setTranscriptTranslationState] = useState<LoadState<KoreanTranscriptTrajectory | null>>({
+    key: "",
+    status: "idle",
+    data: null,
+    error: null,
+  });
+  const [contextTranslationState, setContextTranslationState] = useState<LoadState<KoreanContextTranslationAsset | null>>({
     key: "",
     status: "idle",
     data: null,
@@ -1137,13 +1870,14 @@ export default function Explorer() {
     let current = true;
     let storedLanguage: TaskLanguage = "en";
     try {
-      if (window.localStorage.getItem(TASK_LANGUAGE_STORAGE_KEY) === "ko") {
+      const stored = window.localStorage.getItem(DISPLAY_LANGUAGE_STORAGE_KEY) ??
+        window.localStorage.getItem(LEGACY_TASK_LANGUAGE_STORAGE_KEY);
+      if (stored === "ko") {
         storedLanguage = "ko";
       }
     } catch {
       // Storage can be unavailable in privacy-restricted browser contexts.
     }
-    document.documentElement.lang = storedLanguage;
     void Promise.resolve().then(() => {
       if (!current) return;
       setTaskLanguage(storedLanguage);
@@ -1154,39 +1888,80 @@ export default function Explorer() {
 
   useEffect(() => {
     if (!taskLanguageMounted) return;
-    document.documentElement.lang = taskLanguage;
     try {
-      window.localStorage.setItem(TASK_LANGUAGE_STORAGE_KEY, taskLanguage);
+      window.localStorage.setItem(DISPLAY_LANGUAGE_STORAGE_KEY, taskLanguage);
     } catch {
       // The selected language still applies for this session when storage is unavailable.
     }
   }, [taskLanguage, taskLanguageMounted]);
 
-  const domains = useMemo(
-    () => snapshot.domains.filter((domain) => domain.benchmark === benchmark),
-    [benchmark],
-  );
+  const domains = scopedDomains;
   const domain = domains.find((candidate) => candidate.slug === domainSlug) ?? domains[0];
+  const activeContextTranslationRef = contextTranslationRef(domain);
 
-  const models = useMemo(
-    () => [...new Set(domain.runs.map((run) => run.model))],
+  useEffect(() => {
+    let current = true;
+    if (taskLanguage !== "ko") return () => { current = false; };
+    if (!activeContextTranslationRef?.path) {
+      void Promise.resolve().then(() => {
+        if (!current) {
+          return;
+        }
+        setContextTranslationState({
+          key: domain.id,
+          status: "ready",
+          data: null,
+          error: "A Korean domain context translation is not available.",
+        });
+      });
+      return () => { current = false; };
+    }
+    void Promise.resolve().then(() => {
+      if (!current) return;
+      setContextTranslationState({
+        key: domain.id,
+        status: "loading",
+        data: null,
+        error: null,
+      });
+    });
+    loadContextTranslation(activeContextTranslationRef.path, domain.id)
+      .then((asset) => {
+        if (!current) return;
+        setContextTranslationState({
+          key: domain.id,
+          status: "ready",
+          data: asset,
+          error: null,
+        });
+      })
+      .catch((error: unknown) => {
+        if (!current) return;
+        setContextTranslationState({
+          key: domain.id,
+          status: "error",
+          data: null,
+          error: error instanceof Error ? error.message : "Could not load Korean domain context.",
+        });
+      });
+    return () => { current = false; };
+  }, [activeContextTranslationRef?.path, contextTranslationRetry, domain.id, taskLanguage]);
+
+  const scopedRuns = useMemo(
+    () => domain.runs.filter((run) => run.model === TARGET_MODEL),
     [domain],
-  );
-  const runsForModel = useMemo(
-    () => domain.runs.filter((run) => modelFilter === "all" || run.model === modelFilter),
-    [domain, modelFilter],
   );
   const preferredRunId = runFilter || "all";
   const activeRunFilter = preferredRunId === "all"
     ? "all"
-    : runsForModel.some((run) => run.id === preferredRunId)
+    : scopedRuns.some((run) => run.id === preferredRunId)
       ? preferredRunId
-      : runsForModel[0]?.id ?? "all";
+      : scopedRuns[0]?.id ?? "all";
   const requestedRuns = useMemo(
     () => activeRunFilter === "all"
-      ? runsForModel
-      : runsForModel.filter((run) => run.id === activeRunFilter),
-    [activeRunFilter, runsForModel],
+      ? scopedRuns
+      : scopedRuns.filter((run) => run.id === activeRunFilter),
+    [activeRunFilter, scopedRuns],
   );
   const requestedTaskPaths = useMemo(
     () => [...new Set(requestedRuns.map((run) => run.tasksPath))],
@@ -1243,14 +2018,19 @@ export default function Explorer() {
         });
       });
     return () => { current = false; };
-  }, [requestedTaskPaths, requestedTaskPathsKey, taskLanguage]);
+  }, [requestedTaskPaths, requestedTaskPathsKey, taskLanguage, taskTranslationRetry]);
 
   useEffect(() => {
     let current = true;
     if (!requestedRuns.length) {
       void Promise.resolve().then(() => {
         if (current) {
-          setIndexState({ key: requestedKey, status: "ready", data: [], error: null });
+          setIndexState({
+            key: requestedKey,
+            status: "ready",
+            data: { trajectories: [], transcriptOverlays: {} },
+            error: null,
+          });
         }
       });
       return () => { current = false; };
@@ -1258,16 +2038,28 @@ export default function Explorer() {
 
     void Promise.resolve().then(() => {
       if (current) {
-        setIndexState({ key: requestedKey, status: "loading", data: [], error: null });
+        setIndexState({
+          key: requestedKey,
+          status: "loading",
+          data: { trajectories: [], transcriptOverlays: {} },
+          error: null,
+        });
       }
     });
     Promise.all(requestedRuns.map(loadRunIndex))
       .then((indexes) => {
         if (!current) return;
+        const transcriptOverlays = Object.assign(
+          {},
+          ...indexes.map((asset) => asset.transcriptOverlays?.ko ?? {}),
+        );
         setIndexState({
           key: requestedKey,
           status: "ready",
-          data: indexes.flat(),
+          data: {
+            trajectories: indexes.flatMap((asset) => asset.trajectories),
+            transcriptOverlays,
+          },
           error: null,
         });
       })
@@ -1276,7 +2068,7 @@ export default function Explorer() {
         setIndexState({
           key: requestedKey,
           status: "error",
-          data: [],
+          data: { trajectories: [], transcriptOverlays: {} },
           error: error instanceof Error ? error.message : "Could not load trajectory indexes.",
         });
       });
@@ -1285,7 +2077,12 @@ export default function Explorer() {
 
   const currentIndexState = indexState.key === requestedKey
     ? indexState
-    : { key: requestedKey, status: "loading" as const, data: [], error: null };
+    : {
+        key: requestedKey,
+        status: "loading" as const,
+        data: { trajectories: [], transcriptOverlays: {} },
+        error: null,
+      };
   const activeTaskTranslationStatus: LoadStatus = taskLanguage === "en"
     ? "idle"
     : taskAssetsState.key === requestedTaskPathsKey
@@ -1296,7 +2093,7 @@ export default function Explorer() {
     ? taskAssetsState.error
     : null;
   const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase());
-  const filteredTrajectories = useMemo(() => currentIndexState.data.filter((item) => {
+  const filteredTrajectories = useMemo(() => currentIndexState.data.trajectories.filter((item) => {
     const run = runsById.get(item.runId);
     const koreanDisplay = taskDisplayForSummary(
       item,
@@ -1333,6 +2130,10 @@ export default function Explorer() {
     selectedTaskGroup ??
     taskGroups[0];
   const selectedRun = selectedSummary ? runsById.get(selectedSummary.runId) : undefined;
+  const selectedTaskEntry = selectedSummary && selectedRun
+    ? (taskAssetsState.data.get(selectedRun.tasksPath) ?? loadedTasksCache.get(selectedRun.tasksPath))
+      ?.tasks[selectedSummary.taskId]
+    : undefined;
   const selectedTaskDisplay = selectedSummary
     ? taskDisplayForSummary(
         selectedSummary,
@@ -1342,7 +2143,7 @@ export default function Explorer() {
       )
     : undefined;
   const selectedTaskTranslation = taskLanguage === "ko"
-    ? selectedTaskDisplay?.translation
+    ? selectedTaskDisplay?.translation ?? selectedTaskEntry?.translations?.ko
     : undefined;
   const currentIndex = selectedSummary
     ? filteredTrajectories.findIndex((candidate) => candidate.id === selectedSummary.id)
@@ -1356,6 +2157,75 @@ export default function Explorer() {
   const pageStart = safePage * pageSize;
   const pageTrajectories = filteredTrajectories.slice(pageStart, pageStart + PAGE_SIZE);
   const pageTaskGroups = taskGroups.slice(pageStart, pageStart + TASK_PAGE_SIZE);
+  const transcriptOverlayRef = selectedSummary
+    ? currentIndexState.data.transcriptOverlays[selectedSummary.detailPath]
+    : undefined;
+  const transcriptTranslationKey = selectedSummary ? `ko:${selectedSummary.id}` : "";
+
+  useEffect(() => {
+    let current = true;
+    if (taskLanguage !== "ko" || !selectedSummary || selectedSummary.messageCount === 0) {
+      return () => { current = false; };
+    }
+    if (!transcriptOverlayRef?.path) {
+      void Promise.resolve().then(() => {
+        if (!current) return;
+        setTranscriptTranslationState({
+          key: transcriptTranslationKey,
+          status: "ready",
+          data: null,
+          error: "A Korean conversation translation is not available for this trajectory.",
+        });
+      });
+      return () => { current = false; };
+    }
+
+    void Promise.resolve().then(() => {
+      if (!current) return;
+      setTranscriptTranslationState({
+        key: transcriptTranslationKey,
+        status: "loading",
+        data: null,
+        error: null,
+      });
+    });
+    loadTranscriptOverlay(transcriptOverlayRef.path)
+      .then((asset) => {
+        if (!current) return;
+        if (
+          asset.runId !== selectedSummary.runId ||
+          asset.sourceDetailPath !== selectedSummary.detailPath
+        ) {
+          throw new Error("The Korean conversation overlay does not match this trajectory chunk.");
+        }
+        const translated = asset.trajectories[selectedSummary.id];
+        if (!translated) {
+          throw new Error("This trajectory is missing from its Korean conversation overlay.");
+        }
+        setTranscriptTranslationState({
+          key: transcriptTranslationKey,
+          status: "ready",
+          data: translated,
+          error: null,
+        });
+      })
+      .catch((error: unknown) => {
+        if (!current) return;
+        setTranscriptTranslationState({
+          key: transcriptTranslationKey,
+          status: "error",
+          data: null,
+          error: error instanceof Error ? error.message : "Could not load the Korean conversation.",
+        });
+      });
+    return () => { current = false; };
+  }, [
+    selectedSummary,
+    taskLanguage,
+    transcriptOverlayRef?.path,
+    transcriptTranslationKey,
+    transcriptTranslationRetry,
+  ]);
 
   useEffect(() => {
     let current = true;
@@ -1414,6 +2284,43 @@ export default function Explorer() {
     detailState.status === "ready"
     ? detailState.data ?? undefined
     : undefined;
+  const activeTranscriptTranslationStatus: LoadStatus = taskLanguage === "en" ||
+    !selectedSummary || selectedSummary.messageCount === 0
+    ? "idle"
+    : transcriptTranslationState.key === transcriptTranslationKey
+      ? transcriptTranslationState.status
+      : "loading";
+  const activeTranscriptTranslation = taskLanguage === "ko" &&
+    transcriptTranslationState.key === transcriptTranslationKey
+    ? transcriptTranslationState.data
+    : null;
+  const activeTranscriptTranslationError = taskLanguage === "ko" &&
+    transcriptTranslationState.key === transcriptTranslationKey
+    ? transcriptTranslationState.error
+    : null;
+  const displayMessages = useMemo(() => (trajectory?.messages ?? []).map((message, index) => {
+    const canTranslate = taskLanguage === "ko" && Boolean(message.content) && !isControlToken(message.content);
+    const translated = canTranslate && activeTranscriptTranslation
+      ? translatedMessageContent(activeTranscriptTranslation, index)
+      : undefined;
+    return {
+      message,
+      displayContent: translated ?? message.content,
+      displayToolCalls: displayToolInvocations(
+        message,
+        index,
+        taskLanguage === "ko" ? activeTranscriptTranslation : null,
+      ),
+      contentLanguage: translated ? "ko" as const : "en" as const,
+      translationFallback: Boolean(
+        canTranslate &&
+        activeTranscriptTranslation &&
+        activeTranscriptTranslationStatus === "ready" &&
+        !translated,
+      ),
+    };
+  }), [activeTranscriptTranslation, activeTranscriptTranslationStatus, taskLanguage, trajectory]);
+  const transcriptFallbackCount = displayMessages.filter((item) => item.translationFallback).length;
   const activeDetailStatus: LoadStatus = !selectedSummary
     ? "idle"
     : detailState.key === selectedSummary.id
@@ -1421,6 +2328,19 @@ export default function Explorer() {
       : "loading";
   const activeDetailError = detailState.key === selectedSummary?.id
     ? detailState.error
+    : null;
+  const activeContextTranslationStatus: LoadStatus = taskLanguage === "en"
+    ? "idle"
+    : contextTranslationState.key === domain.id
+      ? contextTranslationState.status
+      : "loading";
+  const activeContextTranslation = taskLanguage === "ko" &&
+    contextTranslationState.key === domain.id
+    ? contextTranslationState.data
+    : null;
+  const activeContextTranslationError = taskLanguage === "ko" &&
+    contextTranslationState.key === domain.id
+    ? contextTranslationState.error
     : null;
   const duration = selectedSummary ? formatDuration(selectedSummary.duration) : null;
   const contextRun = selectedRun ?? (
@@ -1431,7 +2351,6 @@ export default function Explorer() {
     : undefined;
 
   function resetBrowser() {
-    setModelFilter("all");
     setRunFilter("all");
     setTrialFilter("all");
     setOutcome("all");
@@ -1439,43 +2358,14 @@ export default function Explorer() {
     setFocusedTaskKey("");
     setPage(0);
     setSelectedTrajectoryId("");
-    setPromptVariantId("");
+    setPromptComponent("agent");
     setPolicyMode("domain");
     setBrowserOpen(false);
-  }
-
-  function changeBenchmark(nextBenchmark: BenchmarkId) {
-    const nextDomains = snapshot.domains.filter((item) => item.benchmark === nextBenchmark);
-    const nextDomain = nextDomains.find((item) => item.slug === domainSlug) ?? nextDomains[0];
-    setBenchmark(nextBenchmark);
-    setDomainSlug(nextDomain.slug);
-    resetBrowser();
   }
 
   function changeDomain(slug: string) {
     setDomainSlug(slug);
     resetBrowser();
-  }
-
-  function changeModel(nextModel: string) {
-    const nextRuns = domain.runs.filter(
-      (run) => nextModel === "all" || run.model === nextModel,
-    );
-    const currentRun = activeRunFilter === "all"
-      ? undefined
-      : domain.runs.find((run) => run.id === activeRunFilter);
-    setModelFilter(nextModel);
-    if (activeRunFilter === "all") {
-      setRunFilter("all");
-    } else if (currentRun && nextRuns.some((run) => run.id === currentRun.id)) {
-      setRunFilter(currentRun.id);
-    } else {
-      setRunFilter("all");
-    }
-    setTrialFilter("all");
-    setPage(0);
-    setSelectedTrajectoryId("");
-    setFocusedTaskKey("");
   }
 
   function changeRun(nextRun: string) {
@@ -1569,37 +2459,40 @@ export default function Explorer() {
     setDetailRetry((value) => value + 1);
   }
 
+  function retryTranscriptTranslation() {
+    if (transcriptOverlayRef?.path) transcriptOverlayCache.delete(transcriptOverlayRef.path);
+    setTranscriptTranslationRetry((value) => value + 1);
+  }
+
+  function retryTaskTranslation() {
+    for (const path of requestedTaskPaths) {
+      tasksCache.delete(path);
+      loadedTasksCache.delete(path);
+    }
+    setTaskTranslationRetry((value) => value + 1);
+  }
+
+  function retryContextTranslation() {
+    if (activeContextTranslationRef?.path) {
+      contextTranslationCache.delete(activeContextTranslationRef.path);
+    }
+    setContextTranslationRetry((value) => value + 1);
+  }
+
   return (
     <main className="explorer-shell">
       <aside className="sidebar">
         <div className="brand-row">
-          <span className="brand-mark">τ</span>
+          <span className="brand-mark">τ²</span>
           <div className="brand-copy">
             <strong className="brand-name">TAU Explorer</strong>
-            <span className="brand-subtitle">Domain observatory</span>
+            <span className="brand-subtitle">τ² · GPT-5</span>
           </div>
           <TaskLanguageSwitch
             value={taskLanguage}
             onChange={setTaskLanguage}
             className="desktop-task-language"
           />
-        </div>
-
-        <div className="benchmark-switch" aria-label="Benchmark version">
-          <button
-            type="button"
-            className={`benchmark-tab${benchmark === "tau" ? " active" : ""}`}
-            onClick={() => changeBenchmark("tau")}
-          >
-            τ-bench
-          </button>
-          <button
-            type="button"
-            className={`benchmark-tab${benchmark === "tau2" ? " active" : ""}`}
-            onClick={() => changeBenchmark("tau2")}
-          >
-            τ²-bench
-          </button>
         </div>
 
         <div className="mobile-selectors">
@@ -1646,7 +2539,7 @@ export default function Explorer() {
                 onClick={() => changeDomain(item.slug)}
               >
                 <span className="domain-name">
-                  <span className="availability-mark">{benchmark === "tau" ? "τ" : "τ²"}</span>
+                  <span className="availability-mark">τ²</span>
                   {item.name}
                 </span>
                 <span className="domain-count">{item.taskCount}</span>
@@ -1690,23 +2583,18 @@ export default function Explorer() {
               </button>
             ))}
           </div>
-          <div className="catalog-filters">
-            <label className="catalog-filter model-filter">
-              <span>Model</span>
-              <select value={modelFilter} onChange={(event) => changeModel(event.target.value)}>
-                <option value="all">All models</option>
-                {models.map((model) => <option value={model} key={model}>{model}</option>)}
-              </select>
-            </label>
-            <label className="catalog-filter run-filter">
-              <span>Run</span>
-              <select value={activeRunFilter} onChange={(event) => changeRun(event.target.value)}>
-                <option value="all">All runs · {runsForModel.length}</option>
-                {runsForModel.map((run) => (
-                  <option value={run.id} key={run.id}>{formatRunLabel(run)}</option>
-                ))}
-              </select>
-            </label>
+          <div className={`catalog-filters${scopedRuns.length > 1 ? "" : " single-filter"}`}>
+            {scopedRuns.length > 1 ? (
+              <label className="catalog-filter run-filter">
+                <span>Run</span>
+                <select value={activeRunFilter} onChange={(event) => changeRun(event.target.value)}>
+                  <option value="all">All GPT-5 runs · {scopedRuns.length}</option>
+                  {scopedRuns.map((run) => (
+                    <option value={run.id} key={run.id}>{formatRunLabel(run)}</option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
             <label className="catalog-filter trial-filter">
               <span>Trial</span>
               <select
@@ -1800,8 +2688,8 @@ export default function Explorer() {
                     >
                       <span className="task-group-copy">
                         <span className="trajectory-id">Task {compactTaskId(group.taskId)}</span>
-                        <strong>{group.title}</strong>
-                        <span className="task-scenario">{group.scenarioPreview}</span>
+                        <strong lang={group.contentLanguage}>{group.title}</strong>
+                        <span className="task-scenario" lang={group.contentLanguage}>{group.scenarioPreview}</span>
                         <span className="task-group-meta">
                           {group.trajectories.length} trajectories · {group.runs.length} runs
                         </span>
@@ -1868,7 +2756,7 @@ export default function Explorer() {
                 </span>
                 <span className="trajectory-item-copy">
                   <span className="trajectory-id">Task {compactTaskId(item.taskId)} · T{item.trial}</span>
-                  <strong>{itemDisplay.title}</strong>
+                  <strong lang={itemDisplay.translation ? "ko" : "en"}>{itemDisplay.title}</strong>
                   <span>{item.messageCount} turns · {item.toolCallCount} calls · {itemRun ? formatRunLabel(itemRun) : "Unknown run"}</span>
                 </span>
               </button>
@@ -1892,7 +2780,7 @@ export default function Explorer() {
         <div className="sidebar-footer">
           <div>
             <span className="status-dot" />
-            Pinned official snapshot
+            τ² · GPT-5 snapshot
           </div>
           <a
             href={`https://github.com/${domain.source.repository}`}
@@ -1927,7 +2815,9 @@ export default function Explorer() {
                 <p className="breadcrumb">
                   {domain.benchmarkLabel} / {domain.slug} / task {compactTaskId(selectedSummary.taskId)}
                 </p>
-                <h1>{selectedTaskDisplay?.title ?? selectedSummary.title}</h1>
+                <h1 lang={selectedTaskDisplay?.translation ? "ko" : "en"}>
+                  {selectedTaskDisplay?.title ?? selectedSummary.title}
+                </h1>
               </div>
               <div className="topbar-actions">
                 <button
@@ -1976,13 +2866,30 @@ export default function Explorer() {
             ) : null}
 
             {activeDetailStatus === "ready" && trajectory?.messages.length ? (
-              <ol className="chat-stream" aria-label="Conversation transcript" key={trajectory.id}>
-                {trajectory.messages.map((message, index) => (
+              <ol
+                className="chat-stream"
+                aria-label={taskLanguage === "ko" ? "대화 기록, 한국어 표시" : "Conversation transcript"}
+                key={trajectory.id}
+              >
+                {taskLanguage === "ko" ? (
+                  <TranscriptLanguageNotice
+                    status={activeTranscriptTranslationStatus}
+                    error={activeTranscriptTranslationError}
+                    hasTranslation={Boolean(activeTranscriptTranslation)}
+                    fallbackCount={transcriptFallbackCount}
+                    retry={retryTranscriptTranslation}
+                  />
+                ) : null}
+                {displayMessages.map((item, index) => (
                   <TranscriptItem
-                    message={message}
+                    message={item.message}
                     messageIndex={index}
                     metadataVisible={metadataVisible}
-                    key={`${message.turnIndex}-${index}`}
+                    displayContent={item.displayContent}
+                    displayToolCalls={item.displayToolCalls}
+                    contentLanguage={item.contentLanguage}
+                    translationFallback={item.translationFallback}
+                    key={`${item.message.turnIndex}-${index}`}
                   />
                 ))}
               </ol>
@@ -2023,20 +2930,35 @@ export default function Explorer() {
         domain={domain}
         trajectory={trajectory}
         taskLanguage={taskLanguage}
+        taskEntry={selectedTaskEntry}
         taskTranslation={selectedTaskTranslation}
         translationStatus={activeTaskTranslationStatus}
         translationError={activeTaskTranslationError}
+        retryTaskTranslation={retryTaskTranslation}
         tab={contextTab}
         setTab={setContextTab}
-        promptVariantId={promptVariantId}
-        setPromptVariantId={setPromptVariantId}
+        promptComponent={promptComponent}
+        setPromptComponent={setPromptComponent}
         policyMode={policyMode}
         setPolicyMode={setPolicyMode}
         promptMode={promptMode}
         setPromptMode={setPromptMode}
+        evaluatorPromptMode={evaluatorPromptMode}
+        setEvaluatorPromptMode={setEvaluatorPromptMode}
         runtimePromptId={contextRun?.promptRef}
+        runAgentModel={contextRun?.model}
+        runUserModel={contextRun?.userModel}
         runPolicy={runPolicySnapshot?.content}
         runPolicyUrl={runPolicySnapshot?.sourceUrl}
+        runPolicyId={runPolicySnapshot?.id}
+        contextTranslation={activeContextTranslation}
+        contextTranslationStatus={activeContextTranslationStatus}
+        contextTranslationError={activeContextTranslationError}
+        retryContextTranslation={retryContextTranslation}
+        transcriptTranslation={activeTranscriptTranslation}
+        transcriptTranslationStatus={activeTranscriptTranslationStatus}
+        transcriptTranslationError={activeTranscriptTranslationError}
+        retryTranscriptTranslation={retryTranscriptTranslation}
         detailStatus={activeDetailStatus}
         detailError={activeDetailError}
         retryDetail={retrySelectedDetail}

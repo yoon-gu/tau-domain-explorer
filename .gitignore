@@ -38,4 +38,6 @@ yarn-error.log*
 /.wrangler/
 /outputs/
 /work/
+__pycache__/
+*.py[cod]
 *.tsbuildinfo

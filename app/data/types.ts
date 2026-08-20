@@ -19,11 +19,43 @@ export interface TranscriptMessage {
   toolCalls: ToolInvocation[];
 }
 
+export interface PromptSourceLink {
+  label: string;
+  sourcePath: string;
+  sourceUrl: string;
+}
+
 export interface PromptVariant {
   id: string;
   label: string;
   description: string;
   content: string;
+  sourceHash: string;
+  /** Primary provenance link: the runtime wrapper that assembles this prompt. */
+  sourceUrl: string;
+  /** Complete provenance for the wrapper plus injected guideline document. */
+  sourceLinks: PromptSourceLink[];
+}
+
+export interface RuntimePromptDocument {
+  sourceHash: string;
+  content: string;
+  sourceUrl: string;
+}
+
+export interface RuntimePromptCatalog {
+  agent: {
+    model: string;
+    instruction: RuntimePromptDocument;
+    systemTemplate: RuntimePromptDocument;
+  };
+  evaluator: {
+    model: string;
+    temperature: number;
+    invocationCount: number;
+    system: RuntimePromptDocument;
+    userTemplate: RuntimePromptDocument;
+  };
 }
 
 export interface PolicySnapshot {
@@ -36,6 +68,8 @@ export interface PolicySnapshot {
 export interface DomainSource {
   repository: string;
   commit: string;
+  release?: string;
+  dataCommit?: string;
   license: string;
   /** Legacy fields retained for callers that also consume the old monolithic snapshot. */
   runCommit?: string | null;
@@ -84,7 +118,10 @@ export interface DomainData {
   summary: string;
   taskCount: number;
   trajectoryCount: number;
+  /** Total callable tools exposed across both participants. */
   toolCount: number;
+  agentToolCount: number;
+  userToolCount: number;
   policy: string;
   policySource: string;
   policyUrl: string;
@@ -95,6 +132,7 @@ export interface DomainData {
   runs: RunData[];
   defaultRunId: string;
   policySnapshots: PolicySnapshot[];
+  contextTranslationPath: string;
 }
 
 export interface BenchmarkSource {
@@ -102,6 +140,8 @@ export interface BenchmarkSource {
   label: string;
   repository: string;
   revision: string;
+  runtimeCommit?: string;
+  dataCommit?: string;
   license: string;
 }
 
@@ -113,8 +153,44 @@ export interface AgentOnlyDataSummary {
 
 export interface DatasetTotals {
   runs: number;
+  tasks: number;
   trajectories: number;
+  detailChunks: number;
   detailBytes: number;
+}
+
+export interface DatasetSelection {
+  benchmark: "tau2";
+  model: "GPT-5";
+  submission: string;
+  release: string;
+  runtimeCommit: string;
+}
+
+export interface TranslationSurfaceTotals {
+  occurrences: number;
+  unique: number;
+}
+
+export interface ToolLeafTranslationTotals {
+  classifierVersion: "tau2-tool-ascii-prose-v1";
+  calls: number;
+  all: TranslationSurfaceTotals;
+  translated: TranslationSurfaceTotals;
+  translatedArguments: TranslationSurfaceTotals;
+  translatedResults: TranslationSurfaceTotals;
+  codeOnly: TranslationSurfaceTotals;
+}
+
+export interface TranslationTotals {
+  locale: "ko";
+  transcriptOverlays: number;
+  messageContents: number;
+  translatedMessageContents: number;
+  controlOnlyContents: number;
+  evaluatorPrompts: number;
+  contexts: number;
+  toolLeaves: ToolLeafTranslationTotals;
 }
 
 /** Small catalog imported with the application shell. */
@@ -124,8 +200,11 @@ export interface BenchmarkSnapshot {
   generatedAt: string;
   notice: string;
   agentOnly: AgentOnlyDataSummary;
+  selection: DatasetSelection;
   sources: BenchmarkSource[];
   totals: DatasetTotals;
+  translationTotals: TranslationTotals;
+  runtimePrompts: RuntimePromptCatalog;
   domains: DomainData[];
 }
 
@@ -152,11 +231,23 @@ export interface TrajectorySummary {
   scenarioPreview: string;
 }
 
+export interface AssetRef {
+  path: string;
+  sha256: string;
+  bytes: number;
+  /** Present for a derived asset that is bound to exact canonical source bytes. */
+  sourceSha256?: string;
+}
+
 export interface RunIndexAsset {
   schemaVersion: 2;
   datasetId: string;
   runId: string;
   trajectories: TrajectorySummary[];
+  transcriptOverlays: {
+    /** Keys are exact English `TrajectorySummary.detailPath` values. */
+    ko: Record<string, AssetRef>;
+  };
 }
 
 export type TaskLanguage = "en" | "ko";
@@ -165,6 +256,8 @@ export interface TaskTranslation {
   title: string;
   descriptionPurpose: string | null;
   scenario: Record<string, string | null>;
+  /** Korean display reconstruction of Python `str(task.user_scenario)`. */
+  runtimeScenario: string;
 }
 
 /** Shared task/scenario data, deduplicated across trials and compatible runs. */
@@ -172,6 +265,8 @@ export interface TaskAssetEntry {
   taskId: string;
   title: string;
   scenario: Record<string, unknown>;
+  /** Exact Python `str(task.user_scenario)` used in the runtime user prompt. */
+  runtimeScenario: string;
   task: Record<string, unknown>;
   translations?: {
     ko?: TaskTranslation;
@@ -182,6 +277,12 @@ export interface TasksAsset {
   schemaVersion: 2;
   datasetId: string;
   tasks: Record<string, TaskAssetEntry>;
+}
+
+export interface EvaluationPromptSnapshot {
+  model: string;
+  /** Exact English dynamic user prompt sent to the NL-assertions judge. */
+  userPrompt: string;
 }
 
 /** Exact trajectory payload stored in each lazy detail asset. */
@@ -197,6 +298,8 @@ export interface TrajectoryDetail {
   agentCost: number | null;
   userCost: number | null;
   evaluation: Record<string, unknown> | null;
+  /** Omitted when the runtime did not invoke the NL-assertions evaluator. */
+  evaluationPrompt?: EvaluationPromptSnapshot;
   messages: TranscriptMessage[];
 }
 
@@ -204,6 +307,84 @@ export interface TrajectoryChunkAsset {
   schemaVersion: 2;
   datasetId: string;
   trajectories: Record<string, TrajectoryDetail>;
+}
+
+export interface KoreanTranscriptTrajectory {
+  /** Decimal normalized message indices; null/empty/control-only bodies are omitted. */
+  messages: Record<string, string>;
+  /** RFC 6901 pointers rooted at normalized `/messages/{i}/toolCalls/{j}`. */
+  toolLeaves?: Record<string, string>;
+  /** Korean display reconstruction of `TrajectoryDetail.evaluationPrompt.userPrompt`. */
+  evaluatorUserPrompt?: string;
+}
+
+export interface KoreanToolTranslationEntry {
+  sourceHash: string;
+  content: string;
+}
+
+/** Checked-in source-of-truth repacked into per-chunk `toolLeaves` overlays. */
+export interface KoreanToolTranslationSource {
+  schemaVersion: 1;
+  datasetId: string;
+  locale: "ko";
+  model: "GPT-5";
+  classifierVersion: "tau2-tool-ascii-prose-v1";
+  entries: Record<string, KoreanToolTranslationEntry>;
+}
+
+export interface KoreanTranscriptOverlayAsset {
+  schemaVersion: 1;
+  datasetId: string;
+  locale: "ko";
+  model: "GPT-5";
+  runId: string;
+  sourceDetailPath: string;
+  trajectories: Record<string, KoreanTranscriptTrajectory>;
+}
+
+export interface ContextTranslationDocument {
+  sourceHash: string;
+  content: string;
+}
+
+export interface ContextTranslationPrompt extends ContextTranslationDocument {
+  id: string;
+  label: string;
+  description: string;
+}
+
+export interface KoreanContextTranslationAsset {
+  schemaVersion: 1;
+  datasetId: string;
+  locale: "ko";
+  model: "GPT-5";
+  domainId: string;
+  source: {
+    repository: string;
+    release: string;
+    runtimeCommit: string;
+  };
+  policy: ContextTranslationDocument;
+  policySnapshots: Record<string, ContextTranslationDocument>;
+  agent: {
+    model: string;
+    instruction: ContextTranslationDocument;
+    systemTemplate: ContextTranslationDocument;
+    resolvedSystemPrompt: ContextTranslationDocument;
+  };
+  user: {
+    model: string;
+    prompt: ContextTranslationPrompt;
+  };
+  evaluator: {
+    model: string;
+    temperature: number;
+    invocationCount: number;
+    system: ContextTranslationDocument;
+    userTemplate: ContextTranslationDocument;
+    assertions: Record<string, string>;
+  };
 }
 
 /**

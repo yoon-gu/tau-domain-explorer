@@ -18,6 +18,17 @@
   box-sizing: border-box;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 html,
 body {
   min-height: 100%;
@@ -29,6 +40,7 @@ body {
 
 body {
   overflow: hidden;
+  font-size: 15px;
 }
 
 button,
@@ -115,7 +127,7 @@ summary:focus-visible {
   border-radius: 5px;
   background: transparent;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 680;
   white-space: nowrap;
 }
@@ -143,47 +155,15 @@ summary:focus-visible {
 }
 
 .brand-name {
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: -0.02em;
 }
 
 .brand-subtitle {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.35;
   letter-spacing: 0.02em;
-}
-
-.benchmark-switch {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3px;
-  margin: 22px 0 22px;
-  padding: 3px;
-  border: 1px solid #d8d8d3;
-  border-radius: 9px;
-  background: #e7e7e3;
-}
-
-.benchmark-tab {
-  min-height: 36px;
-  padding: 7px 8px;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 650;
-}
-
-.benchmark-tab:hover {
-  color: var(--ink);
-}
-
-.benchmark-tab.active {
-  background: var(--paper);
-  color: var(--ink);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
 }
 
 .mobile-selectors {
@@ -200,7 +180,7 @@ summary:focus-visible {
 
 .section-heading > span {
   color: var(--faint);
-  font: 10px/1.4 var(--font-geist-mono), monospace;
+  font: 12px/1.4 var(--font-geist-mono), monospace;
 }
 
 .catalog-view-switch {
@@ -223,7 +203,7 @@ summary:focus-visible {
   border-radius: 5px;
   background: transparent;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 650;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -238,7 +218,7 @@ summary:focus-visible {
 .eyebrow {
   margin: 0;
   color: #81817c;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -278,7 +258,7 @@ summary:focus-visible {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .availability-mark {
@@ -290,12 +270,12 @@ summary:focus-visible {
   border-radius: 6px;
   background: rgb(255 255 255 / 42%);
   color: var(--muted);
-  font: 11px Georgia, serif;
+  font: 12px Georgia, serif;
 }
 
 .domain-count {
   color: var(--muted);
-  font: 11px/1.4 var(--font-geist-mono), monospace;
+  font: 12px/1.4 var(--font-geist-mono), monospace;
 }
 
 .trajectory-browser {
@@ -319,6 +299,10 @@ summary:focus-visible {
   margin: 7px 2px 1px;
 }
 
+.catalog-filters.single-filter {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .catalog-filter {
   display: grid;
   min-width: 0;
@@ -327,7 +311,7 @@ summary:focus-visible {
 
 .catalog-filter > span {
   color: var(--faint);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -344,17 +328,13 @@ summary:focus-visible {
   outline: 0;
   background: rgb(255 255 255 / 58%);
   color: var(--ink-soft);
-  font-size: 12px;
+  font-size: 13px;
   text-overflow: ellipsis;
 }
 
 .catalog-filter select:focus {
   border-color: #a4a49e;
   background: var(--paper);
-}
-
-.model-filter {
-  grid-column: 1 / -1;
 }
 
 .search-wrap {
@@ -381,7 +361,7 @@ summary:focus-visible {
   border: 0;
   outline: 0;
   background: transparent;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .search-wrap input::placeholder {
@@ -411,7 +391,7 @@ summary:focus-visible {
   border-radius: 999px;
   background: transparent;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -444,13 +424,13 @@ summary:focus-visible {
 .catalog-state strong {
   margin-top: 11px;
   color: var(--ink-soft);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .catalog-state p {
   max-width: 210px;
   margin: 6px 0 11px;
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.55;
 }
 
@@ -532,7 +512,7 @@ summary:focus-visible {
 
 .task-group-copy strong {
   color: #353533;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 620;
   line-height: 1.4;
 }
@@ -541,7 +521,7 @@ summary:focus-visible {
   display: -webkit-box;
   overflow: hidden;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.45;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -550,7 +530,7 @@ summary:focus-visible {
 .task-group-meta {
   overflow: hidden;
   color: var(--faint);
-  font: 10px/1.4 var(--font-geist-mono), monospace;
+  font: 12px/1.4 var(--font-geist-mono), monospace;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -568,7 +548,7 @@ summary:focus-visible {
   border: 1px solid #c9c9c3;
   border-radius: 999px;
   color: var(--ink-soft);
-  font: 10px/1.25 var(--font-geist-mono), monospace;
+  font: 12px/1.25 var(--font-geist-mono), monospace;
 }
 
 .task-result-count.fail {
@@ -615,7 +595,7 @@ summary:focus-visible {
   min-width: 0;
   overflow: hidden;
   color: var(--ink-soft);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 650;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -624,7 +604,7 @@ summary:focus-visible {
 .task-run-heading span {
   flex: 0 0 auto;
   color: var(--faint);
-  font: 10px/1.4 var(--font-geist-mono), monospace;
+  font: 12px/1.4 var(--font-geist-mono), monospace;
 }
 
 .task-trial-chips {
@@ -645,7 +625,7 @@ summary:focus-visible {
   border-radius: 7px;
   background: var(--paper);
   color: var(--ink-soft);
-  font: 11px/1 var(--font-geist-mono), monospace;
+  font: 13px/1 var(--font-geist-mono), monospace;
 }
 
 .task-trial-chip:hover {
@@ -676,7 +656,7 @@ summary:focus-visible {
   border: 1px solid #bdbdb8;
   border-radius: 50%;
   color: var(--ink);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -694,7 +674,7 @@ summary:focus-visible {
 .trajectory-id {
   overflow: hidden;
   color: #85857f;
-  font: 10px/1.4 var(--font-geist-mono), monospace;
+  font: 12px/1.4 var(--font-geist-mono), monospace;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -703,7 +683,7 @@ summary:focus-visible {
   display: -webkit-box;
   overflow: hidden;
   color: #353533;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 570;
   line-height: 1.45;
   -webkit-box-orient: vertical;
@@ -713,7 +693,7 @@ summary:focus-visible {
 .trajectory-item-copy > span:last-child {
   overflow: hidden;
   color: var(--faint);
-  font-size: 11px;
+  font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -721,7 +701,7 @@ summary:focus-visible {
 .empty-list {
   padding: 24px 10px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
   text-align: center;
 }
@@ -735,7 +715,7 @@ summary:focus-visible {
   padding: 5px 2px 4px;
   border-top: 1px solid #dbdbd5;
   color: var(--muted);
-  font: 11px/1.4 var(--font-geist-mono), monospace;
+  font: 13px/1.4 var(--font-geist-mono), monospace;
   text-align: center;
 }
 
@@ -767,7 +747,7 @@ summary:focus-visible {
   padding: 11px 7px 0;
   border-top: 1px solid #dbdbd5;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.4;
 }
 
@@ -817,7 +797,7 @@ summary:focus-visible {
   overflow: hidden;
   margin: 0 0 7px;
   color: var(--muted);
-  font: 11px/1.4 var(--font-geist-mono), monospace;
+  font: 12px/1.4 var(--font-geist-mono), monospace;
   letter-spacing: 0.02em;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -826,7 +806,7 @@ summary:focus-visible {
 .topbar h1 {
   overflow: hidden;
   margin: 0;
-  font-size: clamp(18px, 1.45vw, 22px);
+  font-size: clamp(20px, 1.55vw, 24px);
   font-weight: 660;
   letter-spacing: -0.035em;
   text-overflow: ellipsis;
@@ -847,7 +827,7 @@ summary:focus-visible {
   border: 1px solid var(--line);
   border-radius: 7px;
   background: var(--paper);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -860,7 +840,7 @@ summary:focus-visible {
   border: 1px solid #d0d0cb;
   border-radius: 999px;
   background: var(--wash);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 620;
 }
 
@@ -871,7 +851,7 @@ summary:focus-visible {
 
 .score-badge strong {
   margin-left: 2px;
-  font: 11px/1.4 var(--font-geist-mono), monospace;
+  font: 12px/1.4 var(--font-geist-mono), monospace;
 }
 
 .trajectory-toolbar {
@@ -884,7 +864,7 @@ summary:focus-visible {
   padding: 0 28px;
   border-bottom: 1px solid var(--line-soft);
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   scrollbar-width: none;
   white-space: nowrap;
 }
@@ -942,7 +922,7 @@ summary:focus-visible {
   border-bottom: 1px solid var(--line-soft);
   background: var(--wash);
   color: var(--ink-soft);
-  font: 11px/1.4 var(--font-geist-mono), monospace;
+  font: 13px/1.4 var(--font-geist-mono), monospace;
   white-space: nowrap;
 }
 
@@ -953,7 +933,7 @@ summary:focus-visible {
 
 .metadata-strip small {
   color: var(--faint);
-  font: 10px/1.35 var(--font-geist-sans), sans-serif;
+  font: 12px/1.35 var(--font-geist-sans), sans-serif;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -970,6 +950,37 @@ summary:focus-visible {
   scrollbar-width: thin;
 }
 
+.transcript-language-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: -10px 0 28px;
+  padding: 9px 11px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: var(--wash);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.transcript-language-note > span {
+  flex: 1;
+}
+
+.transcript-language-note small {
+  display: none;
+}
+
+.message-language-badge {
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--faint);
+  font: 12px/1.25 var(--font-geist-mono), monospace;
+  letter-spacing: 0.02em;
+}
+
 .message {
   display: flex;
   width: 100%;
@@ -984,7 +995,7 @@ summary:focus-visible {
   gap: 7px;
   margin-bottom: 9px;
   color: var(--ink-soft);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .message-meta strong {
@@ -994,7 +1005,7 @@ summary:focus-visible {
 .turn-label,
 .message-meta time {
   color: var(--faint);
-  font: 10px/1.4 var(--font-geist-mono), monospace;
+  font: 12px/1.4 var(--font-geist-mono), monospace;
 }
 
 .avatar {
@@ -1005,7 +1016,7 @@ summary:focus-visible {
   border: 1px solid #cbcbc6;
   border-radius: 7px;
   background: #ecece8;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 760;
 }
 
@@ -1019,7 +1030,7 @@ summary:focus-visible {
   max-width: calc(100% - 31px);
   margin: 0 0 13px 31px;
   color: #343432;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.65;
   white-space: pre-wrap;
 }
@@ -1047,7 +1058,7 @@ summary:focus-visible {
   border-radius: 7px !important;
   background: transparent !important;
   color: var(--muted) !important;
-  font: 11px/1.5 var(--font-geist-mono), monospace !important;
+  font: 13px/1.5 var(--font-geist-mono), monospace !important;
   letter-spacing: 0.02em;
 }
 
@@ -1102,7 +1113,7 @@ summary:focus-visible {
   border: 1px solid #c8c8c2;
   border-radius: 6px;
   background: var(--paper);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 760;
 }
 
@@ -1120,14 +1131,14 @@ summary:focus-visible {
 
 .tool-summary-copy strong {
   overflow: hidden;
-  font: 12px/1.4 var(--font-geist-mono), monospace;
+  font: 14px/1.4 var(--font-geist-mono), monospace;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .tool-kind {
   color: var(--faint);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.07em;
   text-transform: uppercase;
 }
@@ -1135,7 +1146,7 @@ summary:focus-visible {
 .tool-state {
   margin-left: auto;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -1175,7 +1186,7 @@ summary:focus-visible {
   justify-content: space-between;
   margin-bottom: 5px;
   color: var(--faint);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1188,7 +1199,7 @@ summary:focus-visible {
   border-radius: 5px;
   background: var(--paper);
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 620;
   letter-spacing: 0;
   text-transform: none;
@@ -1208,7 +1219,7 @@ pre {
   max-height: 280px;
   overflow: auto;
   color: #4a4a47;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
@@ -1229,12 +1240,12 @@ pre {
 .workspace-empty h1 {
   margin: 13px 0 7px;
   color: var(--ink);
-  font-size: 19px;
+  font-size: 20px;
 }
 
 .workspace-empty p {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .workspace-state {
@@ -1251,14 +1262,14 @@ pre {
 .workspace-state h1 {
   margin: 15px 0 7px;
   color: var(--ink);
-  font-size: 19px;
+  font-size: 20px;
   letter-spacing: -0.02em;
 }
 
 .workspace-state p {
   max-width: 370px;
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.6;
 }
 
@@ -1274,7 +1285,7 @@ pre {
   border: 1px dashed #aaa9a4;
   border-radius: 50%;
   color: var(--ink-soft);
-  font: 700 12px var(--font-geist-mono), monospace;
+  font: 700 13px var(--font-geist-mono), monospace;
 }
 
 .state-button {
@@ -1285,7 +1296,7 @@ pre {
   border-radius: 7px;
   background: var(--paper);
   color: var(--ink-soft);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -1306,7 +1317,7 @@ pre {
 
 .state-actions a {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -1337,7 +1348,7 @@ pre {
 }
 
 .context-header strong {
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .context-header-actions {
@@ -1352,7 +1363,7 @@ pre {
   border-radius: 999px;
   background: var(--paper);
   color: var(--muted);
-  font: 10px/1.4 var(--font-geist-mono), monospace;
+  font: 12px/1.4 var(--font-geist-mono), monospace;
 }
 
 .context-close {
@@ -1388,7 +1399,7 @@ pre {
   border: 0;
   background: transparent;
   color: #85857f;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -1444,7 +1455,7 @@ pre {
   border-radius: 5px;
   background: transparent;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -1468,7 +1479,7 @@ pre {
   padding-bottom: 12px;
   border-bottom: 1px solid var(--line-soft);
   color: var(--faint);
-  font: 10px/1.55 var(--font-geist-mono), monospace;
+  font: 12px/1.55 var(--font-geist-mono), monospace;
 }
 
 .source-line span {
@@ -1483,6 +1494,15 @@ pre {
   text-underline-offset: 2px;
 }
 
+.source-line .source-link-list {
+  display: flex;
+  min-width: max-content;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 9px;
+}
+
 .markdown-document {
   color: #464643;
 }
@@ -1490,7 +1510,7 @@ pre {
 .markdown-document h2 {
   margin: 32px 0 13px;
   color: var(--ink);
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 680;
   letter-spacing: -0.025em;
   line-height: 1.25;
@@ -1504,7 +1524,7 @@ pre {
   margin: 29px 0 10px;
   padding-top: 1px;
   color: var(--ink);
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 680;
   line-height: 1.4;
 }
@@ -1512,7 +1532,7 @@ pre {
 .markdown-document h4 {
   margin: 22px 0 8px;
   color: #333331;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 720;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1520,7 +1540,7 @@ pre {
 
 .markdown-document p {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.68;
 }
 
@@ -1529,7 +1549,7 @@ pre {
   border: 1px solid #dfdfda;
   border-radius: 3px;
   background: var(--paper);
-  font: 11px/1.5 var(--font-geist-mono), monospace;
+  font: 13px/1.5 var(--font-geist-mono), monospace;
 }
 
 .markdown-space {
@@ -1545,7 +1565,7 @@ pre {
 
 .markdown-bullet > span {
   color: var(--muted);
-  font: 12px/1.8 var(--font-geist-mono), monospace;
+  font: 14px/1.8 var(--font-geist-mono), monospace;
 }
 
 .document-tag {
@@ -1556,7 +1576,7 @@ pre {
   border-radius: 4px;
   background: var(--paper);
   color: var(--muted);
-  font: 10px/1.4 var(--font-geist-mono), monospace;
+  font: 13px/1.4 var(--font-geist-mono), monospace;
 }
 
 .stacked-toolbar {
@@ -1565,19 +1585,53 @@ pre {
   margin-bottom: 11px;
 }
 
-.variant-row {
-  display: flex;
-  gap: 5px;
-  overflow-x: auto;
-  padding-bottom: 2px;
-  scrollbar-width: none;
+.prompt-component-switch {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid #d9d9d4;
+  border-radius: 8px;
+  background: #ebebe7;
 }
 
-.variant-row::-webkit-scrollbar {
-  display: none;
+.prompt-component-switch button {
+  display: grid;
+  min-width: 0;
+  min-height: 62px;
+  align-content: center;
+  gap: 2px;
+  padding: 7px 6px;
+  border: 0;
+  border-right: 1px solid #d9d9d4;
+  background: transparent;
+  color: var(--muted);
+  text-align: left;
 }
 
-.variant-chip,
+.prompt-component-switch button:last-child {
+  border-right: 0;
+}
+
+.prompt-component-switch button:hover,
+.prompt-component-switch button.active {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.prompt-component-switch span {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 680;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prompt-component-switch small {
+  color: var(--faint);
+  font: 12px/1.25 var(--font-geist-mono), monospace;
+  overflow-wrap: anywhere;
+}
+
 .text-chip {
   min-width: max-content;
   padding: 6px 8px;
@@ -1585,15 +1639,8 @@ pre {
   border-radius: 999px;
   background: transparent;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 620;
-}
-
-.variant-chip.active,
-.variant-chip:hover {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: white;
 }
 
 .prompt-description {
@@ -1601,13 +1648,13 @@ pre {
 }
 
 .prompt-description strong {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .prompt-description p {
   margin: 6px 0 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -1619,7 +1666,7 @@ pre {
   border-radius: 8px;
   background: var(--paper);
   color: #41413e;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
@@ -1636,7 +1683,7 @@ pre {
   border-radius: 7px;
   background: rgb(255 255 255 / 55%);
   color: #61615c;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
@@ -1645,6 +1692,13 @@ pre {
   border-style: solid;
   background: #f1f1ed;
   color: var(--ink-soft);
+}
+
+.context-note.translation-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .panel-intro {
@@ -1656,7 +1710,7 @@ pre {
   display: block;
   margin-bottom: 8px;
   color: var(--faint);
-  font: 10px/1.4 var(--font-geist-mono), monospace;
+  font: 12px/1.4 var(--font-geist-mono), monospace;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -1665,14 +1719,14 @@ pre {
 .evaluation-hero h2 {
   margin: 0;
   color: var(--ink);
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.35;
 }
 
 .panel-intro p {
   margin: 9px 0 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.55;
 }
 
@@ -1683,7 +1737,7 @@ pre {
 .context-section h3 {
   margin: 0 0 9px;
   color: var(--ink);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -1692,7 +1746,7 @@ pre {
 .context-section p {
   margin: 0;
   color: #52524e;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.68;
 }
 
@@ -1712,7 +1766,7 @@ pre {
   margin: 0;
   padding: 10px 0;
   border-bottom: 1px solid var(--line-soft);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.45;
 }
 
@@ -1743,7 +1797,7 @@ pre {
   justify-content: space-between;
   color: var(--muted);
   cursor: pointer;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 650;
   list-style: none;
 }
@@ -1809,7 +1863,7 @@ pre {
   place-items: center;
   padding: 30px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   text-align: center;
 }
 
@@ -1820,7 +1874,7 @@ pre {
 
 .raw-toolbar > span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -1917,11 +1971,6 @@ pre {
     display: none;
   }
 
-  .benchmark-switch {
-    align-self: center;
-    margin: 0;
-  }
-
   .mobile-selectors {
     display: grid;
     grid-column: 1 / -1;
@@ -1953,7 +2002,7 @@ pre {
   .mobile-selectors label > span,
   .mobile-browser-field > span {
     color: var(--faint);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -1985,7 +2034,7 @@ pre {
 
   .mobile-browser-trigger strong {
     overflow: hidden;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1993,7 +2042,7 @@ pre {
 
   .mobile-browser-trigger span {
     color: var(--faint);
-    font-size: 10px;
+    font-size: 12px;
     white-space: nowrap;
   }
 
@@ -2049,11 +2098,11 @@ pre {
   }
 
   .trajectory-browser.mobile-open .catalog-filters {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 76px;
+    grid-template-columns: minmax(0, 1fr) 90px;
   }
 
-  .trajectory-browser.mobile-open .model-filter {
-    grid-column: auto;
+  .trajectory-browser.mobile-open .catalog-filters.single-filter {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .trajectory-browser.mobile-open .catalog-filter select,
@@ -2063,7 +2112,7 @@ pre {
 
   .trajectory-browser.mobile-open .catalog-view-switch button {
     min-height: 40px;
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .trajectory-browser.mobile-open .task-group-toggle {
@@ -2074,7 +2123,7 @@ pre {
   .trajectory-browser.mobile-open .task-trial-chip {
     min-width: 50px;
     min-height: 44px;
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .trajectory-browser-backdrop {
@@ -2100,7 +2149,7 @@ pre {
   .topbar h1 {
     display: -webkit-box;
     overflow: hidden;
-    font-size: 17px;
+    font-size: 20px;
     white-space: normal;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -2185,13 +2234,7 @@ pre {
     min-width: 31px;
     padding-right: 4px;
     padding-left: 4px;
-    font-size: 11px;
-  }
-
-  .benchmark-tab {
-    padding-right: 3px;
-    padding-left: 3px;
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .workspace {
@@ -2218,7 +2261,7 @@ pre {
   }
 
   .score-badge span {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .metadata-strip {
@@ -2238,6 +2281,11 @@ pre {
 
   .source-line {
     display: grid;
+  }
+
+  .source-line .source-link-list {
+    min-width: 0;
+    justify-content: flex-start;
   }
 
   .document-toolbar {
