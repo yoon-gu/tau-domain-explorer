@@ -630,6 +630,8 @@ test("keeps Task conversations and evaluation evidence visible in the workspace"
   assert.match(source, /className="evaluation-evidence"/u);
   assert.match(source, /Supplemental NL review · not included in the final score/u);
   assert.match(source, /aria-pressed=\{evaluationVisible\}/u);
+  assert.doesNotMatch(source, /Exactly reconstructed from runtime commit/u);
+  assert.doesNotMatch(source, /provider raw HTTP request/u);
 });
 
 test("catalog is narrowed to the three official τ² GPT-5 runs", async () => {

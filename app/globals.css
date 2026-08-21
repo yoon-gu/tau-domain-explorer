@@ -1755,7 +1755,7 @@ pre {
 .source-line {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 10px;
   margin-bottom: 23px;
   padding-bottom: 12px;

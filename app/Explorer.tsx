@@ -1679,7 +1679,6 @@ function PromptPanel({
   let translated = false;
   let title = "";
   let description = "";
-  let sourceLabel = "";
   let sourceUrl = domain.promptUrl;
   let waitingForDetail = false;
 
@@ -1693,7 +1692,6 @@ function PromptPanel({
       ? translatedText
       : promptMode === "template" ? agentTemplate : agentResolved;
     translated = Boolean(isKorean && translatedText);
-    sourceLabel = "τ² LLMAgent runtime";
     sourceUrl = documentSourceUrl(runtimeAgent.systemTemplate) ??
       `https://github.com/${domain.source.repository}/blob/964ef/src/tau2/agent/llm_agent.py`;
   } else if (component === "user") {
@@ -1713,9 +1711,6 @@ function PromptPanel({
       : promptMode === "template" ? userTemplate : userResolved;
     translated = Boolean(isKorean && translatedText);
     waitingForDetail = promptMode === "resolved" && !trajectory;
-    sourceLabel = domain.slug === "telecom"
-      ? "Tool-enabled τ² user simulator runtime"
-      : domain.promptSource;
     sourceUrl = documentSourceUrl(userPrompt) ?? domain.promptUrl;
   } else {
     title = evaluatorMode === "system" ? "NL evaluator system prompt" : "NL evaluator user input";
@@ -1729,7 +1724,6 @@ function PromptPanel({
     text = isKorean && translatedText ? translatedText : englishText;
     translated = Boolean(isKorean && translatedText);
     waitingForDetail = !trajectory;
-    sourceLabel = "τ² NL-assertions evaluator runtime";
     sourceUrl = documentSourceUrl(runtimeEvaluator.system) ??
       `https://github.com/${domain.source.repository}/blob/964ef/src/tau2/evaluator/evaluator_nl_assertions.py`;
   }
@@ -1834,10 +1828,6 @@ function PromptPanel({
       ) : null}
 
       <div className="source-line">
-        <span>
-          {sourceLabel}. Exactly reconstructed from runtime commit 964ef; provider raw HTTP
-          request and tool-schema serialization were not recorded.
-        </span>
         <span className="source-link-list">
           {sourceLinks.map((source) => (
             <a
