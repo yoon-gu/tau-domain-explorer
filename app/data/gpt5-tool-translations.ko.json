@@ -19,7 +19,7 @@
     },
     "tool_0082d26098471f00d270217f": {
       "sourceHash": "0082d26098471f00d270217fc27f9427c4c3ec677d873c4afd18945c05b5fd42",
-      "content": "APN 설정 재설정 중...\n네트워크 서비스를 다시 시작하는 중...\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "APN 설정 재설정 중...\n네트워크 서비스를 다시 시작하는 중...\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_00c366b0fa46f3c3858696a5": {
       "sourceHash": "00c366b0fa46f3c3858696a5d49ec158d01170577a7bd8734ee61613332f4ec8",
@@ -119,7 +119,7 @@
     },
     "tool_0656bbcdd1b4ed78c198b93c": {
       "sourceHash": "0656bbcdd1b4ed78c198b93c86d0e4bce4e78cc889a8e1612c506a5512729e7c",
-      "content": "성공. '메시지' 앱에 '저장소' 권한이 부여되었습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "성공. '메시지' 앱에 '저장소' 권한이 부여되었습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_065fdad5a1a222d64a8de71f": {
       "sourceHash": "065fdad5a1a222d64a8de71fbddbd1a10fef06f1dfe3eccb624d62296da62a6f",
@@ -175,7 +175,7 @@
     },
     "tool_08577c6adc642edac6b9506c": {
       "sourceHash": "08577c6adc642edac6b9506c12c6d140b159ba35c308c6c003e4a4ddec683ca1",
-      "content": "교환요청함"
+      "content": "교환 요청됨"
     },
     "tool_08adcfab8d87c4163dbd7ca7": {
       "sourceHash": "08adcfab8d87c4163dbd7ca730ec0e880f88daa02e9e3372238108b137bc9100",
@@ -183,7 +183,7 @@
     },
     "tool_08dacd6079010e2203449ecf": {
       "sourceHash": "08dacd6079010e2203449ecf0479d1efe86350e5026f87876501f1f0d1ed5344",
-      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_08ddcd30bb681234e53b9cc8": {
       "sourceHash": "08ddcd30bb681234e53b9cc8a90d5bbbca87f5241d970d21653c03a22afaa340",
@@ -191,7 +191,7 @@
     },
     "tool_08e3c4c91ca5c58e479ea699": {
       "sourceHash": "08e3c4c91ca5c58e479ea699df7b1a7e3743831ac17b27e1e967c7d74f41df23",
-      "content": "남자들"
+      "content": "남성용"
     },
     "tool_09523c6fe0be5539da970fcd": {
       "sourceHash": "09523c6fe0be5539da970fcd39e44eca4790f4efb4b7fa430f11be2fb92594b4",
@@ -295,7 +295,7 @@
     },
     "tool_0ef49a3c92f37310f483c666": {
       "sourceHash": "0ef49a3c92f37310f483c66652fd0687d3e723bda4e4ee91248e4d386a5a8f9c",
-      "content": "여자들"
+      "content": "여성용"
     },
     "tool_0f0827ca1b051ebb136d0cee": {
       "sourceHash": "0f0827ca1b051ebb136d0cee1f0a7e94739652f5c3f26aae420bac8201b7b233",
@@ -371,11 +371,11 @@
     },
     "tool_12501be74386422b6ed42736": {
       "sourceHash": "12501be74386422b6ed4273677b2be9761213924f76abc0c6c998e8bc7299efb",
-      "content": "이제 데이터 로밍이 활성화되었습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
+      "content": "이제 데이터 로밍이 활성화되었습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
     },
     "tool_1269755585366369b3865356": {
       "sourceHash": "1269755585366369b386535630d54fc0eb6aa80c0f85b25c75abf3ddf26ea9f0",
-      "content": "이제 모바일 데이터가 꺼져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "이제 모바일 데이터가 꺼져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_12860faec299f148580e1f23": {
       "sourceHash": "12860faec299f148580e1f2353a892955bc29b24f444ee4eaa4199c8636de8c8",
@@ -427,7 +427,7 @@
     },
     "tool_1428cf99a60dccb937933adc": {
       "sourceHash": "1428cf99a60dccb937933adc19967f2ae1f473eb2d795206b06135eb92a38a78",
-      "content": "VPN 연결이 성공적으로 끊어졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
+      "content": "VPN 연결이 성공적으로 끊어졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
     },
     "tool_149f7514de22152fc19cb824": {
       "sourceHash": "149f7514de22152fc19cb824b82dc0f5f4f51988763b0fdcb51cb1ed424fe14c",
@@ -467,7 +467,7 @@
     },
     "tool_1590c7d7b6b590d41714fbf1": {
       "sourceHash": "1590c7d7b6b590d41714fbf1f70e972c883ca1d03f7150565fe4804099d7ba62",
-      "content": "현재 Wi-Fi 통화가 꺼져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "현재 Wi-Fi 통화가 꺼져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_15af50a07d8a67856f62249f": {
       "sourceHash": "15af50a07d8a67856f62249fbb016130df248453189ff665c863634ef7a76bfd",
@@ -475,7 +475,7 @@
     },
     "tool_160ddbde1a7c732856f0fc72": {
       "sourceHash": "160ddbde1a7c732856f0fc728ad44ef30b32caafe5527b9b4c60e273cc4c0946",
-      "content": "딱딱한 껍질"
+      "content": "하드쉘"
     },
     "tool_16477688c0e00699c6cfa449": {
       "sourceHash": "16477688c0e00699c6cfa4497a3612d7e83c532062b64b250fed8908128ed548",
@@ -487,7 +487,7 @@
     },
     "tool_167b6b425a4803dbb2bc7b77": {
       "sourceHash": "167b6b425a4803dbb2bc7b7701c38870d4aac9c0aefdbbff3d0eb9a7d3df259c",
-      "content": "이제 데이터 로밍이 활성화되었습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "이제 데이터 로밍이 활성화되었습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_1699521e5c81c3f856ff963b": {
       "sourceHash": "1699521e5c81c3f856ff963b472413507386308df961e5f99d7c9f292a3b431f",
@@ -599,7 +599,7 @@
     },
     "tool_1d192818906dee1ff51ac311": {
       "sourceHash": "1d192818906dee1ff51ac311f7dc898e865812cdeac1e0ddb15308bd4c004760",
-      "content": "이제 모바일 데이터가 켜져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "이제 모바일 데이터가 켜져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_1d620fc279bd2568568004cc": {
       "sourceHash": "1d620fc279bd2568568004cc960273128b23a5a70fa623fdbcd40d7496674544",
@@ -615,7 +615,7 @@
     },
     "tool_1ee36a42394f17436bcb18af": {
       "sourceHash": "1ee36a42394f17436bcb18af45d5223babcf093fa7950be38d328954b5f85d54",
-      "content": "8 시간"
+      "content": "8시간"
     },
     "tool_1f70d99a0259db80d90b3008": {
       "sourceHash": "1f70d99a0259db80d90b3008e8502ab309a158f252ad5bd1e744555b01f8d1b1",
@@ -623,7 +623,7 @@
     },
     "tool_1f7dcc0038be21e6f4414452": {
       "sourceHash": "1f7dcc0038be21e6f441445252c9135ee82f05ddcffa988368eb69e4833a54db",
-      "content": "이제 데이터 로밍이 활성화되었습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "이제 데이터 로밍이 활성화되었습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_1f84c8cebc2c2fea00d7ff1d": {
       "sourceHash": "1f84c8cebc2c2fea00d7ff1ddc79f279278dc8401da71c042b1e996cf3e852b3",
@@ -847,7 +847,7 @@
     },
     "tool_2d9f0b1905bd95c9faa079a0": {
       "sourceHash": "2d9f0b1905bd95c9faa079a078fad0aeed780a0c62f227996acb11b7828dfeb3",
-      "content": "20 시간"
+      "content": "20시간"
     },
     "tool_2db8517f4e81330dde19d283": {
       "sourceHash": "2db8517f4e81330dde19d28394d09989fc094c339e4aef22396880197c036965",
@@ -863,7 +863,7 @@
     },
     "tool_2e564960ccb50fde178cc2a6": {
       "sourceHash": "2e564960ccb50fde178cc2a60aaa24891b21f05a92c76057ed83ba8cb2dd5c00",
-      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_2e5a1994060d5fdbbdd34cd5": {
       "sourceHash": "2e5a1994060d5fdbbdd34cd5f6a1e8e22adc0c901c29a47bf968709441aed319",
@@ -891,7 +891,7 @@
     },
     "tool_2f3d396882bcef3d266b4df6": {
       "sourceHash": "2f3d396882bcef3d266b4df60018634163cb9a2d9df7f362afe26190c0e5c379",
-      "content": "이제 데이터 절약 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "이제 데이터 절약 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_2f6c34ee4aadf52b337b9f87": {
       "sourceHash": "2f6c34ee4aadf52b337b9f87c1d26cb15d255397cd538e7da1c03800c8483ae2",
@@ -1151,7 +1151,7 @@
     },
     "tool_3e6063cec5a586f99274af43": {
       "sourceHash": "3e6063cec5a586f99274af4348e4c1af857fbd78a52a990f7804cbb3f041e034",
-      "content": "10 시간"
+      "content": "10시간"
     },
     "tool_3ea5c192e366d3188a5a472d": {
       "sourceHash": "3ea5c192e366d3188a5a472dfafca2ec8d034f0651babafa801910016298e6f4",
@@ -1163,7 +1163,7 @@
     },
     "tool_3f2072ce6c853e90d1f9987a": {
       "sourceHash": "3f2072ce6c853e90d1f9987a6540a6e5838d80b0db25a66c09ee8fc9859dcc21",
-      "content": "APN 설정 재설정 중...\n네트워크 서비스를 다시 시작하는 중...\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "APN 설정 재설정 중...\n네트워크 서비스를 다시 시작하는 중...\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_40758d8f0b3e5ce47d3eaff4": {
       "sourceHash": "40758d8f0b3e5ce47d3eaff4aeac16f30a12244acdba10b793f2488b026d53cb",
@@ -1287,7 +1287,7 @@
     },
     "tool_48af7780a28c883e59ce208d": {
       "sourceHash": "48af7780a28c883e59ce208dcb030b5a50341007c8d59835e0482ffa87b5cbbd",
-      "content": "회선 요금 L1002"
+      "content": "회선 L1002 요금"
     },
     "tool_4923a8840b08b1710940d4b1": {
       "sourceHash": "4923a8840b08b1710940d4b136e9c2196eb4f8baf838ff4257a2ba0141d4f1b8",
@@ -1335,11 +1335,11 @@
     },
     "tool_4b35efb202a1b1538c4dd476": {
       "sourceHash": "4b35efb202a1b1538c4dd476130fa657222c07544a0d2a99bd3232951a5f39dc",
-      "content": "이제 데이터 로밍이 꺼졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "이제 데이터 로밍이 꺼졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_4b510e7fb1195d56658e4cf5": {
       "sourceHash": "4b510e7fb1195d56658e4cf55a5e6be93bb8a9c16160e6054b365524d50ebd79",
-      "content": "이제 모바일 데이터가 켜져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
+      "content": "이제 모바일 데이터가 켜져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
     },
     "tool_4b66891fa3487106eca475a2": {
       "sourceHash": "4b66891fa3487106eca475a2fef849a928a978e2bd62836db1723ddac2c7c1b0",
@@ -1431,7 +1431,7 @@
     },
     "tool_514bdf6a4e656b3c838d8ad8": {
       "sourceHash": "514bdf6a4e656b3c838d8ad8e783612d11e148335d46aa20944016c88b410535",
-      "content": "이제 모바일 데이터가 켜져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "이제 모바일 데이터가 켜져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_5156e0d732748f3878965acd": {
       "sourceHash": "5156e0d732748f3878965acde09ef3718483bdff27988526863a550345311dc0",
@@ -1503,7 +1503,7 @@
     },
     "tool_54a29c95ca022d10c3fa7a5f": {
       "sourceHash": "54a29c95ca022d10c3fa7a5f1541a330a770c4c0ca4880fdb284b8c5749791de",
-      "content": "이제 데이터 절약 모드가 켜졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "이제 데이터 절약 모드가 켜졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_55ccec97b8f51cb16b44556a": {
       "sourceHash": "55ccec97b8f51cb16b44556aa6d7f4ae4ae6ca5df5013087e39971baca1694c7",
@@ -1531,7 +1531,7 @@
     },
     "tool_5733b73c5c5cf7e32725949a": {
       "sourceHash": "5733b73c5c5cf7e32725949a234110c274ffc69f65d0b1fe4679953e6166f836",
-      "content": "네트워크 서비스를 다시 시작하는 중...\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "네트워크 서비스를 다시 시작하는 중...\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_58190ffabf981aa3956f64e7": {
       "sourceHash": "58190ffabf981aa3956f64e7fb6c336b181e7145950a37f4ce6d761a81f5d083",
@@ -1563,7 +1563,7 @@
     },
     "tool_58fa09a040106e4dc9d0da33": {
       "sourceHash": "58fa09a040106e4dc9d0da33ed77767ec39ac34d6b8e0d00204c5a3d649455be",
-      "content": "연결을 끊을 활성 VPN 연결이 없습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "연결을 끊을 활성 VPN 연결이 없습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_59117c2b4371875154c21256": {
       "sourceHash": "59117c2b4371875154c212561f2d434871df2bd666ab7858b66289f3acd9e9a3",
@@ -1675,7 +1675,7 @@
     },
     "tool_5eacc3ee4838234489d113d6": {
       "sourceHash": "5eacc3ee4838234489d113d698c8ddbb9d72aa1c25283cb5483a2208cb53b560",
-      "content": "SIM 카드가 성공적으로 다시 장착되었습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "SIM 카드가 성공적으로 다시 장착되었습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_5eb67f9f8409b9c3f7397356": {
       "sourceHash": "5eb67f9f8409b9c3f739735633cbdf92121393d0e13bd0f464b1b2a6a15ad2dc",
@@ -1783,7 +1783,7 @@
     },
     "tool_64e930dadf7f0d5138392d3c": {
       "sourceHash": "64e930dadf7f0d5138392d3c63f914c65d7a9758958da7b5a52699ce447237e8",
-      "content": "VPN 연결이 성공적으로 끊어졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "VPN 연결이 성공적으로 끊어졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_6587407c5a37630cdebc06f7": {
       "sourceHash": "6587407c5a37630cdebc06f7d0ad436a78472708d3fd38ddc2b8b6c0e197937c",
@@ -1887,7 +1887,7 @@
     },
     "tool_68acaaad770e5e1a3e655713": {
       "sourceHash": "68acaaad770e5e1a3e655713047e9320f07c8b2e4611bd3dfb1aa0e720e923a9",
-      "content": "이제 데이터 절약 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "이제 데이터 절약 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_6904127a6ece6153a03e62ba": {
       "sourceHash": "6904127a6ece6153a03e62ba52f7bd036100d7da3d7d9b55ca3848d9d70da4da",
@@ -2059,7 +2059,7 @@
     },
     "tool_736249dae06382ba28d99adf": {
       "sourceHash": "736249dae06382ba28d99adffbccbd6a4ee9e400ddabed0857ad23ea343e1643",
-      "content": "현재 Wi-Fi 통화가 켜져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "현재 Wi-Fi 통화가 켜져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_738c8bf7038c505340b18bba": {
       "sourceHash": "738c8bf7038c505340b18bba6e17a1a0e89abdbc6a563f1b1a00f6cde72eeee6",
@@ -2163,7 +2163,7 @@
     },
     "tool_79b62c4956db9b86e7149489": {
       "sourceHash": "79b62c4956db9b86e71494897cbc7325efa213a047e3c655f29b0e0078c52238",
-      "content": "VPN 연결이 성공적으로 끊어졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "VPN 연결이 성공적으로 끊어졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_7a1d8b768eca4e8f0e7da3fe": {
       "sourceHash": "7a1d8b768eca4e8f0e7da3fec514029b7aa1bab24171646ff5f21e6d777244c7",
@@ -2395,15 +2395,15 @@
     },
     "tool_8c4205ce1a380872e11646e4": {
       "sourceHash": "8c4205ce1a380872e11646e48472628059903076be090f237742ce4b69e59732",
-      "content": "용기"
+      "content": "통형"
     },
     "tool_8cf2281bb550133c724d13cc": {
       "sourceHash": "8cf2281bb550133c724d13ccdc1e6d88eb8b2f473bf9b56b5f120f2189557d9b",
-      "content": "이제 데이터 로밍이 꺼졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "이제 데이터 로밍이 꺼졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_8cf68ce508ed617776b5ffae": {
       "sourceHash": "8cf68ce508ed617776b5ffae609e4b75b0309090b6e4ad82bc68e7a26d2a7240",
-      "content": "이제 데이터 절약 모드가 켜졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
+      "content": "이제 데이터 절약 모드가 켜졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
     },
     "tool_8d0f76e55cdb9cbd730adf30": {
       "sourceHash": "8d0f76e55cdb9cbd730adf30dfdce410ffb0c62b62967763a88da98275397ead",
@@ -2419,7 +2419,7 @@
     },
     "tool_8e4f7776f0fe6f76140495d7": {
       "sourceHash": "8e4f7776f0fe6f76140495d7ce9f4450fccd1093c6306a0fa248496df4705796",
-      "content": "상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_8eb1506b5f2c2760e00ba0cd": {
       "sourceHash": "8eb1506b5f2c2760e00ba0cdec321bd474aa441e1c8a25202312d96e8775acbb",
@@ -2443,7 +2443,7 @@
     },
     "tool_8ff8067d033282f06e81cdca": {
       "sourceHash": "8ff8067d033282f06e81cdca0362d2e23c237057899ad0aef0341f797fd42bd2",
-      "content": "네트워크 서비스를 다시 시작하는 중...\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "네트워크 서비스를 다시 시작하는 중...\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_907814bbbc15ea0ddb864ae1": {
       "sourceHash": "907814bbbc15ea0ddb864ae1974e9fb43dac6dc588f62c6550c01c5b73c2098e",
@@ -2463,7 +2463,7 @@
     },
     "tool_92449121f6325839e0c2334f": {
       "sourceHash": "92449121f6325839e0c2334f5e003e82aef02cc03b19289e5bed862047bea99a",
-      "content": "딸깍거리는"
+      "content": "클릭형"
     },
     "tool_9247a5d62025a2119a06636e": {
       "sourceHash": "9247a5d62025a2119a06636ea8ea94b463f739db7648ebf5df2054c35d8a7c9a",
@@ -2595,7 +2595,7 @@
     },
     "tool_998786b1c7a08700c73e370e": {
       "sourceHash": "998786b1c7a08700c73e370eeeb0f4c19988701116babd3dc1a6068f92446cb9",
-      "content": "이제 비행기 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
+      "content": "이제 비행기 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
     },
     "tool_99886c4a89fb94d2d64535b1": {
       "sourceHash": "99886c4a89fb94d2d64535b18741ed56342188820c80908721d2eae9a0af9b27",
@@ -2867,7 +2867,7 @@
     },
     "tool_a89083372669aba46a37e8ab": {
       "sourceHash": "a89083372669aba46a37e8abb199af573c87c631195f82a8e909e7f2c63b990b",
-      "content": "현재 Wi-Fi가 켜져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "현재 Wi-Fi가 켜져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_a8d6225b9ec32c393f183a22": {
       "sourceHash": "a8d6225b9ec32c393f183a226514b5dfa0f8df961d473ab70f4dc297bd86539b",
@@ -2891,11 +2891,11 @@
     },
     "tool_aa3978aacdd63eedd87afe91": {
       "sourceHash": "aa3978aacdd63eedd87afe914a05281e8a8721fc6bea0ad7a1c8d32dcffd5971",
-      "content": "상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_aa45551a0ef22da54983423e": {
       "sourceHash": "aa45551a0ef22da54983423e242334b242764a696a5687cb8f574db1dfcf9df8",
-      "content": "현재 Wi-Fi 통화가 켜져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "현재 Wi-Fi 통화가 켜져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_aab94ca06981b01712a48f2a": {
       "sourceHash": "aab94ca06981b01712a48f2a8242a21c80ddafd8c2ebb45ba2f46c7b4806ec0a",
@@ -3047,7 +3047,7 @@
     },
     "tool_b56d5a4d06aa0292100aefd0": {
       "sourceHash": "b56d5a4d06aa0292100aefd09c372f7dfb755f0975942917bc7a4f2c16e741c1",
-      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_b5e45235c287f171a79e0fb4": {
       "sourceHash": "b5e45235c287f171a79e0fb45c019271cb7ef59f01a0dfe9fc71cfa35465da48",
@@ -3063,7 +3063,7 @@
     },
     "tool_b6d9607c9720d158057b3459": {
       "sourceHash": "b6d9607c9720d158057b34597914f2442fe1006aed7fb854332786f96a3e7b61",
-      "content": "고객 John Smith(C1001) 라인 포함 L1002 (555-123-2002) 프랑스 로밍은 훌륭함에도 불구하고 모바일 데이터가 없습니다 5G 신호. 완료된 작업: 백엔드에서 로밍이 활성화되었습니다. 확인된 라인 활성; 계획 P1002 와 15 GB 사용; 연료를 보급하다 2 GB가 성공적으로 완료되었습니다. 데이터/로밍 전환; APN을 기본값으로 재설정하고 재부팅했습니다. VPN 꺼짐; 데이터 세이버 꺼짐; 네트워크 모드가 다음으로 설정됨 4G/5G 선호하고 시도한 4G-only; SIM이 재장착되었습니다. 비행기 모드 순환; 백엔드 로밍 새로 고침(비활성화/활성화) 장치 쇼 4 바 5G 및 데이터 아이콘이 있지만 속도 테스트 및 웹 사이트에서 \"연결 없음\"이라고 보고됩니다. 전문가에게 국제 데이터에 대한 백엔드 프로비저닝, 잠재적인 로밍/데이터 차단, APN 프로필 프로비저닝을 확인하고 네트워크 측 새로 고침(HLR/HSS/PGW 세션 재설정)을 수행하도록 요청하세요. 긴급: 고객은 뛰어난 인터넷 속도를 요구합니다."
+      "content": "고객 John Smith(C1001) 라인 포함 L1002 (555-123-2002) 프랑스 로밍은 매우 좋음에도 불구하고 모바일 데이터가 없습니다 5G 신호. 완료된 작업: 백엔드에서 로밍이 활성화되었습니다. 확인된 라인 활성; 계획 P1002 와 15 GB 사용; 연료를 보급하다 2 GB가 성공적으로 완료되었습니다. 데이터/로밍 전환; APN을 기본값으로 재설정하고 재부팅했습니다. VPN 꺼짐; 데이터 세이버 꺼짐; 네트워크 모드가 다음으로 설정됨 4G/5G 선호하고 시도한 4G-only; SIM이 재장착되었습니다. 비행기 모드 순환; 백엔드 로밍 새로 고침(비활성화/활성화) 장치 쇼 4 바 5G 및 데이터 아이콘이 있지만 속도 테스트 및 웹 사이트에서 \"연결 없음\"이라고 보고됩니다. 전문가에게 국제 데이터에 대한 백엔드 프로비저닝, 잠재적인 로밍/데이터 차단, APN 프로필 프로비저닝을 확인하고 네트워크 측 새로 고침(HLR/HSS/PGW 세션 재설정)을 수행하도록 요청하세요. 긴급: 고객은 뛰어난 인터넷 속도를 요구합니다."
     },
     "tool_b7393cb04aad80e2b84c3f24": {
       "sourceHash": "b7393cb04aad80e2b84c3f24a377a2d6422a8710bdc422ab2a40f428e10e3b69",
@@ -3095,7 +3095,7 @@
     },
     "tool_b8d511e4be1f9adf53485194": {
       "sourceHash": "b8d511e4be1f9adf534851940b2ccce1e8513a400278116fa36f0f7dac66d9c5",
-      "content": "이제 데이터 절약 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "이제 데이터 절약 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_b8e7db2e06bef1120cb43e4f": {
       "sourceHash": "b8e7db2e06bef1120cb43e4ff44e2dd1d1b3a492ed79efbf1884d66e289c89b1",
@@ -3131,7 +3131,7 @@
     },
     "tool_bb1f9ffd667ec61e170501cb": {
       "sourceHash": "bb1f9ffd667ec61e170501cbb8422dec30e144ce78257895f2023e6dcd6f646d",
-      "content": "요금제 요금"
+      "content": "요금제 이용료"
     },
     "tool_bb2746c4ddbd6052ee7d9e82": {
       "sourceHash": "bb2746c4ddbd6052ee7d9e82a606c1368bffc7b581a6f423ee7d0994eb1368e0",
@@ -3147,7 +3147,7 @@
     },
     "tool_bbb5f775b7dba8aa46882b12": {
       "sourceHash": "bbb5f775b7dba8aa46882b126d831b7e96c2de8c9d8d00ebe361dfd12a255d6a",
-      "content": "성공. '메시지' 앱에 'SMS' 권한이 부여되었습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "성공. '메시지' 앱에 'SMS' 권한이 부여되었습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_bbcb07d7e8fd53d3167ca442": {
       "sourceHash": "bbcb07d7e8fd53d3167ca4421e1ca6116f0722ea3baede5a62b628847a1a7ecb",
@@ -3167,7 +3167,7 @@
     },
     "tool_bccdc18e7b6ac085553ef044": {
       "sourceHash": "bccdc18e7b6ac085553ef044cadec50c310dffd4a86277e0c5c3940aa0e9ce04",
-      "content": "전송 성공"
+      "content": "상담원 연결 완료"
     },
     "tool_bd4202e434f91f776ead771c": {
       "sourceHash": "bd4202e434f91f776ead771c8d8e04d839c7d5009f75bc83bd277406fb89679b",
@@ -3399,7 +3399,7 @@
     },
     "tool_c9e1a78afbeaa90a10c18926": {
       "sourceHash": "c9e1a78afbeaa90a10c189269960e0ee0ca6770358c0c1e2031bd3f3c52c28a6",
-      "content": "스테인레스 스틸"
+      "content": "스테인리스 스틸"
     },
     "tool_c9f9748ce8868266d03a0adf": {
       "sourceHash": "c9f9748ce8868266d03a0adf45bb6ecffd5036a1dfa49381ac055a89a907b17a",
@@ -3527,7 +3527,7 @@
     },
     "tool_d165b2dea58dfb5245182489": {
       "sourceHash": "d165b2dea58dfb524518248993a2e80b1e34f220e52cd2ee05c17909f000fd2b",
-      "content": "이제 비행기 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "이제 비행기 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_d1f72f757331cedf95701ada": {
       "sourceHash": "d1f72f757331cedf95701adac14784768bd2f186f72d247fca3ccf38f90ed9e8",
@@ -3607,7 +3607,7 @@
     },
     "tool_d50dff33390f14debffddca7": {
       "sourceHash": "d50dff33390f14debffddca74eaa003e1dc0d050364175d4975ab86582acf3d8",
-      "content": "이제 데이터 로밍이 꺼졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "이제 데이터 로밍이 꺼졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_d5c18b65fbb52da8befdbc98": {
       "sourceHash": "d5c18b65fbb52da8befdbc981209c9698dca5280c46b618b211d5a7b4dab9037",
@@ -3699,11 +3699,11 @@
     },
     "tool_dafc8f82921d39aa19e05617": {
       "sourceHash": "dafc8f82921d39aa19e05617cfee1228534a4de9a8f67db8c29bf9b3cf4006df",
-      "content": "상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_db953d2aa06f16edd194759a": {
       "sourceHash": "db953d2aa06f16edd194759a45bee9884d8ba9b9c83c6f503b2fb37fd0c228b1",
-      "content": "SIM 카드가 성공적으로 다시 장착되었습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "SIM 카드가 성공적으로 다시 장착되었습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_dbc2f613b14cadf32c551aab": {
       "sourceHash": "dbc2f613b14cadf32c551aab70bfa927467316d21e54092688a3bd65f64c391c",
@@ -3715,7 +3715,7 @@
     },
     "tool_dc7e0e691f26423d6591681f": {
       "sourceHash": "dc7e0e691f26423d6591681f57b8099264b77f31c37ba18a631c7a09a4e96e2a",
-      "content": "상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
+      "content": "상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
     },
     "tool_dc8bf8964a19427a22ed5f78": {
       "sourceHash": "dc8bf8964a19427a22ed5f78bc53b46b7eceffee2a34416d294bd7df63460114",
@@ -3739,7 +3739,7 @@
     },
     "tool_ddebe9d23421f359e8b1caec": {
       "sourceHash": "ddebe9d23421f359e8b1caecd6c98b8f6e19cf75d110fbbcb8eaacf950376374",
-      "content": "이제 모바일 데이터가 꺼져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "이제 모바일 데이터가 꺼져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_de0f732ef8d91fe0e9bc04e3": {
       "sourceHash": "de0f732ef8d91fe0e9bc04e3a79e4e63ec2681c3a97e7f20aa5b1027359e830a",
@@ -3763,7 +3763,7 @@
     },
     "tool_e00484af9028ab8e67a2df2e": {
       "sourceHash": "e00484af9028ab8e67a2df2efd7946a15fb037c3e1d73140a566ad67a699d5cb",
-      "content": "이제 데이터 로밍이 활성화되었습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "이제 데이터 로밍이 활성화되었습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_e04cd0aab68afa29e12733e0": {
       "sourceHash": "e04cd0aab68afa29e12733e00c058f3626e02372a8f7a0163815a32e4c5fac04",
@@ -3779,11 +3779,11 @@
     },
     "tool_e1b36197a3f91c76e02614ac": {
       "sourceHash": "e1b36197a3f91c76e02614acfcafa1033717b0defdf6aaaaef12c918fa472ff3",
-      "content": "이제 비행기 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "이제 비행기 모드가 꺼졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_e2176294c2a8e4eebb0c8947": {
       "sourceHash": "e2176294c2a8e4eebb0c89476f1eb2b4cf9ddb2839adf0170111afd6ab154d70",
-      "content": "현재 Wi-Fi가 꺼져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "현재 Wi-Fi가 꺼져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_e21d4db19074f5b355b03e01": {
       "sourceHash": "e21d4db19074f5b355b03e011ab2c0957374140c76197e9baf7a8737ffc83808",
@@ -3855,7 +3855,7 @@
     },
     "tool_e692f13e843cdeb64baa4d25": {
       "sourceHash": "e692f13e843cdeb64baa4d255e6fe829cec4944d09e5e19d058a57497c26ec59",
-      "content": "이제 데이터 로밍이 활성화되었습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "이제 데이터 로밍이 활성화되었습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_e6bb5689beec52c4672bd4df": {
       "sourceHash": "e6bb5689beec52c4672bd4df92c3613d128d30cdc2b704f76953fe43d89c4ae8",
@@ -3907,7 +3907,7 @@
     },
     "tool_ea8daead13353e5666a7a430": {
       "sourceHash": "ea8daead13353e5666a7a430190f70184443d0dfb24af6407e6c9f51fbe93985",
-      "content": "현재 Wi-Fi가 켜져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "현재 Wi-Fi가 켜져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_eb1e005492ee3e521ad6c38d": {
       "sourceHash": "eb1e005492ee3e521ad6c38de3b9643dfcc7d8133856d21404745d5ed6b5c559",
@@ -4007,7 +4007,7 @@
     },
     "tool_f11c774abebd6a6e82d1eb2a": {
       "sourceHash": "f11c774abebd6a6e82d1eb2adbbd72b53800f2838108528fe98cba7c1ae02ee7",
-      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_f1908a7c45aa1249ba4e6e6a": {
       "sourceHash": "f1908a7c45aa1249ba4e6e6ac0b380630e90ff67fa27235b4ed69e6f79c0df28",
@@ -4019,7 +4019,7 @@
     },
     "tool_f2b3fb71489c8ca1290eaf58": {
       "sourceHash": "f2b3fb71489c8ca1290eaf58ae68172e94f89fce8a6c707a484aadd5dfb6ad97",
-      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
+      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
     },
     "tool_f2e0298f1b3695af8dcdcdf6": {
       "sourceHash": "f2e0298f1b3695af8dcdcdf68bc6763d9fb6cde0a55e5a8038c9e24be4afd947",
@@ -4055,15 +4055,15 @@
     },
     "tool_f5d10ea8db78ee6091fcbcbc": {
       "sourceHash": "f5d10ea8db78ee6091fcbcbc995ed66fcbb1b9c08dc3f2a342f0acec154bafc8",
-      "content": "네트워크 서비스를 다시 시작하는 중...\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
+      "content": "네트워크 서비스를 다시 시작하는 중...\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔋 80%"
     },
     "tool_f60591bbf9aee708e62491d0": {
       "sourceHash": "f60591bbf9aee708e62491d0af470804f42782399c6fa9ed397e3fff5445d6af",
-      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "기본 네트워크 모드는 다음으로 설정됩니다: 4g_5g_preferred\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_f64324bc202ae751d73a6866": {
       "sourceHash": "f64324bc202ae751d73a68669b8ca1034717154febc1a11564971937a2c120b7",
-      "content": "현재 Wi-Fi가 꺼져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "현재 Wi-Fi가 꺼져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_f65e352de2838c24ef39e2d5": {
       "sourceHash": "f65e352de2838c24ef39e2d50fd14f57b5c9f9bb5b2f4497cb4dbdc86467ca3f",
@@ -4079,7 +4079,7 @@
     },
     "tool_f7f45292293dd4ef35cde01f": {
       "sourceHash": "f7f45292293dd4ef35cde01f36e8e3e0aa7cc62016a7f8eb88fc23b15783ae72",
-      "content": "APN 설정은 재부팅 시 재설정됩니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "APN 설정은 재부팅 시 재설정됩니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_f7f7fc4c9efc51486a61d1e1": {
       "sourceHash": "f7f7fc4c9efc51486a61d1e1fcdbe296400b54b1cb407a2d26d5b38f3435f3dc",
@@ -4107,7 +4107,7 @@
     },
     "tool_f95dc2ce9ebbf525ee4b8d90": {
       "sourceHash": "f95dc2ce9ebbf525ee4b8d90dc9122c3d3999a16719cda8dbca383e4ff21b532",
-      "content": "이제 모바일 데이터가 켜져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "이제 모바일 데이터가 켜져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_f9950085e751ead93ab65e84": {
       "sourceHash": "f9950085e751ead93ab65e840966cb44d51a54d35894b573d6a576ad5e2e9685",
@@ -4159,7 +4159,7 @@
     },
     "tool_fc1f41460f76817eaec35476": {
       "sourceHash": "fc1f41460f76817eaec354760e709b5516700a7bdc4ca2758b55734c1c9bd7ea",
-      "content": "이제 데이터 절약 모드가 켜졌습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
+      "content": "이제 데이터 절약 모드가 켜졌습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔽 데이터 세이버 | 🔒 VPN 연결됨 | 🔋 80%"
     },
     "tool_fcb1fb8a51c5e7c464c38d15": {
       "sourceHash": "fcb1fb8a51c5e7c464c38d158831d05097cc538cdfb7b2c79b7c01e732132c70",
@@ -4175,7 +4175,7 @@
     },
     "tool_fdb43571b0a386037f6d9fb1": {
       "sourceHash": "fdb43571b0a386037f6d9fb1bd245fcef0c2dac0808d4c95d2c5a6418a6b6cd6",
-      "content": "상태 표시줄: 📶⁴ 훌륭함 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
+      "content": "상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📵 데이터 비활성화됨 | 🔋 80%"
     },
     "tool_fdc8650d6e560b6ea701b256": {
       "sourceHash": "fdc8650d6e560b6ea701b256812b19c78e29ee4806ceab42f1b2e10866c0217f",
@@ -4203,7 +4203,7 @@
     },
     "tool_feb9e6fc25c22727ab63e761": {
       "sourceHash": "feb9e6fc25c22727ab63e76186ee3768f9a11410627a06462ef03ab7f027795a",
-      "content": "촉각적인"
+      "content": "택타일"
     },
     "tool_fef54839f6072b9824309a4a": {
       "sourceHash": "fef54839f6072b9824309a4a3c31c663cdd1f6a8612c2838d57342b29507054a",
@@ -4215,7 +4215,7 @@
     },
     "tool_ff345e1c229ce5ed2f042fce": {
       "sourceHash": "ff345e1c229ce5ed2f042fce8a1cc189ae92cebb30e813a4a572de2188c503fd",
-      "content": "현재 Wi-Fi가 켜져 있습니다.\n상태 표시줄: 📶⁴ 훌륭함 | 5G | 📱 데이터 활성화 | 🔋 80%"
+      "content": "현재 Wi-Fi가 켜져 있습니다.\n상태 표시줄: 📶⁴ 매우 좋음 | 5G | 📱 데이터 활성화 | 🔋 80%"
     },
     "tool_ff7ca1f123ef4f9ff7478b9f": {
       "sourceHash": "ff7ca1f123ef4f9ff7478b9f480e97bde2b4c53130dfba1d7877701907ede5e8",

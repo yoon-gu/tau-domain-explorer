@@ -40,8 +40,9 @@ const protectedContextSource = [
   "#[A-Za-z0-9_-]+",
   "\\b\\d{4}-\\d{2}-\\d{2}\\b",
   "\\b\\d{1,2}:\\d{2}(?::\\d{2})?(?:\\s?[AP]M)?\\b",
-  "[$€£¥]\\s?\\d[\\d,.]*(?:\\s?(?:USD|EUR|GBP|KRW))?",
+  "[$€£¥]\\s?\\d(?:\\d|[,.](?=\\d))*(?:\\s?(?:USD|EUR|GBP|KRW))?",
   "\\b(?=[A-Za-z0-9_-]*[A-Za-z])(?=[A-Za-z0-9_-]*\\d)[A-Za-z0-9_-]{3,}\\b",
+  "\\b[a-z][a-z0-9_]+\\((?=[^()\\n]*(?:=|[\"']))[^()\\n]*\\)",
   "\\b[a-z]+(?:_[a-z0-9]+)+\\b",
   "\\b\\d+(?:[.,]\\d+)*[A-Za-z]{1,6}\\b",
   "\\b\\d+(?:[.,]\\d+)*(?:%|st|nd|rd|th)?\\b",
@@ -143,6 +144,86 @@ function assertContextTranslation(
     protectedContextLiterals(source, protectedSource),
     `${label} protected literals`,
   );
+}
+
+function assertTranscriptNaturalness(source, translated, role, domainId, label) {
+  const globallyMechanical = [
+    /귀하/u,
+    /당신/u,
+    /제공하십시오/u,
+    /계정을 식별/u,
+    /고객님의 고객 ID/u,
+    /제가 도와드릴 수 있어요/u,
+    /예약을 예약/u,
+    /\\n원문 표기:/u,
+    /(?:지불|결제) 할당/u,
+    /이름과 이름/u,
+    /그것은 제가 필요한 모든 것을 다룹니다/u,
+    /고객님은 그것을 얻었습니다/u,
+    /정말 천만에요/u,
+    /\$\d(?:\d|[,.](?=\d))*[,.][가-힣]/u,
+  ];
+  for (const pattern of globallyMechanical) {
+    assert.doesNotMatch(translated, pattern, `${label} mechanical Korean: ${pattern}`);
+  }
+
+  if (role === "assistant") {
+    assert.doesNotMatch(
+      translated,
+      /(?:^|[\s"'“‘(])(?:제|내)\s*(?:계정|회선|휴대폰|전화|SIM)\b/imu,
+      `${label} assistant perspective`,
+    );
+  }
+
+  if (domainId === "tau2:retail") {
+    if (/\bboots?\b/iu.test(source)) {
+      assert.doesNotMatch(translated, /부팅/u, `${label} boots must mean footwear`);
+    }
+    if (/\bpuzzle\b[\s\S]*\bpieces\b|\bpieces\b[\s\S]*\bpuzzle\b/iu.test(source)) {
+      assert.doesNotMatch(translated, /작품/u, `${label} puzzle pieces`);
+    }
+    if (/\border (?:was |has been )?placed\b|\bplaced (?:the |an? )?order\b/iu.test(source)) {
+      assert.doesNotMatch(translated, /배치/u, `${label} placed order`);
+    }
+    if (/\bon file\b/iu.test(source)) {
+      assert.doesNotMatch(translated, /파일/u, `${label} on-file account data`);
+    }
+    assert.doesNotMatch(translated, /\bi[칠오]\b|\bx이\b/u, `${label} product model`);
+  }
+
+  if (domainId === "tau2:airline") {
+    if (/\breturn\b/iu.test(source) && /\b(?:flight|date|leg|trip|itinerary)\b|same day/iu.test(source)) {
+      assert.doesNotMatch(
+        translated,
+        /당일\s*반환|귀국[^\n.]{0,30}반환|반환[^\n.]{0,30}(?:귀국|항공편|일정|날짜)/u,
+        `${label} return flight`,
+      );
+    }
+    if (/\bdirect\b/iu.test(source) && /\bflight/iu.test(source)) {
+      assert.doesNotMatch(
+        translated,
+        /직접\s*(?:및|항공편|편|비행)/u,
+        `${label} direct flight`,
+      );
+    }
+  }
+
+  if (domainId === "tau2:telecom") {
+    const proseOnly = translated.replace(
+      /\b[a-z][a-z0-9_]+\((?=[^()\n]*(?:=|["']))[^()\n]*\)/gu,
+      "",
+    );
+    assert.doesNotMatch(
+      proseOnly,
+      /연료(?:를)?\s*보급|서비스 안 함|서비스를 제공하지 않음|서비스가 제공되지 않|실행 그리고|추가했습니다\s*\d|MMS 다시/u,
+      `${label} telecom terminology`,
+    );
+    assert.doesNotMatch(
+      proseOnly,
+      /\b(?:No Service|No Signal|Data Disabled)\b/u,
+      `${label} untranslated status label`,
+    );
+  }
 }
 
 function assertToolTranslation(source, translated, label) {
@@ -425,6 +506,13 @@ function fontPixels(css, selector) {
   return Number(value);
 }
 
+function minimumHeightPixels(css, selector) {
+  const block = selectorBlock(css, selector);
+  const value = block.match(/min-height:\s*(\d+)px/)?.[1];
+  assert.ok(value, `missing pixel min-height for ${selector}`);
+  return Number(value);
+}
+
 test("server-renders the pinned τ² GPT-5 explorer shell", async () => {
   const response = await render();
   assert.equal(response.status, 200);
@@ -470,6 +558,46 @@ test("uses a readable typography scale across the explorer", async () => {
     );
   }
   assert.equal(css.split(".message > p {").length - 1, 1);
+});
+
+test("keeps the mobile explorer readable and touch friendly", async () => {
+  const css = await readFile(stylesheetUrl, "utf8");
+  const mobileStart = css.indexOf("@media (max-width: 820px)");
+  const compactStart = css.indexOf("@media (max-width: 520px)", mobileStart);
+  assert.ok(mobileStart >= 0 && compactStart > mobileStart, "mobile media queries");
+  const mobileCss = css.slice(mobileStart, compactStart);
+
+  assert.match(mobileCss, /\.desktop-task-language\s*\{\s*display:\s*grid;/u);
+  assert.match(mobileCss, /\.mobile-task-language\s*\{\s*display:\s*none;/u);
+  assert.ok(minimumHeightPixels(mobileCss, ".desktop-task-language button") >= 44);
+  assert.ok(minimumHeightPixels(mobileCss, ".mobile-selectors select") >= 44);
+  assert.ok(minimumHeightPixels(mobileCss, ".mobile-browser-trigger") >= 44);
+  assert.ok(minimumHeightPixels(mobileCss, ".score-badge") >= 44);
+  assert.ok(minimumHeightPixels(mobileCss, ".context-trigger") >= 44);
+  assert.ok(minimumHeightPixels(mobileCss, ".context-close") >= 44);
+  assert.ok(minimumHeightPixels(mobileCss, ".mini-switch button") >= 44);
+  assert.ok(
+    minimumHeightPixels(
+      mobileCss,
+      ".trajectory-browser.mobile-open .catalog-view-switch button",
+    ) >= 44,
+  );
+  assert.ok(
+    minimumHeightPixels(
+      mobileCss,
+      ".trajectory-browser.mobile-open .outcome-filter button,\n  .trajectory-browser.mobile-open .mini-switch button,\n  .trajectory-browser.mobile-open .quiet-button",
+    ) >= 44,
+  );
+  assert.match(
+    selectorBlock(mobileCss, ".context-close"),
+    /flex:\s*0\s+0\s+44px/u,
+  );
+  assert.ok(
+    minimumHeightPixels(
+      mobileCss,
+      ".trajectory-toolbar button,\n  .trajectory-toolbar a",
+    ) >= 44,
+  );
 });
 
 test("catalog is narrowed to the three official τ² GPT-5 runs", async () => {
@@ -1464,6 +1592,13 @@ test("run indexes, chunks, transcript memories, and Korean overlays resolve exha
           assertContextTranslation(
             content,
             memoryEntry.content,
+            `${run.id} ${identity.id} translation`,
+          );
+          assertTranscriptNaturalness(
+            content,
+            memoryEntry.content,
+            message.role,
+            domain.id,
             `${run.id} ${identity.id} translation`,
           );
           assert.equal(

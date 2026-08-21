@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "datasetId": "tau2-gpt5-sierra-2025-08-09-v1",
-  "generatedAt": "2026-08-20T21:16:55.008Z",
+  "generatedAt": "2026-08-21T04:46:54.264Z",
   "notice": "Pinned GPT-5 conversational trajectories from the official τ²-bench Sierra submission, with exhaustive Korean display overlays.",
   "agentOnly": {
     "reason": "The selected GPT-5 submission contains interactive user simulations only.",
@@ -153,7 +153,7 @@
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_airline_default_gpt-4.1-2025-04-14_4trials.json"
         }
       ],
-      "contextTranslationPath": "/data/sets/tau2-gpt5-sierra-2025-08-09-v1/translations/ko/context/airline_a2972345b9fddc2eeb.json",
+      "contextTranslationPath": "/data/sets/tau2-gpt5-sierra-2025-08-09-v1/translations/ko/context/airline_3373d356688be34289.json",
       "runs": [
         {
           "id": "run_cJ5pvG-VbK9x6vYlpe",
@@ -240,7 +240,7 @@
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_retail_default_gpt-4.1-2025-04-14_4trials.json"
         }
       ],
-      "contextTranslationPath": "/data/sets/tau2-gpt5-sierra-2025-08-09-v1/translations/ko/context/retail_0dc7f96bb4fbad36e2.json",
+      "contextTranslationPath": "/data/sets/tau2-gpt5-sierra-2025-08-09-v1/translations/ko/context/retail_8f8b552d86280d76da.json",
       "runs": [
         {
           "id": "run_o7OQCUdXVT5V8W3TkF",
@@ -327,7 +327,7 @@
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_telecom_default_gpt-4.1-2025-04-14_4trials.json"
         }
       ],
-      "contextTranslationPath": "/data/sets/tau2-gpt5-sierra-2025-08-09-v1/translations/ko/context/telecom_b9b7dfb7a75810d430.json",
+      "contextTranslationPath": "/data/sets/tau2-gpt5-sierra-2025-08-09-v1/translations/ko/context/telecom_4d0a2710b76c2d9c70.json",
       "runs": [
         {
           "id": "run_NkQuH5ORPpc2f1qZ8t",
@@ -352,7 +352,7 @@
           "policySnapshotId": "policy_065b48503bf78015",
           "promptRef": "tool-enabled",
           "indexPath": "/data/sets/tau2-gpt5-sierra-2025-08-09-v1/indexes/run_NkQuH5ORPpc2f1qZ8t.json",
-          "tasksPath": "/data/sets/tau2-gpt5-sierra-2025-08-09-v1/tasks/tasks_84d9394cb5fb877016.json",
+          "tasksPath": "/data/sets/tau2-gpt5-sierra-2025-08-09-v1/tasks/tasks_477a4fc273adae7c22.json",
           "sourceFile": "web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_telecom_default_gpt-4.1-2025-04-14_4trials.json",
           "sourceUrl": "https://github.com/sierra-research/tau2-bench/blob/v0.2.0/web/leaderboard/public/submissions/gpt-5_sierra_2025-08-09/trajectories/gpt-5_telecom_default_gpt-4.1-2025-04-14_4trials.json"
         }

@@ -14,6 +14,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 import urllib.error
@@ -45,8 +46,9 @@ PROTECTED = re.compile(
             r"#[A-Za-z0-9_-]+",
             r"\b\d{4}-\d{2}-\d{2}\b",
             r"\b\d{1,2}:\d{2}(?::\d{2})?(?:\s?[AP]M)?\b",
-            r"[$€£¥]\s?\d[\d,.]*(?:\s?(?:USD|EUR|GBP|KRW))?",
+            r"[$€£¥]\s?\d(?:\d|[,.](?=\d))*(?:\s?(?:USD|EUR|GBP|KRW))?",
             r"\b(?=[A-Za-z0-9_-]*[A-Za-z])(?=[A-Za-z0-9_-]*\d)[A-Za-z0-9_-]{3,}\b",
+            r"\b[a-z][a-z0-9_]+\((?=[^()\n]*(?:=|[\"']))[^()\n]*\)",
             r"\b[a-z]+(?:_[a-z0-9]+)+\b",
             r"\b\d+(?:[.,]\d+)*[A-Za-z]{1,6}\b",
             r"\b\d+(?:[.,]\d+)*(?:%|st|nd|rd|th)?\b",
@@ -57,6 +59,21 @@ PROTECTED = re.compile(
 HANGUL = re.compile(r"[\uac00-\ud7a3]")
 LATIN_WORD = re.compile(r"[A-Za-z]{2,}")
 ADDED_DIGITS = re.compile(r"\d+")
+
+CLAUDE_LOCALIZATION_SYSTEM = """You are a senior Korean localization editor for customer-service transcripts.
+Translate every supplied content string into idiomatic, accurate Korean while respecting its role.
+
+- An assistant speaks in professional polite Korean, calls the customer '고객님' only when natural, and never uses 귀하 or 당신. The assistant says 고객님의 계정/회선/휴대폰/SIM, never 제 계정/제 회선/제 휴대폰/제 SIM.
+- A user speaks naturally in the first person with 저/제 and never addresses themself as 고객님.
+- Preserve the exact meaning, subject, conditions, negation, quantities, comparisons, and temporal relationships.
+- Use correct service terminology: order=주문, exchange=교환, return=반품, refund=환불, item=상품, puzzle pieces=퍼즐 조각, boots=부츠, and airline cabin classes=베이직 이코노미/이코노미/비즈니스석.
+- For telecom, line=회선, plan=요금제, bill=청구서, refuel/add data=데이터 추가, No Service=서비스 없음, No Signal=신호 없음, Data Disabled=데이터 사용 중지, ON=켜짐, OFF=꺼짐.
+- Never translate literal IDs, product codes, dates, amounts, card brands, airport codes, tool names, JSON keys, or non-string JSON values.
+- Every <TAUKEEPn> marker is an essential literal. Preserve its exact spelling and count, keep it in the same sentence or list item, and attach it to the same noun, action, and comparison as in the source. Never merge, duplicate, omit, or move markers.
+- Preserve Markdown structure, line breaks, JSON syntax, object keys, arrays, and control tokens.
+- Translate all human-readable prose without adding explanations, invented details, or omitted content.
+
+Return only the structured translations requested by the schema, in exactly the same order as the input."""
 
 
 def korean_integer(value: str) -> str:
@@ -288,7 +305,13 @@ def finish_gemini_plan(
             key = f"{entry_id}:{match.group(1)}"
             if key not in unit_translations:
                 raise ValueError(f"missing translated prose unit {key}")
-            return polish(unit_translations[key], role)
+            # Source-side numbers are always protected before the model sees a
+            # prose unit. Any Arabic digits returned inside that unit were
+            # invented while spelling an English number word (for example,
+            # ``once`` -> ``1회``). Render only those added digits as Korean
+            # words so they cannot be mistaken for canonical order, card, date,
+            # quantity, or amount literals.
+            return polish(verbalize_model_added_digits(unit_translations[key]), role)
 
         return UNIT_TOKEN.sub(replace, value)
 
@@ -325,7 +348,7 @@ def finish_gemini_plan(
     return restored
 
 
-def gemini_request(items: list[dict[str, str]], model: str, attempts: int = 3) -> list[str]:
+def gemini_request(items: list[dict[str, str]], model: str, attempts: int = 7) -> list[str]:
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
         raise ValueError("GEMINI_API_KEY is required for --provider gemini")
@@ -334,12 +357,31 @@ def gemini_request(items: list[dict[str, str]], model: str, attempts: int = 3) -
         f"{model}:generateContent?key={key}"
     )
     instruction = (
-        "Translate every content value from English to natural, polite Korean for a customer-service "
-        "conversation. Preserve every <TAUKEEPn> marker exactly, including its spelling and count. Preserve "
-        "Markdown structure, line breaks, JSON syntax, JSON object keys, arrays, and non-string JSON literals. "
-        "Translate all supplied human-readable prose without adding explanations or omitting content. Return a JSON array with exactly one string "
-        "for every input string, in exactly the same order.\n\nINPUT:\n"
-        + json.dumps([item["content"] for item in items], ensure_ascii=False, separators=(",", ":"))
+        "You are a senior Korean localization editor for a customer-service transcript. Translate every "
+        "content value into idiomatic, accurate Korean while respecting its role. An assistant speaks in "
+        "professional polite Korean, calls the customer '고객님' only when natural, and never uses 귀하 or 당신. "
+        "The assistant must say 고객님의 계정/회선/휴대폰/SIM, never 제 계정/제 회선/제 휴대폰/제 SIM. "
+        "A user speaks naturally in the first person with 저/제 and does not address themself as 고객님. "
+        "Preserve the exact meaning, subject, conditions, negation, quantities, and temporal relationships. "
+        "Use correct service terminology: order=주문, exchange=교환, return=반품, refund=환불, item=상품, "
+        "puzzle pieces=퍼즐 조각, boots=부츠, and airline cabin classes=베이직 이코노미/이코노미/비즈니스석. "
+        "For telecom, line=회선, plan=요금제, bill=청구서, refuel/add data=데이터 추가, No Service=서비스 없음, "
+        "No Signal=신호 없음, Data Disabled=데이터 사용 중지, ON=켜짐, and OFF=꺼짐. "
+        "Do not translate literal IDs, product codes, dates, amounts, card brands, airport codes, or tool names. "
+        "Every <TAUKEEPn> marker represents an essential literal. Preserve its spelling and count, keep it in "
+        "the same sentence or list item, and attach it to the same noun, action, and comparison as in the source; "
+        "never move a marker into a later clause or paragraph. Preserve Markdown structure, "
+        "line breaks, JSON syntax, JSON object keys, arrays, and non-string JSON literals. Translate all supplied "
+        "human-readable prose without adding explanations, invented dates, or omitted content. Return a JSON array "
+        "with exactly one translated string for every input object, in exactly the same order.\n\nINPUT:\n"
+        + json.dumps(
+            [
+                {"role": item.get("role", "unknown"), "content": item["content"]}
+                for item in items
+            ],
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
     )
     schema = {
         "type": "ARRAY",
@@ -352,7 +394,7 @@ def gemini_request(items: list[dict[str, str]], model: str, attempts: int = 3) -
         "responseMimeType": "application/json",
         "responseSchema": schema,
     }
-    if not model.startswith(("gemini-3.6", "gemini-3.7")):
+    if not model.startswith(("gemini-3.5", "gemini-3.6", "gemini-3.7", "gemma-")):
         generation_config["thinkingConfig"] = {"thinkingBudget": 0}
     body = json.dumps(
         {
@@ -368,7 +410,7 @@ def gemini_request(items: list[dict[str, str]], model: str, attempts: int = 3) -
                 headers={"Content-Type": "application/json"},
                 method="POST",
             )
-            with urllib.request.urlopen(request, timeout=180) as response:
+            with urllib.request.urlopen(request, timeout=600) as response:
                 payload = json.load(response)
             text = payload["candidates"][0]["content"]["parts"][0]["text"]
             result = json.loads(text)
@@ -394,8 +436,95 @@ def gemini_request(items: list[dict[str, str]], model: str, attempts: int = 3) -
     raise AssertionError("unreachable")
 
 
+def claude_request(items: list[dict[str, str]], model: str, attempts: int = 3) -> list[str]:
+    """Translate a batch through the authenticated local Claude CLI.
+
+    The CLI is run without tools, project customizations, or session persistence.
+    A strict schema keeps batch ordering deterministic while the existing plan
+    and validators retain authority over every protected literal and JSON shape.
+    """
+    schema = {
+        "type": "object",
+        "properties": {
+            "translations": {
+                "type": "array",
+                "items": {"type": "string"},
+                "minItems": len(items),
+                "maxItems": len(items),
+            }
+        },
+        "required": ["translations"],
+        "additionalProperties": False,
+    }
+    prompt = (
+        "Translate this JSON array. Each object has a speaker role and exact content. "
+        "Return one translation for every object in the same order.\n\nINPUT:\n"
+        + json.dumps(
+            [
+                {"role": item.get("role", "unknown"), "content": item["content"]}
+                for item in items
+            ],
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+    )
+    command = [
+        "claude",
+        "-p",
+        "--model",
+        model,
+        "--safe-mode",
+        "--tools",
+        "",
+        "--permission-mode",
+        "dontAsk",
+        "--no-session-persistence",
+        "--output-format",
+        "json",
+        "--max-budget-usd",
+        "2",
+        "--system-prompt",
+        CLAUDE_LOCALIZATION_SYSTEM,
+        "--json-schema",
+        json.dumps(schema, separators=(",", ":")),
+        prompt,
+    ]
+    for attempt in range(attempts):
+        try:
+            completed = subprocess.run(
+                command,
+                cwd=PROJECT_ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=600,
+            )
+            payload = json.loads(completed.stdout)
+            structured = payload.get("structured_output")
+            result = structured.get("translations") if isinstance(structured, dict) else None
+            if (
+                not isinstance(result, list)
+                or len(result) != len(items)
+                or any(not isinstance(item, str) for item in result)
+            ):
+                raise ValueError("Claude response does not match the translation schema")
+            return result
+        except (subprocess.SubprocessError, json.JSONDecodeError, ValueError) as error:
+            if attempt + 1 == attempts:
+                raise
+            delay = min(15, 2 ** attempt)
+            print(f"Claude request retry {attempt + 1}/{attempts} in {delay}s: {error}", flush=True)
+            time.sleep(delay)
+    raise AssertionError("unreachable")
+
+
 def translate_gemini_batch(
-    batch: list[tuple[str, str, str]], model: str, *, force_segmented: bool = False
+    batch: list[tuple[str, str, str]],
+    model: str,
+    *,
+    force_segmented: bool = False,
+    defer_invalid: bool = False,
+    request_units: Any | None = None,
 ) -> dict[str, str]:
     prepared: list[dict[str, str]] = []
     plans: dict[str, tuple[Any, bool, list[str] | None]] = {}
@@ -404,11 +533,13 @@ def translate_gemini_batch(
         plan, is_json, units, literals = make_gemini_plan(
             source, entry_id, force_segmented=force_segmented
         )
+        for unit in units:
+            unit["role"] = role
         prepared.extend(units)
         plans[entry_id] = (plan, is_json, literals)
         source_by_id[entry_id] = (role, source)
     if prepared:
-        result = gemini_request(prepared, model)
+        result = request_units(prepared) if request_units else gemini_request(prepared, model)
         if len(result) != len(prepared):
             raise ValueError("Gemini response count does not match the request")
         unit_translations = {
@@ -423,32 +554,74 @@ def translate_gemini_batch(
             completed[entry_id] = finish_gemini_plan(
                 source, plan, is_json, unit_translations, entry_id, role, literals
             )
-        except ValueError:
+        except ValueError as error:
+            if defer_invalid:
+                print(f"deferred invalid translation {entry_id}: {error}", flush=True)
+                continue
             if force_segmented or literals is None:
                 raise
+            # A long multi-item response may associate a marker with the wrong
+            # array element even when the schema count is valid. Retry the
+            # affected entry alone with its full sentence context first;
+            # segment into prose spans only if that single-item response still
+            # cannot preserve its markers.
             completed.update(
                 translate_gemini_batch(
-                    [(entry_id, role, source)], model, force_segmented=True
+                    [(entry_id, role, source)],
+                    model,
+                    force_segmented=len(batch) == 1,
+                    defer_invalid=defer_invalid,
+                    request_units=request_units,
                 )
             )
     return completed
 
 
 def translate_gemini_resilient(
-    batch: list[tuple[str, str, str]], model: str
+    batch: list[tuple[str, str, str]],
+    model: str,
+    *,
+    force_segmented: bool = False,
+    defer_invalid: bool = False,
+    request_units: Any | None = None,
 ) -> dict[str, str]:
     try:
-        return translate_gemini_batch(batch, model)
+        return translate_gemini_batch(
+            batch,
+            model,
+            force_segmented=force_segmented,
+            defer_invalid=defer_invalid,
+            request_units=request_units,
+        )
     except urllib.error.HTTPError:
         # Quota/server errors should be handled by the request retry policy or
         # by resuming the checkpoint with another configured model.
         raise
     except Exception:
         if len(batch) == 1:
-            return translate_gemini_batch(batch, model, force_segmented=True)
+            return translate_gemini_batch(
+                batch,
+                model,
+                force_segmented=True,
+                request_units=request_units,
+            )
         midpoint = len(batch) // 2
-        completed = translate_gemini_resilient(batch[:midpoint], model)
-        completed.update(translate_gemini_resilient(batch[midpoint:], model))
+        completed = translate_gemini_resilient(
+            batch[:midpoint],
+            model,
+            force_segmented=force_segmented,
+            defer_invalid=defer_invalid,
+            request_units=request_units,
+        )
+        completed.update(
+            translate_gemini_resilient(
+                batch[midpoint:],
+                model,
+                force_segmented=force_segmented,
+                defer_invalid=defer_invalid,
+                request_units=request_units,
+            )
+        )
         return completed
 
 
@@ -650,14 +823,38 @@ def main() -> int:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--checkpoint-every", type=int, default=20)
-    parser.add_argument("--provider", choices=("argos", "gemini", "google"), default="argos")
+    parser.add_argument(
+        "--provider",
+        choices=("argos", "claude", "gemini", "google"),
+        default="argos",
+    )
     parser.add_argument("--gemini-model", default="gemini-2.5-flash")
+    parser.add_argument("--claude-model", default="sonnet")
     parser.add_argument("--batch-items", type=int, default=24)
     parser.add_argument("--batch-chars", type=int, default=24000)
     parser.add_argument("--batch-units", type=int, default=350)
     parser.add_argument("--batch-delay", type=float, default=0)
     parser.add_argument("--retranslate-invalid", action="store_true")
+    parser.add_argument(
+        "--force-retranslate-all",
+        action="store_true",
+        help="Discard the existing checkpoint in memory and rebuild every entry.",
+    )
+    parser.add_argument("--shard-index", type=int, default=0)
+    parser.add_argument("--shard-count", type=int, default=1)
+    parser.add_argument("--force-segmented", action="store_true")
+    parser.add_argument("--defer-invalid", action="store_true")
+    parser.add_argument(
+        "--merge-shard",
+        action="append",
+        type=Path,
+        default=[],
+        help="Merge a complete set of disjoint translation checkpoints and exit.",
+    )
     args = parser.parse_args()
+
+    if args.shard_count < 1 or not 0 <= args.shard_index < args.shard_count:
+        raise ValueError("shard-index must be within [0, shard-count)")
 
     metadata, expected = load_run(args.run_id)
     output_path = args.output.resolve()
@@ -666,7 +863,8 @@ def main() -> int:
         existing = read_json(output_path)
         if existing.get("runId") != args.run_id or existing.get("locale") != "ko":
             raise ValueError(f"incompatible translation checkpoint: {output_path}")
-        entries = existing.get("entries", {})
+        if not args.force_retranslate_all:
+            entries = existing.get("entries", {})
 
     # Re-read exact source strings once, keyed by the validated IDs above.
     run = metadata["run"]
@@ -696,6 +894,35 @@ def main() -> int:
             "runId": args.run_id,
             "entries": dict(sorted(entries.items())),
         }
+
+    if args.merge_shard:
+        merged: dict[str, Any] = {}
+        for shard_path in args.merge_shard:
+            shard = read_json(shard_path.resolve())
+            for field, expected_value in (
+                ("schemaVersion", 1),
+                ("datasetId", DATASET_ID),
+                ("locale", "ko"),
+                ("model", "GPT-5"),
+                ("domainId", metadata["domain"]["id"]),
+                ("runId", args.run_id),
+            ):
+                if shard.get(field) != expected_value:
+                    raise ValueError(f"incompatible shard {shard_path}: {field}")
+            for entry_id, entry in shard.get("entries", {}).items():
+                if entry_id in merged:
+                    raise ValueError(f"duplicate entry across shards: {entry_id}")
+                merged[entry_id] = entry
+        missing = set(expected) - set(merged)
+        extra = set(merged) - set(expected)
+        if missing or extra:
+            raise ValueError(
+                f"merged shard coverage mismatch: missing={len(missing)} extra={len(extra)}"
+            )
+        entries = merged
+        write_json_atomic(output_path, payload())
+        print(f"{args.run_id}: merged {len(entries)}/{len(expected)} translations")
+        return 0
 
     stale = set(entries) - set(expected)
     if stale:
@@ -728,18 +955,30 @@ def main() -> int:
                 flush=True,
             )
 
-    completed = len(entries)
-    total = len(expected)
+    target_ids = [
+        entry_id
+        for position, entry_id in enumerate(sorted(expected))
+        if position % args.shard_count == args.shard_index
+    ]
+    completed = sum(entry_id in entries for entry_id in target_ids)
+    total = len(target_ids)
     print(f"{args.run_id}: {completed}/{total} translations already present", flush=True)
-    pending = [entry_id for entry_id in sorted(expected) if entry_id not in entries]
+    pending = [entry_id for entry_id in target_ids if entry_id not in entries]
+    deferred_ids: set[str] = set()
     while pending:
         batch_ids: list[str] = []
         batch_chars = 0
         batch_units = 0
         for entry_id in pending:
             _role, content = source_by_id[entry_id]
-            if args.provider == "gemini":
-                unit_count = len(make_gemini_plan(content, entry_id)[2])
+            if args.provider in {"claude", "gemini"}:
+                unit_count = len(
+                    make_gemini_plan(
+                        content,
+                        entry_id,
+                        force_segmented=args.force_segmented,
+                    )[2]
+                )
             elif args.provider == "google":
                 unit_count = len(
                     make_gemini_plan(content, entry_id, force_segmented=True)[2]
@@ -758,7 +997,22 @@ def main() -> int:
         batch = [(entry_id, *source_by_id[entry_id]) for entry_id in batch_ids]
         try:
             if args.provider == "gemini":
-                translations = translate_gemini_resilient(batch, args.gemini_model)
+                translations = translate_gemini_resilient(
+                    batch,
+                    args.gemini_model,
+                    force_segmented=args.force_segmented,
+                    defer_invalid=args.defer_invalid,
+                )
+            elif args.provider == "claude":
+                translations = translate_gemini_resilient(
+                    batch,
+                    args.claude_model,
+                    force_segmented=args.force_segmented,
+                    defer_invalid=args.defer_invalid,
+                    request_units=lambda items: claude_request(
+                        items, args.claude_model
+                    ),
+                )
             elif args.provider == "google":
                 translations = translate_google_resilient(batch)
             else:
@@ -770,7 +1024,14 @@ def main() -> int:
             print(f"failed batch beginning {batch_ids[0]}: {error}", file=sys.stderr, flush=True)
             write_json_atomic(output_path, payload())
             raise
-        for entry_id in batch_ids:
+        translated_ids = [entry_id for entry_id in batch_ids if entry_id in translations]
+        missing_batch_ids = set(batch_ids) - set(translated_ids)
+        if missing_batch_ids and not args.defer_invalid:
+            raise ValueError(
+                f"translation batch omitted {len(missing_batch_ids)} entries"
+            )
+        deferred_ids.update(missing_batch_ids)
+        for entry_id in translated_ids:
             role, content = source_by_id[entry_id]
             _entry_id, source_hash = message_id(role, content)
             entries[entry_id] = {
@@ -778,16 +1039,19 @@ def main() -> int:
                 "sourceHash": source_hash,
                 "content": translations[entry_id],
             }
-        completed += len(batch_ids)
+        completed += len(translated_ids)
         pending = pending[len(batch_ids) :]
-        if completed % args.checkpoint_every < len(batch_ids) or not pending:
+        if completed % args.checkpoint_every < len(translated_ids) or not pending:
             write_json_atomic(output_path, payload())
             print(f"{args.run_id}: {completed}/{total}", flush=True)
         if pending and args.batch_delay > 0:
             time.sleep(args.batch_delay)
 
     write_json_atomic(output_path, payload())
-    print(f"{args.run_id}: complete ({total} distinct messages)", flush=True)
+    print(
+        f"{args.run_id}: complete ({completed}/{total} translated, {len(deferred_ids)} deferred)",
+        flush=True,
+    )
     return 0
 
 

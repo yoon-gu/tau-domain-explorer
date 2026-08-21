@@ -1035,6 +1035,15 @@ summary:focus-visible {
   white-space: pre-wrap;
 }
 
+.message > p[lang="ko"],
+.topbar h1[lang="ko"],
+.task-group-copy strong[lang="ko"],
+.task-scenario[lang="ko"],
+.trajectory-item-copy strong[lang="ko"] {
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+
 .user-message {
   align-items: flex-end;
 }
@@ -1955,7 +1964,7 @@ pre {
     display: grid;
     height: 176px;
     min-height: 176px;
-    grid-template-columns: 1fr 220px;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto 62px;
     gap: 10px 14px;
     padding: 13px 14px;
@@ -1965,31 +1974,29 @@ pre {
 
   .brand-row {
     align-self: center;
+    min-width: 0;
+    padding-right: 0;
+    padding-left: 2px;
   }
 
   .desktop-task-language {
-    display: none;
+    display: grid;
+  }
+
+  .desktop-task-language button {
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .mobile-selectors {
     display: grid;
     grid-column: 1 / -1;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr) auto;
+    grid-template-columns: minmax(108px, 0.72fr) minmax(0, 1.28fr);
     gap: 8px;
   }
 
   .mobile-task-language {
-    display: grid;
-    align-self: end;
-    min-height: 42px;
-    margin: 0;
-    padding: 3px;
-  }
-
-  .mobile-task-language button {
-    min-width: 34px;
-    min-height: 34px;
-    padding: 4px 5px;
+    display: none;
   }
 
   .mobile-selectors label,
@@ -2010,7 +2017,7 @@ pre {
 
   .mobile-selectors select {
     min-width: 0;
-    min-height: 42px;
+    min-height: 44px;
     padding: 0 27px 0 9px;
     border: 1px solid #d4d4ce;
     border-radius: 7px;
@@ -2021,7 +2028,7 @@ pre {
   .mobile-browser-trigger {
     display: grid;
     min-width: 0;
-    min-height: 42px;
+    min-height: 44px;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: 8px;
@@ -2088,8 +2095,8 @@ pre {
 
   .mobile-browser-head > button {
     display: grid;
-    width: 34px;
-    height: 34px;
+    width: 44px;
+    height: 44px;
     place-items: center;
     border: 1px solid #d1d1cb;
     border-radius: 7px;
@@ -2110,9 +2117,35 @@ pre {
     font-size: 16px;
   }
 
+  .trajectory-browser.mobile-open .catalog-filter select,
+  .trajectory-browser.mobile-open .search-wrap {
+    min-height: 44px;
+  }
+
+  .trajectory-browser.mobile-open .search-wrap button {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+  }
+
   .trajectory-browser.mobile-open .catalog-view-switch button {
-    min-height: 40px;
+    min-height: 44px;
     font-size: 13px;
+  }
+
+  .trajectory-browser.mobile-open .outcome-filter button,
+  .trajectory-browser.mobile-open .mini-switch button,
+  .trajectory-browser.mobile-open .quiet-button {
+    min-height: 44px;
+  }
+
+  .trajectory-browser.mobile-open .catalog-pagination {
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+  }
+
+  .trajectory-browser.mobile-open .catalog-pagination button {
+    width: 44px;
+    height: 44px;
   }
 
   .trajectory-browser.mobile-open .task-group-toggle {
@@ -2156,6 +2189,8 @@ pre {
   }
 
   .score-badge {
+    min-width: 44px;
+    min-height: 44px;
     padding: 7px 9px;
   }
 
@@ -2164,7 +2199,16 @@ pre {
   }
 
   .trajectory-toolbar {
+    min-height: 56px;
+    flex-basis: 56px;
+    gap: 8px;
     padding: 0 16px;
+  }
+
+  .trajectory-toolbar button,
+  .trajectory-toolbar a {
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .chat-stream {
@@ -2204,7 +2248,23 @@ pre {
   }
 
   .quiet-button {
-    min-height: 34px;
+    min-height: 44px;
+  }
+
+  .context-close {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    flex: 0 0 44px;
+  }
+
+  .context-trigger {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .mini-switch button {
+    min-height: 44px;
   }
 }
 
@@ -2212,7 +2272,7 @@ pre {
   .sidebar {
     height: 184px;
     min-height: 184px;
-    grid-template-columns: minmax(0, 1fr) 176px;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto 62px;
     gap: 9px;
   }
@@ -2221,20 +2281,9 @@ pre {
     display: none;
   }
 
-  .brand-row {
-    padding-left: 2px;
-  }
-
   .mobile-selectors {
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr) auto;
+    grid-template-columns: minmax(116px, 0.76fr) minmax(0, 1.24fr);
     gap: 6px;
-  }
-
-  .mobile-task-language button {
-    min-width: 31px;
-    padding-right: 4px;
-    padding-left: 4px;
-    font-size: 13px;
   }
 
   .workspace {
@@ -2246,7 +2295,8 @@ pre {
   }
 
   .context-trigger {
-    min-width: 34px;
+    min-width: 44px;
+    min-height: 44px;
     padding: 7px;
     font-size: 0;
   }

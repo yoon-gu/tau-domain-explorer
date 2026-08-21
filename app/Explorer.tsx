@@ -603,8 +603,17 @@ function fillUserSystemPrompt(template: string, scenario: string) {
   return template.replaceAll("{{ user_scenario }}", scenario);
 }
 
-function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {
+function CopyButton({
+  text,
+  label,
+  language = "en",
+}: {
+  text: string;
+  label?: string;
+  language?: TaskLanguage;
+}) {
   const [copied, setCopied] = useState(false);
+  const buttonLabel = label ?? (language === "ko" ? "복사" : "Copy");
 
   async function copy() {
     await navigator.clipboard.writeText(text);
@@ -613,8 +622,8 @@ function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) 
   }
 
   return (
-    <button type="button" className="quiet-button" onClick={copy} lang="en">
-      {copied ? "Copied" : label}
+    <button type="button" className="quiet-button" onClick={copy} lang={language}>
+      {copied ? (language === "ko" ? "복사됨" : "Copied") : buttonLabel}
     </button>
   );
 }
@@ -657,17 +666,19 @@ function JsonBlock({
   label,
   value,
   language = "en",
+  uiLanguage = "en",
 }: {
   label: string;
   value: unknown;
   language?: TaskLanguage;
+  uiLanguage?: TaskLanguage;
 }) {
   const text = stringify(value);
   return (
     <section className="json-block" lang={language}>
       <div className="json-heading">
-        <span>{label}</span>
-        <CopyButton text={text} />
+        <span lang={uiLanguage}>{label}</span>
+        <CopyButton text={text} language={uiLanguage} />
       </div>
       <pre>{text}</pre>
     </section>
@@ -678,38 +689,57 @@ function ToolInvocationCard({
   invocation,
   argumentsLanguage,
   resultLanguage,
+  displayLanguage,
   defaultOpen,
 }: {
   invocation: ToolInvocation;
   argumentsLanguage: TaskLanguage;
   resultLanguage: TaskLanguage;
+  displayLanguage: TaskLanguage;
   defaultOpen?: boolean;
 }) {
   const isUserTool = invocation.requestor === "user";
+  const korean = displayLanguage === "ko";
   return (
     <details
       className={`tool-call ${isUserTool ? "user-tool" : "agent-tool"}${
         invocation.error ? " tool-error" : ""
       }`}
-      lang="en"
+      lang={displayLanguage}
       open={defaultOpen || undefined}
     >
       <summary>
         <span className="tool-owner" aria-hidden="true">
-          {isUserTool ? "U" : "A"}
+          {korean ? (isUserTool ? "사" : "상") : isUserTool ? "U" : "A"}
         </span>
         <span className="tool-summary-copy">
-          <span className="tool-kind">{isUserTool ? "User tool" : "Agent tool"}</span>
-          <strong>{invocation.name}</strong>
+          <span className="tool-kind">
+            {korean ? (isUserTool ? "사용자 도구" : "상담원 도구") : isUserTool ? "User tool" : "Agent tool"}
+          </span>
+          <strong lang="en">{invocation.name}</strong>
         </span>
         <span className={`tool-state${invocation.error ? " error" : ""}`}>
-          {invocation.error ? "Error" : invocation.result === null ? "No result" : "Success"}
+          {invocation.error
+            ? (korean ? "오류" : "Error")
+            : invocation.result === null
+              ? (korean ? "결과 없음" : "No result")
+              : (korean ? "성공" : "Success")}
         </span>
         <span className="disclosure" aria-hidden="true">⌄</span>
       </summary>
       <div className="tool-detail-grid">
-        <JsonBlock label="Arguments" value={invocation.arguments} language={argumentsLanguage} />
-        <JsonBlock label="Result" value={invocation.result} language={resultLanguage} />
+        <JsonBlock
+          label={korean ? "인자" : "Arguments"}
+          value={invocation.arguments}
+          language={argumentsLanguage}
+          uiLanguage={displayLanguage}
+        />
+        <JsonBlock
+          label={korean ? "결과" : "Result"}
+          value={invocation.result}
+          language={resultLanguage}
+          uiLanguage={displayLanguage}
+        />
       </div>
     </details>
   );
@@ -722,6 +752,7 @@ function TranscriptItem({
   displayContent,
   displayToolCalls,
   contentLanguage,
+  displayLanguage,
   translationFallback,
 }: {
   message: TranscriptMessage;
@@ -730,9 +761,11 @@ function TranscriptItem({
   displayContent: string | null;
   displayToolCalls: DisplayToolInvocation[];
   contentLanguage: TaskLanguage;
+  displayLanguage: TaskLanguage;
   translationFallback: boolean;
 }) {
   const isUser = message.role === "user";
+  const korean = displayLanguage === "ko";
   const timestamp = message.timestamp
     ? new Date(message.timestamp).toLocaleTimeString([], {
         hour: "2-digit",
@@ -745,12 +778,18 @@ function TranscriptItem({
     <li className={`message ${isUser ? "user-message" : "assistant-message"}`}>
       <div className="message-meta">
         <span className={`avatar ${isUser ? "user-avatar" : "assistant-avatar"}`}>
-          {isUser ? "U" : "A"}
+          {korean ? (isUser ? "사" : "상") : isUser ? "U" : "A"}
         </span>
-        <strong>{isUser ? "User" : "Assistant"}</strong>
-        <span className="turn-label">Turn {message.turnIndex}</span>
+        <strong lang={displayLanguage}>
+          {korean ? (isUser ? "사용자" : "상담원") : isUser ? "User" : "Assistant"}
+        </strong>
+        <span className="turn-label" lang={displayLanguage}>
+          {korean ? `턴 ${message.turnIndex}` : `Turn ${message.turnIndex}`}
+        </span>
         {translationFallback ? (
-          <span className="message-language-badge" lang="en">EN original</span>
+          <span className="message-language-badge" lang={displayLanguage}>
+            {korean ? "영어 원문" : "EN original"}
+          </span>
         ) : null}
         {metadataVisible && timestamp ? <time>{timestamp}</time> : null}
       </div>
@@ -768,6 +807,7 @@ function TranscriptItem({
           invocation={display.invocation}
           argumentsLanguage={display.argumentsLanguage}
           resultLanguage={display.resultLanguage}
+          displayLanguage={displayLanguage}
           defaultOpen={messageIndex < 6 && index === 0}
         />
       ))}
@@ -2825,43 +2865,59 @@ export default function Explorer() {
                   className="context-trigger"
                   onClick={() => setContextOpen(true)}
                 >
-                  Context
+                  {taskLanguage === "ko" ? "컨텍스트" : "Context"}
                 </button>
                 <div className={`score-badge ${selectedSummary.reward === 1 ? "pass" : "fail"}`}>
                   <span>{selectedSummary.reward === 1 ? "✓" : "×"}</span>
-                  {selectedSummary.reward === 1 ? "Passed" : "Failed"}
+                  {taskLanguage === "ko"
+                    ? (selectedSummary.reward === 1 ? "통과" : "실패")
+                    : (selectedSummary.reward === 1 ? "Passed" : "Failed")}
                   <strong>{selectedSummary.reward.toFixed(1)}</strong>
                 </div>
               </div>
             </header>
 
             <div className="trajectory-toolbar">
-              <button type="button" aria-label="Previous trajectory" onClick={() => moveTrajectory(-1)}>←</button>
+              <button
+                type="button"
+                aria-label={taskLanguage === "ko" ? "이전 트래젝토리" : "Previous trajectory"}
+                onClick={() => moveTrajectory(-1)}
+              >←</button>
               <span>{currentIndex + 1} / {filteredTrajectories.length}</span>
-              <button type="button" aria-label="Next trajectory" onClick={() => moveTrajectory(1)}>→</button>
+              <button
+                type="button"
+                aria-label={taskLanguage === "ko" ? "다음 트래젝토리" : "Next trajectory"}
+                onClick={() => moveTrajectory(1)}
+              >→</button>
               <span className="toolbar-separator" />
-              <span>{selectedSummary.messageCount} turns</span>
-              <span>{selectedSummary.toolCallCount} tool calls</span>
+              <span>{selectedSummary.messageCount} {taskLanguage === "ko" ? "턴" : "turns"}</span>
+              <span>
+                {selectedSummary.toolCallCount} {taskLanguage === "ko" ? "도구 호출" : "tool calls"}
+              </span>
               {duration ? <span>{duration}</span> : null}
               <span className="toolbar-spacer" />
-              {selectedRun ? <a href={selectedRun.sourceUrl} target="_blank" rel="noreferrer">Source ↗</a> : null}
+              {selectedRun ? (
+                <a href={selectedRun.sourceUrl} target="_blank" rel="noreferrer">
+                  {taskLanguage === "ko" ? "원문 ↗" : "Source ↗"}
+                </a>
+              ) : null}
               <button
                 type="button"
                 className={`metadata-toggle${metadataVisible ? " active" : ""}`}
                 onClick={() => setMetadataVisible((visible) => !visible)}
               >
-                Metadata
+                {taskLanguage === "ko" ? "메타데이터" : "Metadata"}
               </button>
             </div>
 
             {metadataVisible ? (
               <div className="metadata-strip">
-                <span><small>Agent</small>{selectedRun?.model ?? "—"}</span>
-                <span><small>User simulator</small>{selectedRun?.userModel ?? "—"}</span>
-                <span><small>Run</small>{selectedRun ? formatRunLabel(selectedRun) : "—"}</span>
-                <span><small>Termination</small>{selectedSummary.terminationReason.replaceAll("_", " ")}</span>
-                <span><small>Trial</small>#{selectedSummary.trial}</span>
-                <span><small>Cost</small>{formatCost(selectedSummary.agentCost)}</span>
+                <span><small>{taskLanguage === "ko" ? "상담원" : "Agent"}</small>{selectedRun?.model ?? "—"}</span>
+                <span><small>{taskLanguage === "ko" ? "사용자 시뮬레이터" : "User simulator"}</small>{selectedRun?.userModel ?? "—"}</span>
+                <span><small>{taskLanguage === "ko" ? "실행" : "Run"}</small>{selectedRun ? formatRunLabel(selectedRun) : "—"}</span>
+                <span><small>{taskLanguage === "ko" ? "종료" : "Termination"}</small>{selectedSummary.terminationReason.replaceAll("_", " ")}</span>
+                <span><small>{taskLanguage === "ko" ? "시행" : "Trial"}</small>#{selectedSummary.trial}</span>
+                <span><small>{taskLanguage === "ko" ? "비용" : "Cost"}</small>{formatCost(selectedSummary.agentCost)}</span>
               </div>
             ) : null}
 
@@ -2888,6 +2944,7 @@ export default function Explorer() {
                     displayContent={item.displayContent}
                     displayToolCalls={item.displayToolCalls}
                     contentLanguage={item.contentLanguage}
+                    displayLanguage={taskLanguage}
                     translationFallback={item.translationFallback}
                     key={`${item.message.turnIndex}-${index}`}
                   />

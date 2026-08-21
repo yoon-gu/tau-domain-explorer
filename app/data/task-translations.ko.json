@@ -1818,8 +1818,8 @@
     "tau2:telecom": {
       "tasks": {
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_both_permissions|data_mode_off|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_disabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1829,8 +1829,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_both_permissions|data_mode_off|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_disabled_on[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1840,8 +1840,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_both_permissions|unseat_sim_card|user_abroad_roaming_enabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1851,8 +1851,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_sms_permission|data_mode_off|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_disabled_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1862,8 +1862,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_sms_permission|data_mode_off|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_enabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1873,8 +1873,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_storage_permission|data_mode_off|data_usage_exceeded|unseat_sim_card[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1884,8 +1884,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_storage_permission|data_mode_off|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_disabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1895,8 +1895,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_storage_permission|data_mode_off|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_disabled_on[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1906,8 +1906,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_storage_permission|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_disabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1917,8 +1917,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_app_sms_permission|data_mode_off|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_disabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1928,8 +1928,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_app_storage_permission|data_mode_off|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_enabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1939,8 +1939,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_app_storage_permission|unseat_sim_card[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1950,8 +1950,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_disabled_on[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1961,8 +1961,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|break_apn_mms_setting|break_app_both_permissions|data_mode_off|data_usage_exceeded|user_abroad_roaming_enabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1972,8 +1972,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|break_apn_mms_setting|break_app_storage_permission[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1983,8 +1983,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|break_apn_mms_setting|data_mode_off|unseat_sim_card|user_abroad_roaming_disabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -1994,8 +1994,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|break_apn_mms_setting|data_usage_exceeded[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2005,8 +2005,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|break_app_both_permissions|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_disabled_on[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2016,8 +2016,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|break_app_storage_permission|data_mode_off|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2027,8 +2027,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_network_preference|data_usage_exceeded[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2038,8 +2038,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_wifi_calling|break_app_both_permissions|data_mode_off|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_enabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2049,8 +2049,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|bad_wifi_calling|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2060,8 +2060,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|break_app_both_permissions[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2071,8 +2071,8 @@
           }
         },
         "[mms_issue]airplane_mode_on|break_app_both_permissions|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2082,8 +2082,8 @@
           }
         },
         "[mms_issue]bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_storage_permission|data_mode_off|data_usage_exceeded|unseat_sim_card[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2093,8 +2093,8 @@
           }
         },
         "[mms_issue]bad_network_preference|bad_wifi_calling|break_app_both_permissions|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_disabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2104,8 +2104,8 @@
           }
         },
         "[mms_issue]bad_network_preference|bad_wifi_calling|break_app_both_permissions|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2115,8 +2115,8 @@
           }
         },
         "[mms_issue]bad_network_preference|bad_wifi_calling|break_app_sms_permission|data_mode_off|data_usage_exceeded|unseat_sim_card|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2126,8 +2126,8 @@
           }
         },
         "[mms_issue]bad_network_preference|bad_wifi_calling|break_app_sms_permission|data_mode_off|unseat_sim_card|user_abroad_roaming_enabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2137,8 +2137,8 @@
           }
         },
         "[mms_issue]bad_network_preference|break_app_both_permissions[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2148,8 +2148,8 @@
           }
         },
         "[mms_issue]bad_network_preference|break_app_sms_permission|data_mode_off|data_usage_exceeded|user_abroad_roaming_enabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2159,8 +2159,8 @@
           }
         },
         "[mms_issue]bad_network_preference|break_app_sms_permission|user_abroad_roaming_disabled_on[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2170,8 +2170,8 @@
           }
         },
         "[mms_issue]bad_network_preference|data_mode_off|user_abroad_roaming_disabled_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2181,8 +2181,8 @@
           }
         },
         "[mms_issue]bad_network_preference|user_abroad_roaming_disabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2192,8 +2192,8 @@
           }
         },
         "[mms_issue]bad_network_preference|user_abroad_roaming_disabled_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2203,8 +2203,8 @@
           }
         },
         "[mms_issue]bad_wifi_calling|break_apn_mms_setting|break_app_both_permissions|data_mode_off|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2214,8 +2214,8 @@
           }
         },
         "[mms_issue]bad_wifi_calling|break_apn_mms_setting|break_app_sms_permission|data_usage_exceeded[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2225,8 +2225,8 @@
           }
         },
         "[mms_issue]bad_wifi_calling|break_apn_mms_setting|data_mode_off|data_usage_exceeded|unseat_sim_card[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2236,8 +2236,8 @@
           }
         },
         "[mms_issue]bad_wifi_calling|break_apn_mms_setting|unseat_sim_card|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2247,8 +2247,8 @@
           }
         },
         "[mms_issue]bad_wifi_calling|data_mode_off|data_usage_exceeded[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2258,8 +2258,8 @@
           }
         },
         "[mms_issue]break_apn_mms_setting|data_mode_off|data_usage_exceeded|user_abroad_roaming_disabled_on[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2269,8 +2269,8 @@
           }
         },
         "[mms_issue]break_apn_mms_setting|data_mode_off|user_abroad_roaming_disabled_on[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2280,8 +2280,8 @@
           }
         },
         "[mms_issue]break_apn_mms_setting|user_abroad_roaming_enabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2291,8 +2291,8 @@
           }
         },
         "[mms_issue]break_app_both_permissions|data_usage_exceeded[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2302,8 +2302,8 @@
           }
         },
         "[mms_issue]break_app_both_permissions|unseat_sim_card|user_abroad_roaming_disabled_on[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2313,8 +2313,8 @@
           }
         },
         "[mms_issue]break_app_sms_permission|data_mode_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2324,8 +2324,8 @@
           }
         },
         "[mms_issue]break_app_sms_permission|data_usage_exceeded|user_abroad_roaming_disabled_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2335,8 +2335,8 @@
           }
         },
         "[mms_issue]break_app_storage_permission|data_usage_exceeded[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2346,8 +2346,8 @@
           }
         },
         "[mms_issue]break_app_storage_permission|unseat_sim_card|user_abroad_roaming_disabled_on[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
-          "descriptionPurpose": "해결 경로 테스트: MMS(사진/그룹 메시지) 문제.",
+          "title": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: MMS(사진·그룹 메시지) 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 메시지 앱에서 MMS 메시지를 보낼 수 없습니다. 문제를 해결해 MMS 메시지를 성공적으로 보내고 싶습니다.",
@@ -2357,8 +2357,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2368,8 +2368,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|bad_vpn|data_mode_off|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2379,8 +2379,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|bad_vpn|data_mode_off|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_disabled_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2390,8 +2390,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|bad_vpn|data_mode_off|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2401,8 +2401,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|bad_vpn|data_mode_off|data_saver_mode_on|user_abroad_roaming_disabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2412,8 +2412,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|bad_vpn|data_mode_off|data_usage_exceeded|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2423,8 +2423,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|bad_vpn|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_enabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2434,8 +2434,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|bad_vpn|data_saver_mode_on|user_abroad_roaming_disabled_on[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2445,8 +2445,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|data_mode_off|data_saver_mode_on[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2456,8 +2456,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|data_mode_off|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_disabled_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2467,8 +2467,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|data_mode_off|data_usage_exceeded|user_abroad_roaming_disabled_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2478,8 +2478,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|data_mode_off|user_abroad_roaming_disabled_on[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2489,8 +2489,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2500,8 +2500,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2511,8 +2511,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|bad_network_preference|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2522,8 +2522,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|data_mode_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2533,8 +2533,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|data_mode_off|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_enabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2544,8 +2544,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|data_saver_mode_on|user_abroad_roaming_disabled_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2555,8 +2555,8 @@
           }
         },
         "[mobile_data_issue]airplane_mode_on|user_abroad_roaming_enabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2566,8 +2566,8 @@
           }
         },
         "[mobile_data_issue]bad_network_preference|bad_vpn|data_mode_off|data_saver_mode_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2577,8 +2577,8 @@
           }
         },
         "[mobile_data_issue]bad_network_preference|bad_vpn|data_mode_off|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2588,8 +2588,8 @@
           }
         },
         "[mobile_data_issue]bad_network_preference|bad_vpn|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2599,8 +2599,8 @@
           }
         },
         "[mobile_data_issue]bad_network_preference|bad_vpn|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2610,8 +2610,8 @@
           }
         },
         "[mobile_data_issue]bad_network_preference|bad_vpn|user_abroad_roaming_disabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2621,8 +2621,8 @@
           }
         },
         "[mobile_data_issue]bad_network_preference|bad_vpn|user_abroad_roaming_disabled_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2632,8 +2632,8 @@
           }
         },
         "[mobile_data_issue]bad_network_preference|bad_vpn|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2643,8 +2643,8 @@
           }
         },
         "[mobile_data_issue]bad_network_preference|data_mode_off|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2654,8 +2654,8 @@
           }
         },
         "[mobile_data_issue]bad_network_preference|data_saver_mode_on|data_usage_exceeded[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2665,8 +2665,8 @@
           }
         },
         "[mobile_data_issue]bad_network_preference|user_abroad_roaming_enabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2676,8 +2676,8 @@
           }
         },
         "[mobile_data_issue]bad_vpn|data_mode_off|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2687,8 +2687,8 @@
           }
         },
         "[mobile_data_issue]bad_vpn|data_saver_mode_on|user_abroad_roaming_disabled_on[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2698,8 +2698,8 @@
           }
         },
         "[mobile_data_issue]data_mode_off|data_usage_exceeded[PERSONA:None]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2709,8 +2709,8 @@
           }
         },
         "[mobile_data_issue]data_mode_off|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2720,8 +2720,8 @@
           }
         },
         "[mobile_data_issue]data_saver_mode_on|data_usage_exceeded[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2731,8 +2731,8 @@
           }
         },
         "[mobile_data_issue]data_saver_mode_on|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2742,8 +2742,8 @@
           }
         },
         "[mobile_data_issue]data_usage_exceeded|user_abroad_roaming_enabled_off[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
-          "descriptionPurpose": "해결 경로 테스트: 모바일 데이터/느린 인터넷 문제.",
+          "title": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: 모바일 데이터·인터넷 속도 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "모바일 데이터가 제대로 작동하지 않습니다. 아예 끊기거나 매우 느립니다. 문제를 해결해 휴대전화에서 반드시 'excellent' 등급의 인터넷 속도를 얻고 싶습니다. 'poor', 'fair', 'good' 등급은 받아들이지 않습니다. Wi-Fi를 사용할 수 없습니다.",
@@ -2753,8 +2753,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2764,8 +2764,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings|contract_end_suspension|lock_sim_card_pin[PERSONA:None]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2775,8 +2775,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings|contract_end_suspension|lock_sim_card_pin|unseat_sim_card[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2786,8 +2786,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings|contract_end_suspension|unseat_sim_card[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2797,8 +2797,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings|lock_sim_card_pin[PERSONA:None]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2808,8 +2808,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings|lock_sim_card_pin|overdue_bill_suspension[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2819,8 +2819,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings|lock_sim_card_pin|overdue_bill_suspension|unseat_sim_card[PERSONA:None]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2830,8 +2830,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings|lock_sim_card_pin|unseat_sim_card[PERSONA:None]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2841,8 +2841,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings|overdue_bill_suspension[PERSONA:None]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2852,8 +2852,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings|overdue_bill_suspension|unseat_sim_card[PERSONA:None]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2863,8 +2863,8 @@
           }
         },
         "[service_issue]airplane_mode_on|break_apn_settings|unseat_sim_card[PERSONA:None]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2874,8 +2874,8 @@
           }
         },
         "[service_issue]airplane_mode_on|contract_end_suspension|lock_sim_card_pin|unseat_sim_card[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2885,8 +2885,8 @@
           }
         },
         "[service_issue]airplane_mode_on|lock_sim_card_pin[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2896,8 +2896,8 @@
           }
         },
         "[service_issue]airplane_mode_on|lock_sim_card_pin|overdue_bill_suspension[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2907,8 +2907,8 @@
           }
         },
         "[service_issue]airplane_mode_on|lock_sim_card_pin|overdue_bill_suspension|unseat_sim_card[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2918,8 +2918,8 @@
           }
         },
         "[service_issue]airplane_mode_on|lock_sim_card_pin|unseat_sim_card[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2929,8 +2929,8 @@
           }
         },
         "[service_issue]airplane_mode_on|overdue_bill_suspension[PERSONA:None]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2940,8 +2940,8 @@
           }
         },
         "[service_issue]airplane_mode_on|overdue_bill_suspension|unseat_sim_card[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2951,8 +2951,8 @@
           }
         },
         "[service_issue]airplane_mode_on|unseat_sim_card[PERSONA:None]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2962,8 +2962,8 @@
           }
         },
         "[service_issue]break_apn_settings|contract_end_suspension|lock_sim_card_pin[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2973,8 +2973,8 @@
           }
         },
         "[service_issue]break_apn_settings|contract_end_suspension|lock_sim_card_pin|unseat_sim_card[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2984,8 +2984,8 @@
           }
         },
         "[service_issue]break_apn_settings|lock_sim_card_pin[PERSONA:None]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": null,
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -2995,8 +2995,8 @@
           }
         },
         "[service_issue]break_apn_settings|lock_sim_card_pin|overdue_bill_suspension[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -3006,8 +3006,8 @@
           }
         },
         "[service_issue]break_apn_settings|lock_sim_card_pin|overdue_bill_suspension|unseat_sim_card[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -3017,8 +3017,8 @@
           }
         },
         "[service_issue]break_apn_settings|overdue_bill_suspension|unseat_sim_card[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -3028,8 +3028,8 @@
           }
         },
         "[service_issue]contract_end_suspension|lock_sim_card_pin[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -3039,8 +3039,8 @@
           }
         },
         "[service_issue]contract_end_suspension|unseat_sim_card[PERSONA:Hard]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "64세인 당신은 은퇴한 사서로, 휴대전화는 주로 통화와 문자, 손주들 사진 촬영처럼 간단한 용도로만 사용합니다. 기술 전반에 불안과 압박감을 느낍니다.\n\n기술 지식은 상당히 제한적입니다. 단계별 안내도 자주 헷갈리고, \"VPN\"이나 \"APN\" 같은 기술 용어는 마치 외국어처럼 느껴집니다. 구체적으로 질문받은 정보만 공유합니다.\n\n기기를 다루다가 금세 당황하는 편입니다. 계속 안심시켜 주어야 하며, 불안한 질문으로 자주 말을 끊습니다. \"휴대전화를 재부팅하세요\" 같은 간단한 요청에도 소중한 사진을 잃을까 걱정할 수 있습니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -3050,8 +3050,8 @@
           }
         },
         "[service_issue]lock_sim_card_pin|overdue_bill_suspension[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
@@ -3061,8 +3061,8 @@
           }
         },
         "[service_issue]overdue_bill_suspension|unseat_sim_card[PERSONA:Easy]": {
-          "title": "해결 경로 테스트: '서비스 없음'/연결 문제.",
-          "descriptionPurpose": "해결 경로 테스트: '서비스 없음'/연결 문제.",
+          "title": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
+          "descriptionPurpose": "문제 해결 절차 검증: '서비스 없음'·연결 문제.",
           "scenario": {
             "persona": "41세 사무직 관리자인 당신은 업무와 개인 용도로 휴대전화를 매일 사용합니다. 일반적인 휴대전화 기능에는 익숙하지만, 스스로를 기술 애호가라고 여기지는 않습니다.\n\n기술 활용 능력은 평균 수준입니다. 통화, 문자, 이메일, 기본 앱 같은 일반적인 스마트폰 기능은 쉽게 다룹니다. 기본 설정은 이해하지만 새로운 기능을 시도할 때는 명확한 단계별 안내를 선호합니다.\n\n친절하고 참을성 있게 대화합니다. 도움을 받을 때 주의 깊게 듣고 거리낌 없이 질문합니다. 이해한 내용을 확인하고, 받은 지침마다 자세히 피드백합니다.",
             "reasonForCall": "지난 몇 시간 동안 휴대전화에 'No Service'(서비스 없음)가 표시됩니다.",
