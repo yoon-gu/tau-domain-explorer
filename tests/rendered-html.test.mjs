@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const catalogUrl = new URL("../app/data/benchmark-snapshot.json", import.meta.url);
 const stylesheetUrl = new URL("../app/globals.css", import.meta.url);
+const explorerSourceUrl = new URL("../app/Explorer.tsx", import.meta.url);
 const taskTranslationsUrl = new URL(
   "../app/data/task-translations.ko.json",
   import.meta.url,
@@ -525,6 +526,7 @@ test("server-renders the pinned τ² GPT-5 explorer shell", async () => {
   assert.match(html, /Catalog view/);
   assert.match(html, />Tasks</);
   assert.match(html, />Trajectories</);
+  assert.match(html, /aria-selected="true"[^>]*>Tasks</);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
 });
 
@@ -562,7 +564,7 @@ test("uses a readable typography scale across the explorer", async () => {
 
 test("keeps the mobile explorer readable and touch friendly", async () => {
   const css = await readFile(stylesheetUrl, "utf8");
-  const mobileStart = css.indexOf("@media (max-width: 820px)");
+  const mobileStart = css.indexOf("@media (max-width: 900px)");
   const compactStart = css.indexOf("@media (max-width: 520px)", mobileStart);
   assert.ok(mobileStart >= 0 && compactStart > mobileStart, "mobile media queries");
   const mobileCss = css.slice(mobileStart, compactStart);
@@ -598,6 +600,36 @@ test("keeps the mobile explorer readable and touch friendly", async () => {
       ".trajectory-toolbar button,\n  .trajectory-toolbar a",
     ) >= 44,
   );
+  assert.ok(minimumHeightPixels(css, ".task-trial-chip") >= 44);
+  assert.ok(minimumHeightPixels(css, ".task-history-tabs button") >= 44);
+  assert.ok(minimumHeightPixels(css, ".evaluation-item > summary") >= 44);
+});
+
+test("covers 834px and wider iPads without undersized or hidden controls", async () => {
+  const css = await readFile(stylesheetUrl, "utf8");
+  const tabletStart = css.indexOf("@media (max-width: 1180px)");
+  const mobileStart = css.indexOf("@media (max-width: 900px)", tabletStart);
+  assert.ok(tabletStart >= 0 && mobileStart > tabletStart, "tablet and iPad portrait breakpoints");
+  const tabletCss = css.slice(tabletStart, mobileStart);
+
+  const contextPanel = selectorBlock(tabletCss, ".context-panel");
+  assert.match(contextPanel, /height:\s*100dvh/u);
+  assert.match(contextPanel, /visibility:\s*hidden/u);
+  assert.match(contextPanel, /pointer-events:\s*none/u);
+  assert.ok(fontPixels(tabletCss, ".catalog-filter select,\n  .search-wrap input") >= 16);
+  assert.match(tabletCss, /\.score-badge,[\s\S]{0,300}min-height:\s*44px/u);
+});
+
+test("keeps Task conversations and evaluation evidence visible in the workspace", async () => {
+  const source = await readFile(explorerSourceUrl, "utf8");
+  assert.match(source, /useState<CatalogView>\("tasks"\)/u);
+  assert.match(source, /className="task-history-strip"/u);
+  assert.match(source, /Conversation histories for this Task/u);
+  assert.match(source, /navigationTrajectories/u);
+  assert.match(source, /className="evaluation-overview"/u);
+  assert.match(source, /className="evaluation-evidence"/u);
+  assert.match(source, /Supplemental NL review · not included in the final score/u);
+  assert.match(source, /aria-pressed=\{evaluationVisible\}/u);
 });
 
 test("catalog is narrowed to the three official τ² GPT-5 runs", async () => {

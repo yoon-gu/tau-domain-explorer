@@ -71,6 +71,19 @@ interface TaskSummaryGroup {
   failCount: number;
 }
 
+type EvaluationItemKind = "database" | "environment" | "action" | "communication" | "nl";
+
+interface EvaluationDisplayItem {
+  id: string;
+  kind: EvaluationItemKind;
+  label: string;
+  detail: string | null;
+  met: boolean | null;
+  score: number | null;
+  affectsScore: boolean;
+  anchorMessageIndex: number | null;
+}
+
 const PAGE_SIZE = 100;
 const TASK_PAGE_SIZE = 40;
 const DETAIL_CACHE_LIMIT = 24;
@@ -111,6 +124,11 @@ function loadRunIndex(run: RunData) {
   return request;
 }
 
+function taskGroupKey(summary: TrajectorySummary, runsById: Map<string, RunData>) {
+  const taskSet = runsById.get(summary.runId)?.tasksPath ?? summary.runId;
+  return JSON.stringify([summary.domainId, taskSet, summary.taskId]);
+}
+
 function groupTaskSummaries(
   summaries: TrajectorySummary[],
   runsById: Map<string, RunData>,
@@ -128,8 +146,7 @@ function groupTaskSummaries(
   }>();
 
   for (const summary of summaries) {
-    const taskSet = runsById.get(summary.runId)?.tasksPath ?? summary.runId;
-    const key = JSON.stringify([summary.domainId, taskSet, summary.taskId]);
+    const key = taskGroupKey(summary, runsById);
     const display = taskDisplayForSummary(
       summary,
       taskLanguage,
@@ -166,17 +183,18 @@ function groupTaskSummaries(
         failCount: sorted.length - passCount,
       };
     });
-    const passCount = task.trajectories.filter((item) => item.reward === 1).length;
+    const trajectories = runs.flatMap((run) => run.trajectories);
+    const passCount = trajectories.filter((item) => item.reward === 1).length;
     return {
       key: task.key,
       taskId: task.taskId,
       title: task.title,
       scenarioPreview: task.scenarioPreview,
       contentLanguage: task.contentLanguage,
-      trajectories: task.trajectories,
+      trajectories,
       runs,
       passCount,
-      failCount: task.trajectories.length - passCount,
+      failCount: trajectories.length - passCount,
     };
   });
 }
@@ -527,6 +545,143 @@ function asRecord(value: unknown): Record<string, unknown> {
     : {};
 }
 
+function asRecordArray(value: unknown) {
+  return Array.isArray(value) ? value.map(asRecord) : [];
+}
+
+function evaluationBoolean(value: unknown): boolean | null {
+  return typeof value === "boolean" ? value : null;
+}
+
+function evaluationNumber(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function buildEvaluationItems(trajectory: Trajectory): EvaluationDisplayItem[] {
+  const evaluation = asRecord(trajectory.evaluation);
+  const rewardBasis = new Set(
+    Array.isArray(evaluation.reward_basis) ? evaluation.reward_basis.map(String) : [],
+  );
+  const items: EvaluationDisplayItem[] = [];
+  const dbCheck = asRecord(evaluation.db_check);
+
+  if (rewardBasis.has("DB") && Object.keys(dbCheck).length) {
+    items.push({
+      id: "database",
+      kind: "database",
+      label: "Database state matches the expected final state",
+      detail: null,
+      met: evaluationBoolean(dbCheck.db_match),
+      score: evaluationNumber(dbCheck.db_reward),
+      affectsScore: rewardBasis.has("DB"),
+      anchorMessageIndex: null,
+    });
+  }
+
+  (rewardBasis.has("ENV_ASSERTION") ? asRecordArray(evaluation.env_assertions) : []).forEach((check, index) => {
+    const assertion = asRecord(check.env_assertion);
+    const name = typeof assertion.func_name === "string"
+      ? assertion.func_name
+      : `Environment assertion ${index + 1}`;
+    const args = Object.keys(asRecord(assertion.arguments)).length
+      ? JSON.stringify(assertion.arguments)
+      : null;
+    items.push({
+      id: `environment-${index}`,
+      kind: "environment",
+      label: name,
+      detail: args,
+      met: evaluationBoolean(check.met),
+      score: evaluationNumber(check.reward),
+      affectsScore: rewardBasis.has("ENV_ASSERTION"),
+      anchorMessageIndex: null,
+    });
+  });
+
+  const usedToolCalls = new Set<string>();
+  if (rewardBasis.has("ACTION")) {
+    asRecordArray(evaluation.action_checks).forEach((check, index) => {
+      const action = asRecord(check.action);
+      const name = typeof action.name === "string" ? action.name : `Action ${index + 1}`;
+      const requestor = typeof action.requestor === "string" ? action.requestor : null;
+      const met = evaluationBoolean(check.action_match);
+      let anchorMessageIndex: number | null = null;
+
+      if (met) {
+        for (let messageIndex = 0; messageIndex < trajectory.messages.length; messageIndex += 1) {
+          const message = trajectory.messages[messageIndex];
+          const callIndex = message.toolCalls.findIndex((call, toolIndex) => {
+            const key = `${messageIndex}:${toolIndex}`;
+            return !usedToolCalls.has(key) && call.name === name &&
+              (!requestor || call.requestor === requestor);
+          });
+          if (callIndex >= 0) {
+            usedToolCalls.add(`${messageIndex}:${callIndex}`);
+            anchorMessageIndex = messageIndex;
+            break;
+          }
+        }
+      }
+
+      items.push({
+        id: `action-${index}`,
+        kind: "action",
+        label: name,
+        detail: Object.keys(asRecord(action.arguments)).length
+          ? JSON.stringify(action.arguments)
+          : null,
+        met,
+        score: evaluationNumber(check.action_reward),
+        affectsScore: true,
+        anchorMessageIndex,
+      });
+    });
+  }
+
+  if (rewardBasis.has("COMMUNICATE")) {
+    asRecordArray(evaluation.communicate_checks).forEach((check, index) => {
+      const info = typeof check.info === "string" ? check.info : `Communication ${index + 1}`;
+      const justification = typeof check.justification === "string" ? check.justification : null;
+      let anchorMessageIndex: number | null = null;
+      if (evaluationBoolean(check.met) && justification) {
+        anchorMessageIndex = trajectory.messages.findIndex((message) =>
+          message.role === "assistant" &&
+          typeof message.content === "string" &&
+          message.content.length >= 20 &&
+          justification.includes(`message:\n '${message.content}'`));
+        if (anchorMessageIndex < 0) anchorMessageIndex = null;
+      }
+      items.push({
+        id: `communication-${index}`,
+        kind: "communication",
+        label: `Communicate: ${info}`,
+        detail: justification,
+        met: evaluationBoolean(check.met),
+        score: evaluationBoolean(check.met) === null ? null : evaluationBoolean(check.met) ? 1 : 0,
+        affectsScore: true,
+        anchorMessageIndex,
+      });
+    });
+  }
+
+  asRecordArray(evaluation.nl_assertions).forEach((check, index) => {
+    items.push({
+      id: `nl-${index}`,
+      kind: "nl",
+      label: typeof check.nl_assertion === "string"
+        ? check.nl_assertion
+        : `Natural-language assertion ${index + 1}`,
+      detail: typeof check.justification === "string" ? check.justification : null,
+      met: evaluationBoolean(check.met),
+      score: null,
+      affectsScore: false,
+      anchorMessageIndex: null,
+    });
+  });
+
+  return items;
+}
+
 function stringify(value: unknown) {
   if (typeof value === "string") return value;
   if (value === null || value === undefined) return "—";
@@ -846,6 +1001,148 @@ function TranscriptLanguageNotice({
         </button>
       ) : null}
       {error ? <small lang="en">{error}</small> : null}
+    </li>
+  );
+}
+
+function evaluationKindLabel(kind: EvaluationItemKind, language: TaskLanguage) {
+  const korean = language === "ko";
+  const labels: Record<EvaluationItemKind, string> = {
+    database: korean ? "DB 상태" : "Database",
+    environment: korean ? "환경 검증" : "Environment",
+    action: korean ? "도구 행동" : "Action",
+    communication: korean ? "정보 전달" : "Communication",
+    nl: korean ? "자연어 검토" : "NL review",
+  };
+  return labels[kind];
+}
+
+function EvaluationItemRow({
+  item,
+  displayLanguage,
+}: {
+  item: EvaluationDisplayItem;
+  displayLanguage: TaskLanguage;
+}) {
+  const korean = displayLanguage === "ko";
+  const status = item.met === null
+    ? "—"
+    : item.met
+      ? "✓"
+      : "×";
+  return (
+    <details className={`evaluation-item ${item.met === false ? "fail" : "pass"}`}>
+      <summary>
+        <span className="evaluation-status" aria-hidden="true">{status}</span>
+        <span className="evaluation-item-copy">
+          <small lang={displayLanguage}>{evaluationKindLabel(item.kind, displayLanguage)}</small>
+          <strong lang="en">{item.label}</strong>
+        </span>
+        {item.score !== null ? (
+          <span className="evaluation-item-score" aria-label={`${korean ? "점수" : "Score"} ${item.score}`}>
+            {item.score.toFixed(1)}
+          </span>
+        ) : null}
+        <span className="disclosure" aria-hidden="true">⌄</span>
+      </summary>
+      {item.detail ? <p lang="en">{item.detail}</p> : (
+        <p lang={displayLanguage}>{korean ? "추가 설명이 기록되지 않았습니다." : "No additional detail was recorded."}</p>
+      )}
+    </details>
+  );
+}
+
+function EvaluationOverview({
+  trajectory,
+  items,
+  displayLanguage,
+}: {
+  trajectory: Trajectory;
+  items: EvaluationDisplayItem[];
+  displayLanguage: TaskLanguage;
+}) {
+  const korean = displayLanguage === "ko";
+  const evaluation = asRecord(trajectory.evaluation);
+  const breakdown = asRecord(evaluation.reward_breakdown);
+  const scoredCount = items.filter((item) => item.affectsScore).length;
+  return (
+    <li className="evaluation-overview" lang={displayLanguage}>
+      <div className="evaluation-overview-heading">
+        <div>
+          <span className="evaluation-kicker">{korean ? "평가 모드" : "Evaluation mode"}</span>
+          <h2>{korean ? "이 대화의 실행 후 평가" : "Post-run evaluation"}</h2>
+        </div>
+        <strong>{trajectory.reward.toFixed(1)} / 1.0</strong>
+      </div>
+      <p>
+        {korean
+          ? "아래 표시는 대화가 끝난 뒤 계산된 평가를 읽기 편하게 배치한 것입니다. 실제 실행 중 상담원에게는 보이지 않았습니다."
+          : "These results were calculated after the conversation and placed here for review. The agent did not see them while running."}
+      </p>
+      <div className="evaluation-breakdown" aria-label={korean ? "점수 구성" : "Score breakdown"}>
+        {Object.entries(breakdown).map(([basis, value]) => (
+          <span key={basis}><b>{basis}</b>{String(value)}</span>
+        ))}
+        <span><b>{korean ? "점수 항목" : "Scored items"}</b>{scoredCount}</span>
+      </div>
+    </li>
+  );
+}
+
+function EvaluationEvidence({
+  items,
+  displayLanguage,
+}: {
+  items: EvaluationDisplayItem[];
+  displayLanguage: TaskLanguage;
+}) {
+  const korean = displayLanguage === "ko";
+  return (
+    <li className="evaluation-evidence" lang={displayLanguage}>
+      <div className="evaluation-evidence-heading">
+        <span aria-hidden="true">↳</span>
+        <strong>{korean ? "이 턴과 연결된 평가 근거" : "Evaluation evidence linked to this turn"}</strong>
+      </div>
+      {items.map((item) => (
+        <EvaluationItemRow item={item} displayLanguage={displayLanguage} key={item.id} />
+      ))}
+    </li>
+  );
+}
+
+function EvaluationSummary({
+  items,
+  displayLanguage,
+}: {
+  items: EvaluationDisplayItem[];
+  displayLanguage: TaskLanguage;
+}) {
+  const korean = displayLanguage === "ko";
+  const scoreItems = items.filter((item) => item.affectsScore && item.anchorMessageIndex === null);
+  const supplementalItems = items.filter((item) => item.kind === "nl");
+  if (!scoreItems.length && !supplementalItems.length) return null;
+  return (
+    <li className="evaluation-summary" lang={displayLanguage}>
+      <div className="evaluation-summary-heading">
+        <span className="evaluation-kicker">{korean ? "대화 전체" : "Whole conversation"}</span>
+        <h2>{korean ? "특정 턴에 연결되지 않은 평가" : "Evaluation without a turn-level anchor"}</h2>
+        <p>
+          {korean
+            ? "DB·환경·미충족 정보 전달 항목은 특정 메시지의 근거로 저장되지 않아 대화 전체 결과로 표시합니다."
+            : "Database, environment, and unmet communication checks are stored as whole-conversation results rather than evidence for a specific message."}
+        </p>
+      </div>
+      {scoreItems.map((item) => (
+        <EvaluationItemRow item={item} displayLanguage={displayLanguage} key={item.id} />
+      ))}
+      {supplementalItems.length ? (
+        <div className="evaluation-supplemental">
+          <h3>{korean ? "보조 자연어 검토 · 최종 점수 미반영" : "Supplemental NL review · not included in the final score"}</h3>
+          {supplementalItems.map((item) => (
+            <EvaluationItemRow item={item} displayLanguage={displayLanguage} key={item.id} />
+          ))}
+        </div>
+      ) : null}
     </li>
   );
 }
@@ -1866,6 +2163,7 @@ export default function Explorer() {
   const [promptMode, setPromptMode] = useState<PromptMode>("resolved");
   const [evaluatorPromptMode, setEvaluatorPromptMode] = useState<EvaluatorPromptMode>("system");
   const [metadataVisible, setMetadataVisible] = useState(false);
+  const [evaluationVisible, setEvaluationVisible] = useState(true);
   const [contextOpen, setContextOpen] = useState(false);
   const [browserOpen, setBrowserOpen] = useState(false);
   const [page, setPage] = useState(0);
@@ -2150,18 +2448,34 @@ export default function Explorer() {
     const matchesTrial = trialFilter === "all" || item.trial === Number(trialFilter);
     return matchesQuery && matchesOutcome && matchesTrial;
   }), [currentIndexState.data, deferredQuery, outcome, runsById, taskAssetsState.data, trialFilter]);
-  const taskGroups = useMemo(
+  const allTaskGroups = useMemo(
     () => groupTaskSummaries(
-      filteredTrajectories,
+      currentIndexState.data.trajectories,
       runsById,
       taskLanguage,
       taskAssetsState.data,
     ),
-    [filteredTrajectories, runsById, taskAssetsState.data, taskLanguage],
+    [currentIndexState.data.trajectories, runsById, taskAssetsState.data, taskLanguage],
   );
+  const matchingTrajectoryIds = useMemo(
+    () => new Set(filteredTrajectories.map((item) => item.id)),
+    [filteredTrajectories],
+  );
+  const taskGroups = useMemo(
+    () => allTaskGroups.filter((group) =>
+      group.trajectories.some((item) => matchingTrajectoryIds.has(item.id))),
+    [allTaskGroups, matchingTrajectoryIds],
+  );
+  const taskCatalogTrajectories = useMemo(
+    () => taskGroups.flatMap((group) => group.trajectories),
+    [taskGroups],
+  );
+  const visibleTrajectories = catalogView === "tasks"
+    ? taskCatalogTrajectories
+    : filteredTrajectories;
   const selectedSummary =
-    filteredTrajectories.find((candidate) => candidate.id === selectedTrajectoryId) ??
-    filteredTrajectories[0];
+    visibleTrajectories.find((candidate) => candidate.id === selectedTrajectoryId) ??
+    visibleTrajectories[0];
   const selectedTaskGroup = selectedSummary
     ? taskGroups.find((group) => group.trajectories.some((item) => item.id === selectedSummary.id))
     : undefined;
@@ -2185,8 +2499,11 @@ export default function Explorer() {
   const selectedTaskTranslation = taskLanguage === "ko"
     ? selectedTaskDisplay?.translation ?? selectedTaskEntry?.translations?.ko
     : undefined;
+  const navigationTrajectories = catalogView === "tasks"
+    ? selectedTaskGroup?.trajectories ?? []
+    : filteredTrajectories;
   const currentIndex = selectedSummary
-    ? filteredTrajectories.findIndex((candidate) => candidate.id === selectedSummary.id)
+    ? navigationTrajectories.findIndex((candidate) => candidate.id === selectedSummary.id)
     : -1;
   const pageSize = catalogView === "tasks" ? TASK_PAGE_SIZE : PAGE_SIZE;
   const catalogItemCount = catalogView === "tasks"
@@ -2360,6 +2677,20 @@ export default function Explorer() {
       ),
     };
   }), [activeTranscriptTranslation, activeTranscriptTranslationStatus, taskLanguage, trajectory]);
+  const evaluationItems = useMemo(
+    () => trajectory ? buildEvaluationItems(trajectory) : [],
+    [trajectory],
+  );
+  const evaluationItemsByMessage = useMemo(() => {
+    const byMessage = new Map<number, EvaluationDisplayItem[]>();
+    for (const item of evaluationItems) {
+      if (item.anchorMessageIndex === null) continue;
+      const existing = byMessage.get(item.anchorMessageIndex) ?? [];
+      existing.push(item);
+      byMessage.set(item.anchorMessageIndex, existing);
+    }
+    return byMessage;
+  }, [evaluationItems]);
   const transcriptFallbackCount = displayMessages.filter((item) => item.translationFallback).length;
   const activeDetailStatus: LoadStatus = !selectedSummary
     ? "idle"
@@ -2438,7 +2769,8 @@ export default function Explorer() {
   function chooseTask(group: TaskSummaryGroup) {
     setFocusedTaskKey(group.key);
     if (!group.trajectories.some((item) => item.id === selectedSummary?.id)) {
-      setSelectedTrajectoryId(group.trajectories[0]?.id ?? "");
+      const firstMatching = group.trajectories.find((item) => matchingTrajectoryIds.has(item.id));
+      setSelectedTrajectoryId(firstMatching?.id ?? group.trajectories[0]?.id ?? "");
     }
   }
 
@@ -2458,9 +2790,9 @@ export default function Explorer() {
   }
 
   function moveTrajectory(offset: number) {
-    if (!filteredTrajectories.length || currentIndex < 0) return;
-    const next = (currentIndex + offset + filteredTrajectories.length) % filteredTrajectories.length;
-    const nextTrajectory = filteredTrajectories[next];
+    if (!navigationTrajectories.length || currentIndex < 0) return;
+    const next = (currentIndex + offset + navigationTrajectories.length) % navigationTrajectories.length;
+    const nextTrajectory = navigationTrajectories[next];
     setSelectedTrajectoryId(nextTrajectory.id);
     if (catalogView === "tasks") {
       const taskIndex = taskGroups.findIndex((group) =>
@@ -2550,10 +2882,12 @@ export default function Explorer() {
               onClick={() => setBrowserOpen(true)}
               aria-expanded={browserOpen}
             >
-              <strong>{selectedSummary ? compactTaskId(selectedSummary.taskId) : "Browse catalog"}</strong>
+              <strong lang={selectedTaskDisplay?.translation ? "ko" : "en"}>
+                {selectedTaskDisplay?.title ?? (selectedSummary ? compactTaskId(selectedSummary.taskId) : "Browse catalog")}
+              </strong>
               <span>
                 {catalogView === "tasks"
-                  ? `${taskGroups.length.toLocaleString()} tasks`
+                  ? `${selectedTaskGroup?.trajectories.length ?? 0} ${taskLanguage === "ko" ? "개 대화" : "conversations"}`
                   : `${filteredTrajectories.length.toLocaleString()} trajectories`}
               </span>
             </button>
@@ -2604,7 +2938,7 @@ export default function Explorer() {
             <span>
               {currentIndexState.status === "ready"
                 ? catalogView === "tasks"
-                  ? `${taskGroups.length.toLocaleString()} tasks · ${filteredTrajectories.length.toLocaleString()} trajectories`
+                  ? `${taskGroups.length.toLocaleString()} tasks · ${taskCatalogTrajectories.length.toLocaleString()} conversations`
                   : `${filteredTrajectories.length.toLocaleString()} / ${expectedTrajectoryCount.toLocaleString()}`
                 : "Loading…"}
             </span>
@@ -2623,7 +2957,8 @@ export default function Explorer() {
               </button>
             ))}
           </div>
-          <div className={`catalog-filters${scopedRuns.length > 1 ? "" : " single-filter"}`}>
+          {catalogView === "trajectories" || scopedRuns.length > 1 ? (
+          <div className={`catalog-filters${scopedRuns.length > 1 && catalogView === "trajectories" ? "" : " single-filter"}`}>
             {scopedRuns.length > 1 ? (
               <label className="catalog-filter run-filter">
                 <span>Run</span>
@@ -2635,7 +2970,7 @@ export default function Explorer() {
                 </select>
               </label>
             ) : null}
-            <label className="catalog-filter trial-filter">
+            {catalogView === "trajectories" ? <label className="catalog-filter trial-filter">
               <span>Trial</span>
               <select
                 value={trialFilter}
@@ -2649,8 +2984,9 @@ export default function Explorer() {
                 <option value="all">All</option>
                 {trialOptions.map((trial) => <option value={trial} key={trial}>#{trial}</option>)}
               </select>
-            </label>
+            </label> : null}
           </div>
+          ) : null}
           <div className="search-wrap">
             <span aria-hidden="true">⌕</span>
             <input
@@ -2677,7 +3013,7 @@ export default function Explorer() {
               >×</button>
             ) : null}
           </div>
-          <div className="outcome-filter" aria-label="Outcome filter">
+          {catalogView === "trajectories" ? <div className="outcome-filter" aria-label="Outcome filter">
             {(["all", "pass", "fail"] as OutcomeFilter[]).map((filter) => (
               <button
                 type="button"
@@ -2693,7 +3029,7 @@ export default function Explorer() {
                 {filter[0].toUpperCase() + filter.slice(1)}
               </button>
             ))}
-          </div>
+          </div> : null}
           <div className="trajectory-list" ref={listRef}>
             {currentIndexState.status === "loading" ? (
               <div className="catalog-state" role="status">
@@ -2731,7 +3067,7 @@ export default function Explorer() {
                         <strong lang={group.contentLanguage}>{group.title}</strong>
                         <span className="task-scenario" lang={group.contentLanguage}>{group.scenarioPreview}</span>
                         <span className="task-group-meta">
-                          {group.trajectories.length} trajectories · {group.runs.length} runs
+                          {group.trajectories.length} {taskLanguage === "ko" ? "개 대화" : "conversations"}
                         </span>
                       </span>
                       <span className="task-group-side" aria-label={`${group.passCount} passed, ${group.failCount} failed`}>
@@ -2757,13 +3093,16 @@ export default function Explorer() {
                                     type="button"
                                     className={`task-trial-chip${item.id === selectedSummary?.id ? " active" : ""}`}
                                     onClick={() => chooseTrajectory(item.id)}
-                                    aria-label={`Trial ${item.trial}, ${runLabel}, ${item.reward === 1 ? "Pass" : "Fail"}`}
+                                    aria-label={`${taskLanguage === "ko" ? `대화 ${item.trial + 1}` : `Conversation ${item.trial + 1}`}, Trial ${item.trial}, ${runLabel}, ${item.reward === 1 ? "Pass" : "Fail"}`}
                                     key={item.id}
                                   >
                                     <span className={`trial-outcome ${item.reward === 1 ? "pass" : "fail"}`} aria-hidden="true">
                                       {item.reward === 1 ? "✓" : "×"}
                                     </span>
-                                    T{item.trial}
+                                    <span className="task-conversation-label" lang={taskLanguage}>
+                                      {taskLanguage === "ko" ? `대화 ${item.trial + 1}` : `Conversation ${item.trial + 1}`}
+                                    </span>
+                                    <small>Trial #{item.trial}</small>
                                   </button>
                                 ))}
                               </div>
@@ -2867,26 +3206,35 @@ export default function Explorer() {
                 >
                   {taskLanguage === "ko" ? "컨텍스트" : "Context"}
                 </button>
-                <div className={`score-badge ${selectedSummary.reward === 1 ? "pass" : "fail"}`}>
+                <button
+                  type="button"
+                  className={`score-badge ${selectedSummary.reward === 1 ? "pass" : "fail"}${evaluationVisible ? " active" : ""}`}
+                  aria-pressed={evaluationVisible}
+                  aria-label={taskLanguage === "ko"
+                    ? `${selectedSummary.reward === 1 ? "통과" : "실패"}, 점수 ${selectedSummary.reward.toFixed(1)}. 대화 안 평가 ${evaluationVisible ? "숨기기" : "표시하기"}`
+                    : `${selectedSummary.reward === 1 ? "Passed" : "Failed"}, score ${selectedSummary.reward.toFixed(1)}. ${evaluationVisible ? "Hide" : "Show"} evaluation in the conversation`}
+                  onClick={() => setEvaluationVisible((visible) => !visible)}
+                  title={taskLanguage === "ko" ? "대화 안의 평가 표시 전환" : "Toggle evaluation inside the conversation"}
+                >
                   <span>{selectedSummary.reward === 1 ? "✓" : "×"}</span>
                   {taskLanguage === "ko"
                     ? (selectedSummary.reward === 1 ? "통과" : "실패")
                     : (selectedSummary.reward === 1 ? "Passed" : "Failed")}
                   <strong>{selectedSummary.reward.toFixed(1)}</strong>
-                </div>
+                </button>
               </div>
             </header>
 
             <div className="trajectory-toolbar">
               <button
                 type="button"
-                aria-label={taskLanguage === "ko" ? "이전 트래젝토리" : "Previous trajectory"}
+                aria-label={taskLanguage === "ko" ? "이전 대화" : "Previous conversation"}
                 onClick={() => moveTrajectory(-1)}
               >←</button>
-              <span>{currentIndex + 1} / {filteredTrajectories.length}</span>
+              <span>{currentIndex + 1} / {navigationTrajectories.length}</span>
               <button
                 type="button"
-                aria-label={taskLanguage === "ko" ? "다음 트래젝토리" : "Next trajectory"}
+                aria-label={taskLanguage === "ko" ? "다음 대화" : "Next conversation"}
                 onClick={() => moveTrajectory(1)}
               >→</button>
               <span className="toolbar-separator" />
@@ -2909,6 +3257,34 @@ export default function Explorer() {
                 {taskLanguage === "ko" ? "메타데이터" : "Metadata"}
               </button>
             </div>
+
+            {catalogView === "tasks" && selectedTaskGroup ? (
+              <div className="task-history-strip" role="tablist" aria-label={taskLanguage === "ko" ? "이 Task의 대화 이력" : "Conversation histories for this Task"}>
+                <span className="task-history-heading" lang={taskLanguage}>
+                  {taskLanguage === "ko" ? "이 Task의 대화" : "This Task"}
+                </span>
+                <div className="task-history-tabs">
+                  {selectedTaskGroup.trajectories.map((item) => (
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={item.id === selectedSummary.id}
+                      className={item.id === selectedSummary.id ? "active" : ""}
+                      onClick={() => chooseTrajectory(item.id)}
+                      key={item.id}
+                    >
+                      <span className={`trial-outcome ${item.reward === 1 ? "pass" : "fail"}`} aria-hidden="true">
+                        {item.reward === 1 ? "✓" : "×"}
+                      </span>
+                      <span className="task-history-copy">
+                        <strong lang={taskLanguage}>{taskLanguage === "ko" ? `대화 ${item.trial + 1}` : `Conversation ${item.trial + 1}`}</strong>
+                        <small>Trial #{item.trial} · {item.messageCount} {taskLanguage === "ko" ? "턴" : "turns"}</small>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
 
             {metadataVisible ? (
               <div className="metadata-strip">
@@ -2936,19 +3312,36 @@ export default function Explorer() {
                     retry={retryTranscriptTranslation}
                   />
                 ) : null}
-                {displayMessages.map((item, index) => (
-                  <TranscriptItem
-                    message={item.message}
-                    messageIndex={index}
-                    metadataVisible={metadataVisible}
-                    displayContent={item.displayContent}
-                    displayToolCalls={item.displayToolCalls}
-                    contentLanguage={item.contentLanguage}
+                {evaluationVisible ? (
+                  <EvaluationOverview
+                    trajectory={trajectory}
+                    items={evaluationItems}
                     displayLanguage={taskLanguage}
-                    translationFallback={item.translationFallback}
-                    key={`${item.message.turnIndex}-${index}`}
                   />
-                ))}
+                ) : null}
+                {displayMessages.map((item, index) => {
+                  const linkedEvaluation = evaluationItemsByMessage.get(index) ?? [];
+                  return (
+                    <Fragment key={`${item.message.turnIndex}-${index}`}>
+                      <TranscriptItem
+                        message={item.message}
+                        messageIndex={index}
+                        metadataVisible={metadataVisible}
+                        displayContent={item.displayContent}
+                        displayToolCalls={item.displayToolCalls}
+                        contentLanguage={item.contentLanguage}
+                        displayLanguage={taskLanguage}
+                        translationFallback={item.translationFallback}
+                      />
+                      {evaluationVisible && linkedEvaluation.length ? (
+                        <EvaluationEvidence items={linkedEvaluation} displayLanguage={taskLanguage} />
+                      ) : null}
+                    </Fragment>
+                  );
+                })}
+                {evaluationVisible ? (
+                  <EvaluationSummary items={evaluationItems} displayLanguage={taskLanguage} />
+                ) : null}
               </ol>
             ) : activeDetailStatus === "ready" && trajectory ? (
               <div className="workspace-state transcript-state" role="status" aria-label="Conversation transcript">
