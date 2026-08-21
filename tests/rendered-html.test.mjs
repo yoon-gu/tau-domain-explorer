@@ -607,7 +607,7 @@ test("keeps the mobile explorer readable and touch friendly", async () => {
 
 test("covers 834px and wider iPads without undersized or hidden controls", async () => {
   const css = await readFile(stylesheetUrl, "utf8");
-  const tabletStart = css.indexOf("@media (max-width: 1180px)");
+  const tabletStart = css.indexOf("@media (max-width: 1280px)");
   const mobileStart = css.indexOf("@media (max-width: 900px)", tabletStart);
   assert.ok(tabletStart >= 0 && mobileStart > tabletStart, "tablet and iPad portrait breakpoints");
   const tabletCss = css.slice(tabletStart, mobileStart);
@@ -618,6 +618,50 @@ test("covers 834px and wider iPads without undersized or hidden controls", async
   assert.match(contextPanel, /pointer-events:\s*none/u);
   assert.ok(fontPixels(tabletCss, ".catalog-filter select,\n  .search-wrap input") >= 16);
   assert.match(tabletCss, /\.score-badge,[\s\S]{0,300}min-height:\s*44px/u);
+  assert.match(tabletCss, /\.tool-call > summary,[\s\S]{0,100}\.tool-call-group > summary\s*\{\s*min-height:\s*44px/u);
+  assert.match(contextPanel, /width:\s*min\(var\(--context-width/u);
+  assert.doesNotMatch(tabletCss, /grid-template-columns:\s*288px\s+minmax\(0,\s*1fr\)/u);
+});
+
+test("supports persistent collapsible and adjustable sidebars", async () => {
+  const [source, css] = await Promise.all([
+    readFile(explorerSourceUrl, "utf8"),
+    readFile(stylesheetUrl, "utf8"),
+  ]);
+
+  assert.match(source, /tau-explorer-panel-layout-v1/u);
+  assert.match(source, /role="separator"/u);
+  assert.match(source, /aria-valuenow=\{value\}/u);
+  assert.match(source, /setPointerCapture/u);
+  assert.match(source, /event\.shiftKey \? 48 : 16/u);
+  assert.match(source, /className="catalog-collapse"/u);
+  assert.match(source, /className="context-collapse"/u);
+  assert.match(source, /aria-expanded=\{!catalogPanelCollapsed\}/u);
+  assert.match(css, /grid-template-columns:\s*var\(--catalog-column-width\) minmax\(0, 1fr\) var\(--context-column-width\)/u);
+  assert.match(selectorBlock(css, ".panel-resizer"), /touch-action:\s*none/u);
+  assert.match(css, /\.explorer-shell\.catalog-panel-collapsed\s*\{[\s\S]*?--catalog-column-width:\s*52px/u);
+  assert.match(css, /@media \(min-width:\s*1281px\)[\s\S]*?\.context-panel-collapsed \.context-panel\s*\{\s*display:\s*none/u);
+});
+
+test("keeps every tool closed initially and groups dense tool sequences", async () => {
+  const [source, css] = await Promise.all([
+    readFile(explorerSourceUrl, "utf8"),
+    readFile(stylesheetUrl, "utf8"),
+  ]);
+
+  assert.doesNotMatch(source, /defaultOpen/u);
+  assert.doesNotMatch(source, /<details[^>]*\sopen=/u);
+  assert.match(source, /className=\{`tool-call-group/u);
+  assert.match(source, /displayToolCalls\.length > 1/u);
+  assert.match(css, /\.tool-call-group-body \.tool-call\s*\{[\s\S]*?width:\s*100%/u);
+  assert.match(css, /@media \(any-pointer:\s*coarse\)[\s\S]*?\.tool-call-group > summary[\s\S]*?min-height:\s*44px/u);
+
+  const mobileStart = css.indexOf("@media (max-width: 900px)");
+  const compactStart = css.indexOf("@media (max-width: 520px)", mobileStart);
+  const mobileCss = css.slice(mobileStart, compactStart);
+  const compactCss = css.slice(compactStart);
+  assert.doesNotMatch(mobileCss, /\.tool-detail-grid\s*\{\s*grid-template-columns:\s*1fr/u);
+  assert.match(compactCss, /\.tool-detail-grid\s*\{\s*grid-template-columns:\s*1fr/u);
 });
 
 test("keeps Task conversations and evaluation evidence visible in the workspace", async () => {

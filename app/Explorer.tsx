@@ -1,7 +1,12 @@
 "use client";
 
 import { Fragment, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
-import type { ReactNode } from "react";
+import type {
+  CSSProperties,
+  KeyboardEvent as ReactKeyboardEvent,
+  PointerEvent as ReactPointerEvent,
+  ReactNode,
+} from "react";
 import snapshotJson from "./data/benchmark-snapshot.json";
 import type {
   AssetRef,
@@ -89,6 +94,14 @@ const TASK_PAGE_SIZE = 40;
 const DETAIL_CACHE_LIMIT = 24;
 const DISPLAY_LANGUAGE_STORAGE_KEY = "tau-explorer-display-language";
 const LEGACY_TASK_LANGUAGE_STORAGE_KEY = "tau-explorer-task-language";
+const PANEL_LAYOUT_STORAGE_KEY = "tau-explorer-panel-layout-v1";
+const CATALOG_PANEL_DEFAULT = 304;
+const CATALOG_PANEL_MIN = 244;
+const CATALOG_PANEL_MAX = 440;
+const CONTEXT_PANEL_DEFAULT = 410;
+const CONTEXT_PANEL_MIN = 340;
+const CONTEXT_PANEL_MAX = 600;
+const MIN_WORKSPACE_WIDTH = 560;
 const runIndexCache = new Map<string, Promise<RunIndexAsset>>();
 const tasksCache = new Map<string, Promise<TasksAsset>>();
 const loadedTasksCache = new Map<string, TasksAsset>();
@@ -96,6 +109,90 @@ const detailChunkCache = new Map<string, Promise<TrajectoryChunkAsset>>();
 const transcriptOverlayCache = new Map<string, Promise<KoreanTranscriptOverlayAsset>>();
 const contextTranslationCache = new Map<string, Promise<KoreanContextTranslationAsset>>();
 const detailCache = new Map<string, Trajectory>();
+
+function clampPanelWidth(value: number, minimum: number, maximum: number) {
+  return Math.min(Math.max(Math.round(value), minimum), maximum);
+}
+
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- WAI-ARIA adjustable separators are keyboard interactive. */
+function PanelResizer({
+  side,
+  value,
+  minimum,
+  maximum,
+  label,
+  onChange,
+  onReset,
+}: {
+  side: "catalog" | "context";
+  value: number;
+  minimum: number;
+  maximum: number;
+  label: string;
+  onChange: (value: number) => void;
+  onReset: () => void;
+}) {
+  const dragState = useRef<{ pointerId: number; clientX: number; value: number } | null>(null);
+
+  function finishResize(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!dragState.current) return;
+    dragState.current = null;
+    document.body.classList.remove("panel-resizing");
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }
+
+  function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    dragState.current = { pointerId: event.pointerId, clientX: event.clientX, value };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    document.body.classList.add("panel-resizing");
+  }
+
+  function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragState.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const direction = side === "catalog" ? 1 : -1;
+    onChange(clampPanelWidth(drag.value + ((event.clientX - drag.clientX) * direction), minimum, maximum));
+  }
+
+  function handleKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    const direction = side === "catalog" ? 1 : -1;
+    const increment = event.shiftKey ? 48 : 16;
+    let nextValue: number | null = null;
+    if (event.key === "ArrowLeft") nextValue = value - (increment * direction);
+    if (event.key === "ArrowRight") nextValue = value + (increment * direction);
+    if (event.key === "Home") nextValue = minimum;
+    if (event.key === "End") nextValue = maximum;
+    if (nextValue === null) return;
+    event.preventDefault();
+    onChange(clampPanelWidth(nextValue, minimum, maximum));
+  }
+
+  return (
+    <div
+      className={`panel-resizer ${side}-panel-resizer`}
+      role="separator"
+      aria-label={label}
+      aria-orientation="vertical"
+      aria-controls={side === "catalog" ? "catalog-sidebar" : "context-sidebar"}
+      aria-valuemin={minimum}
+      aria-valuemax={maximum}
+      aria-valuenow={value}
+      tabIndex={0}
+      title={`${label} · double-click to reset`}
+      onDoubleClick={onReset}
+      onKeyDown={handleKeyDown}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={finishResize}
+      onPointerCancel={finishResize}
+    />
+  );
+}
+/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex */
 
 async function readJson<T>(path: string): Promise<T> {
   const response = await fetch(path, { cache: "force-cache" });
@@ -845,13 +942,11 @@ function ToolInvocationCard({
   argumentsLanguage,
   resultLanguage,
   displayLanguage,
-  defaultOpen,
 }: {
   invocation: ToolInvocation;
   argumentsLanguage: TaskLanguage;
   resultLanguage: TaskLanguage;
   displayLanguage: TaskLanguage;
-  defaultOpen?: boolean;
 }) {
   const isUserTool = invocation.requestor === "user";
   const korean = displayLanguage === "ko";
@@ -861,7 +956,6 @@ function ToolInvocationCard({
         invocation.error ? " tool-error" : ""
       }`}
       lang={displayLanguage}
-      open={defaultOpen || undefined}
     >
       <summary>
         <span className="tool-owner" aria-hidden="true">
@@ -900,9 +994,61 @@ function ToolInvocationCard({
   );
 }
 
+function ToolInvocationGroup({
+  invocations,
+  displayLanguage,
+}: {
+  invocations: DisplayToolInvocation[];
+  displayLanguage: TaskLanguage;
+}) {
+  const korean = displayLanguage === "ko";
+  const isUserTool = invocations[0]?.invocation.requestor === "user";
+  const errorCount = invocations.filter((item) => Boolean(item.invocation.error)).length;
+  const nameCounts = new Map<string, number>();
+  for (const item of invocations) {
+    nameCounts.set(item.invocation.name, (nameCounts.get(item.invocation.name) ?? 0) + 1);
+  }
+  const names = [...nameCounts.entries()]
+    .map(([name, count]) => `${name}${count > 1 ? ` ×${count}` : ""}`)
+    .join(" · ");
+
+  return (
+    <details
+      className={`tool-call-group ${isUserTool ? "user-tool" : "agent-tool"}${errorCount ? " tool-error" : ""}`}
+      lang={displayLanguage}
+    >
+      <summary>
+        <span className="tool-owner" aria-hidden="true">
+          {korean ? (isUserTool ? "사" : "상") : isUserTool ? "U" : "A"}
+        </span>
+        <span className="tool-summary-copy">
+          <strong>{korean ? `도구 호출 ${invocations.length}개` : `${invocations.length} tool calls`}</strong>
+          <span className="tool-group-names" lang="en" title={names}>{names}</span>
+        </span>
+        <span className={`tool-state${errorCount ? " error" : ""}`}>
+          {errorCount
+            ? (korean ? `오류 ${errorCount}` : `${errorCount} errors`)
+            : (korean ? "모두 성공" : "All succeeded")}
+        </span>
+        <span className="disclosure" aria-hidden="true">⌄</span>
+      </summary>
+      <div className="tool-call-group-body">
+        {invocations.map((display, index) => (
+          <ToolInvocationCard
+            key={`${display.invocation.id}-${index}`}
+            invocation={display.invocation}
+            argumentsLanguage={display.argumentsLanguage}
+            resultLanguage={display.resultLanguage}
+            displayLanguage={displayLanguage}
+          />
+        ))}
+      </div>
+    </details>
+  );
+}
+
 function TranscriptItem({
   message,
-  messageIndex,
   metadataVisible,
   displayContent,
   displayToolCalls,
@@ -911,7 +1057,6 @@ function TranscriptItem({
   translationFallback,
 }: {
   message: TranscriptMessage;
-  messageIndex: number;
   metadataVisible: boolean;
   displayContent: string | null;
   displayToolCalls: DisplayToolInvocation[];
@@ -956,16 +1101,16 @@ function TranscriptItem({
           {displayContent}
         </p>
       ) : null}
-      {displayToolCalls.map((display, index) => (
+      {displayToolCalls.length > 1 ? (
+        <ToolInvocationGroup invocations={displayToolCalls} displayLanguage={displayLanguage} />
+      ) : displayToolCalls[0] ? (
         <ToolInvocationCard
-          key={`${display.invocation.id}-${index}`}
-          invocation={display.invocation}
-          argumentsLanguage={display.argumentsLanguage}
-          resultLanguage={display.resultLanguage}
+          invocation={displayToolCalls[0].invocation}
+          argumentsLanguage={displayToolCalls[0].argumentsLanguage}
+          resultLanguage={displayToolCalls[0].resultLanguage}
           displayLanguage={displayLanguage}
-          defaultOpen={messageIndex < 6 && index === 0}
         />
-      ))}
+      ) : null}
     </li>
   );
 }
@@ -1901,6 +2046,8 @@ function ContextPanel({
   retryDetail,
   open,
   close,
+  collapsed,
+  collapse,
 }: {
   domain: DomainData;
   trajectory?: Trajectory;
@@ -1939,6 +2086,8 @@ function ContextPanel({
   retryDetail: () => void;
   open: boolean;
   close: () => void;
+  collapsed: boolean;
+  collapse: () => void;
 }) {
   const canonicalPolicy = policyMode === "run" && runPolicy
     ? runPolicy
@@ -1961,7 +2110,11 @@ function ContextPanel({
   }
 
   return (
-    <aside className={`context-panel${open ? " context-open" : ""}`} aria-label="Domain context">
+    <aside
+      id="context-sidebar"
+      className={`context-panel${open ? " context-open" : ""}${collapsed ? " panel-collapsed" : ""}`}
+      aria-label="Domain context"
+    >
       <div className="context-header">
         <div>
           <p className="eyebrow">Domain context</p>
@@ -1975,6 +2128,16 @@ function ContextPanel({
             Agent {domain.agentToolCount ?? domain.toolCount} · User {domain.userToolCount ?? 0}
           </span>
           <span>{domain.versionLabel}</span>
+          <button
+            type="button"
+            className="context-collapse"
+            onClick={collapse}
+            aria-expanded={!collapsed}
+            aria-label={taskLanguage === "ko" ? "오른쪽 컨텍스트 패널 접기" : "Collapse context sidebar"}
+            title={taskLanguage === "ko" ? "컨텍스트 패널 접기" : "Collapse context sidebar"}
+          >
+            →
+          </button>
           <button type="button" className="context-close" onClick={close} aria-label="Close context">
             ×
           </button>
@@ -2156,6 +2319,12 @@ export default function Explorer() {
   const [evaluationVisible, setEvaluationVisible] = useState(true);
   const [contextOpen, setContextOpen] = useState(false);
   const [browserOpen, setBrowserOpen] = useState(false);
+  const [catalogPanelWidth, setCatalogPanelWidth] = useState(CATALOG_PANEL_DEFAULT);
+  const [contextPanelWidth, setContextPanelWidth] = useState(CONTEXT_PANEL_DEFAULT);
+  const [catalogPanelCollapsed, setCatalogPanelCollapsed] = useState(false);
+  const [contextPanelCollapsed, setContextPanelCollapsed] = useState(false);
+  const [panelLayoutMounted, setPanelLayoutMounted] = useState(false);
+  const [viewportWidth, setViewportWidth] = useState(1440);
   const [page, setPage] = useState(0);
   const [indexRetry, setIndexRetry] = useState(0);
   const [detailRetry, setDetailRetry] = useState(0);
@@ -2193,6 +2362,80 @@ export default function Explorer() {
     error: null,
   });
   const listRef = useRef<HTMLDivElement>(null);
+  const contextTriggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    let current = true;
+    let storedLayout: {
+      catalogWidth?: number;
+      contextWidth?: number;
+      catalogCollapsed?: boolean;
+      contextCollapsed?: boolean;
+    } = {};
+    try {
+      storedLayout = JSON.parse(window.localStorage.getItem(PANEL_LAYOUT_STORAGE_KEY) ?? "{}") as typeof storedLayout;
+    } catch {
+      // Keep the default panel layout when storage is unavailable or malformed.
+    }
+    void Promise.resolve().then(() => {
+      if (!current) return;
+      if (Number.isFinite(storedLayout.catalogWidth)) {
+        setCatalogPanelWidth(clampPanelWidth(storedLayout.catalogWidth as number, CATALOG_PANEL_MIN, CATALOG_PANEL_MAX));
+      }
+      if (Number.isFinite(storedLayout.contextWidth)) {
+        setContextPanelWidth(clampPanelWidth(storedLayout.contextWidth as number, CONTEXT_PANEL_MIN, CONTEXT_PANEL_MAX));
+      }
+      setCatalogPanelCollapsed(storedLayout.catalogCollapsed === true);
+      setContextPanelCollapsed(storedLayout.contextCollapsed === true);
+      setViewportWidth(window.innerWidth);
+      setPanelLayoutMounted(true);
+    });
+    return () => { current = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!panelLayoutMounted) return;
+    const timer = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(PANEL_LAYOUT_STORAGE_KEY, JSON.stringify({
+          catalogWidth: catalogPanelWidth,
+          contextWidth: contextPanelWidth,
+          catalogCollapsed: catalogPanelCollapsed,
+          contextCollapsed: contextPanelCollapsed,
+        }));
+      } catch {
+        // Panel controls continue to work for this session when storage is unavailable.
+      }
+    }, 120);
+    return () => window.clearTimeout(timer);
+  }, [
+    catalogPanelCollapsed,
+    catalogPanelWidth,
+    contextPanelCollapsed,
+    contextPanelWidth,
+    panelLayoutMounted,
+  ]);
+
+  useEffect(() => {
+    function updateViewport() {
+      setViewportWidth(window.innerWidth);
+    }
+    function closeTopDrawer(event: globalThis.KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      if (browserOpen) {
+        setBrowserOpen(false);
+      } else if (contextOpen) {
+        setContextOpen(false);
+        contextTriggerRef.current?.focus();
+      }
+    }
+    window.addEventListener("resize", updateViewport);
+    window.addEventListener("keydown", closeTopDrawer);
+    return () => {
+      window.removeEventListener("resize", updateViewport);
+      window.removeEventListener("keydown", closeTopDrawer);
+    };
+  }, [browserOpen, contextOpen]);
 
   useEffect(() => {
     let current = true;
@@ -2841,9 +3084,87 @@ export default function Explorer() {
     setContextTranslationRetry((value) => value + 1);
   }
 
+  let renderedCatalogWidth = catalogPanelWidth;
+  let renderedContextWidth = contextPanelWidth;
+  if (viewportWidth <= 900) {
+    renderedCatalogWidth = Math.max(360, renderedCatalogWidth);
+  }
+  if (viewportWidth > 1280) {
+    const availableForPanels = Math.max(
+      CATALOG_PANEL_MIN + CONTEXT_PANEL_MIN,
+      viewportWidth - MIN_WORKSPACE_WIDTH,
+    );
+    const catalogColumn = catalogPanelCollapsed ? 52 : renderedCatalogWidth;
+    const contextColumn = contextPanelCollapsed ? 0 : renderedContextWidth;
+    const overflow = Math.max(0, catalogColumn + contextColumn - availableForPanels);
+    if (overflow > 0 && !contextPanelCollapsed) {
+      renderedContextWidth = Math.max(CONTEXT_PANEL_MIN, renderedContextWidth - overflow);
+    }
+    const remainingOverflow = Math.max(
+      0,
+      (catalogPanelCollapsed ? 52 : renderedCatalogWidth) +
+        (contextPanelCollapsed ? 0 : renderedContextWidth) -
+        availableForPanels,
+    );
+    if (remainingOverflow > 0 && !catalogPanelCollapsed) {
+      renderedCatalogWidth = Math.max(CATALOG_PANEL_MIN, renderedCatalogWidth - remainingOverflow);
+    }
+  }
+  const catalogResizeMaximum = viewportWidth > 1280 && !contextPanelCollapsed
+    ? Math.max(
+      CATALOG_PANEL_MIN,
+      Math.min(CATALOG_PANEL_MAX, viewportWidth - renderedContextWidth - MIN_WORKSPACE_WIDTH),
+    )
+    : CATALOG_PANEL_MAX;
+  const catalogResizeMinimum = viewportWidth <= 900 ? 360 : CATALOG_PANEL_MIN;
+  const contextResizeMaximum = viewportWidth > 1280 && !catalogPanelCollapsed
+    ? Math.max(
+      CONTEXT_PANEL_MIN,
+      Math.min(CONTEXT_PANEL_MAX, viewportWidth - renderedCatalogWidth - MIN_WORKSPACE_WIDTH),
+    )
+    : CONTEXT_PANEL_MAX;
+  const explorerStyle = {
+    "--catalog-width": `${renderedCatalogWidth}px`,
+    "--context-width": `${renderedContextWidth}px`,
+  } as CSSProperties;
+  const explorerClassName = [
+    "explorer-shell",
+    catalogPanelCollapsed ? "catalog-panel-collapsed" : "",
+    contextPanelCollapsed ? "context-panel-collapsed" : "",
+    browserOpen ? "browser-drawer-open" : "",
+    contextOpen ? "context-drawer-open" : "",
+  ].filter(Boolean).join(" ");
+
+  function openCatalogDrawer() {
+    setContextOpen(false);
+    setBrowserOpen(true);
+  }
+
+  function openContextSidebar() {
+    setBrowserOpen(false);
+    setContextPanelCollapsed(false);
+    setContextOpen(true);
+  }
+
+  function collapseContextSidebar() {
+    setContextPanelCollapsed(true);
+    setContextOpen(false);
+    window.requestAnimationFrame(() => contextTriggerRef.current?.focus());
+  }
+
   return (
-    <main className="explorer-shell">
-      <aside className="sidebar">
+    <main className={explorerClassName} style={explorerStyle}>
+      <aside className="sidebar" id="catalog-sidebar" aria-label="Catalog sidebar">
+        <button
+          type="button"
+          className="catalog-restore"
+          onClick={() => setCatalogPanelCollapsed(false)}
+          aria-expanded={!catalogPanelCollapsed}
+          aria-label={taskLanguage === "ko" ? "왼쪽 카탈로그 패널 펼치기" : "Expand catalog sidebar"}
+          title={taskLanguage === "ko" ? "카탈로그 패널 펼치기" : "Expand catalog sidebar"}
+        >
+          →
+        </button>
         <div className="brand-row">
           <span className="brand-mark">τ²</span>
           <div className="brand-copy">
@@ -2855,6 +3176,16 @@ export default function Explorer() {
             onChange={setTaskLanguage}
             className="desktop-task-language"
           />
+          <button
+            type="button"
+            className="catalog-collapse"
+            onClick={() => setCatalogPanelCollapsed(true)}
+            aria-expanded={!catalogPanelCollapsed}
+            aria-label={taskLanguage === "ko" ? "왼쪽 카탈로그 패널 접기" : "Collapse catalog sidebar"}
+            title={taskLanguage === "ko" ? "카탈로그 패널 접기" : "Collapse catalog sidebar"}
+          >
+            ←
+          </button>
         </div>
 
         <div className="mobile-selectors">
@@ -2869,7 +3200,7 @@ export default function Explorer() {
             <button
               type="button"
               className="mobile-browser-trigger"
-              onClick={() => setBrowserOpen(true)}
+              onClick={openCatalogDrawer}
               aria-expanded={browserOpen}
             >
               <strong lang={selectedTaskDisplay?.translation ? "ko" : "en"}>
@@ -3161,6 +3492,16 @@ export default function Explorer() {
         </div>
       </aside>
 
+      <PanelResizer
+        side="catalog"
+        value={renderedCatalogWidth}
+        minimum={catalogResizeMinimum}
+        maximum={catalogResizeMaximum}
+        label={taskLanguage === "ko" ? "카탈로그 패널 너비 조절" : "Resize catalog sidebar"}
+        onChange={setCatalogPanelWidth}
+        onReset={() => setCatalogPanelWidth(CATALOG_PANEL_DEFAULT)}
+      />
+
       <section className="workspace">
         {currentIndexState.status === "loading" ? (
           <div className="workspace-state" role="status" aria-label="Conversation transcript">
@@ -3192,7 +3533,10 @@ export default function Explorer() {
                 <button
                   type="button"
                   className="context-trigger"
-                  onClick={() => setContextOpen(true)}
+                  ref={contextTriggerRef}
+                  onClick={openContextSidebar}
+                  aria-controls="context-sidebar"
+                  aria-expanded={contextOpen}
                 >
                   {taskLanguage === "ko" ? "컨텍스트" : "Context"}
                 </button>
@@ -3315,7 +3659,6 @@ export default function Explorer() {
                     <Fragment key={`${item.message.turnIndex}-${index}`}>
                       <TranscriptItem
                         message={item.message}
-                        messageIndex={index}
                         metadataVisible={metadataVisible}
                         displayContent={item.displayContent}
                         displayToolCalls={item.displayToolCalls}
@@ -3366,6 +3709,16 @@ export default function Explorer() {
         )}
       </section>
 
+      <PanelResizer
+        side="context"
+        value={renderedContextWidth}
+        minimum={CONTEXT_PANEL_MIN}
+        maximum={contextResizeMaximum}
+        label={taskLanguage === "ko" ? "컨텍스트 패널 너비 조절" : "Resize context sidebar"}
+        onChange={setContextPanelWidth}
+        onReset={() => setContextPanelWidth(CONTEXT_PANEL_DEFAULT)}
+      />
+
       <ContextPanel
         domain={domain}
         trajectory={trajectory}
@@ -3404,6 +3757,8 @@ export default function Explorer() {
         retryDetail={retrySelectedDetail}
         open={contextOpen}
         close={() => setContextOpen(false)}
+        collapsed={contextPanelCollapsed}
+        collapse={collapseContextSidebar}
       />
       {contextOpen ? (
         <button
